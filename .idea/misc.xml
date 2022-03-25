@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/AndroidProjects/9Square Property/app/src/main/res/layout/activity_buy_our_services.xml" value="0.20416666666666666" />
+        <entry key="..\:/AndroidProjects/9Square Property/app/src/main/res/layout/activity_buy_service2.xml" value="0.18" />
+        <entry key="..\:/AndroidProjects/9Square Property/app/src/main/res/layout/activity_location.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/9Square Property/app/src/main/res/layout/activity_login.xml" value="0.20416666666666666" />
+        <entry key="..\:/AndroidProjects/9Square Property/app/src/main/res/layout/activity_main.xml" value="0.1503623188405797" />
+        <entry key="..\:/AndroidProjects/9Square Property/app/src/main/res/layout/activity_payu_money.xml" value="0.20416666666666666" />
+        <entry key="..\:/AndroidProjects/9Square Property/app/src/main/res/layout/activity_profile.xml" value="0.16" />
+        <entry key="..\:/AndroidProjects/9Square Property/app/src/main/res/layout/activity_registration.xml" value="0.1503623188405797" />
+        <entry key="..\:/AndroidProjects/9Square Property/app/src/main/res/layout/activity_registration_otp.xml" value="0.20416666666666666" />
+        <entry key="..\:/AndroidProjects/9Square Property/app/src/main/res/layout/anemities.xml" value="0.33" />
+        <entry key="..\:/AndroidProjects/9Square Property/app/src/main/res/layout/app_bar_latest.xml" value="0.1503623188405797" />
+        <entry key="..\:/AndroidProjects/9Square Property/app/src/main/res/layout/app_bar_main.xml" value="0.1503623188405797" />
+        <entry key="..\:/AndroidProjects/9Square Property/app/src/main/res/layout/app_bar_myproperty.xml" value="0.1503623188405797" />
+        <entry key="..\:/AndroidProjects/9Square Property/app/src/main/res/layout/app_bar_setting.xml" value="0.1503623188405797" />
+        <entry key="..\:/AndroidProjects/9Square Property/app/src/main/res/layout/app_bar_shortlisted.xml" value="0.1503623188405797" />
+        <entry key="..\:/AndroidProjects/9Square Property/app/src/main/res/layout/app_bar_testimonials.xml" value="0.1503623188405797" />
+        <entry key="..\:/AndroidProjects/9Square Property/app/src/main/res/layout/footer.xml" value="0.1503623188405797" />
+        <entry key="..\:/AndroidProjects/9Square Property/app/src/main/res/layout/fragment_property_deatial.xml" value="0.16" />
+        <entry key="..\:/AndroidProjects/9Square Property/app/src/main/res/layout/land12.xml" value="0.20416666666666666" />
+        <entry key="..\:/AndroidProjects/9Square Property/app/src/main/res/layout/property.xml" value="0.1503623188405797" />
+        <entry key="..\:/AndroidProjects/9Square Property/app/src/main/res/layout/property12.xml" value="0.1503623188405797" />
+        <entry key="..\:/AndroidProjects/9Square Property/app/src/main/res/menu/activity_main_drawer2.xml" value="0.20416666666666666" />
+        <entry key="..\:/AndroidProjects/9Square Property/app/src/main/res/menu/bottom_nav_menu.xml" value="0.20416666666666666" />
+        <entry key="..\:/AndroidProjects/9Square Property/app/src/main/res/menu/main.xml" value="0.1712962962962963" />
+        <entry key="..\:/Rajat/AndroidProjects/9Square Property/app/src/main/res/drawable/heart.xml" value="0.2203125" />
+        <entry key="..\:/Rajat/AndroidProjects/9Square Property/app/src/main/res/drawable/home.xml" value="0.2203125" />
+        <entry key="..\:/Rajat/AndroidProjects/9Square Property/app/src/main/res/drawable/ic_search.xml" value="0.2203125" />
+        <entry key="..\:/Rajat/AndroidProjects/9Square Property/app/src/main/res/drawable/latest.xml" value="0.2203125" />
+        <entry key="..\:/Rajat/AndroidProjects/9Square Property/app/src/main/res/layout/activity_buy_our_services.xml" value="0.20416666666666666" />
+        <entry key="..\:/Rajat/AndroidProjects/9Square Property/app/src/main/res/layout/activity_splash_screen.xml" value="0.20416666666666666" />
+        <entry key="..\:/Rajat/AndroidProjects/9Square Property/app/src/main/res/layout/app_bar_main.xml" value="0.20416666666666666" />
+        <entry key="..\:/Rajat/AndroidProjects/9Square Property/app/src/main/res/layout/footer.xml" value="0.45919778699861685" />
+        <entry key="..\:/Rajat/AndroidProjects/9Square Property/app/src/main/res/layout/fragment_property_deatial.xml" value="0.22" />
+        <entry key="..\:/Rajat/AndroidProjects/9Square Property/app/src/main/res/layout/test.xml" value="0.33" />
+        <entry key="..\:/Rajat/AndroidProjects/9Square Property/app/src/main/res/menu/activity_main_drawer.xml" value="0.1" />
+        <entry key="..\:/Rajat/AndroidProjects/Nesting India/app/src/main/res/drawable/border_background.xml" value="0.2203125" />
+        <entry key="..\:/Rajat/AndroidProjects/Nesting India/app/src/main/res/drawable/button_bg.xml" value="0.2101851851851852" />
+        <entry key="..\:/Rajat/AndroidProjects/Nesting India/app/src/main/res/drawable/footer_gradient_bg.xml" value="0.2101851851851852" />
+        <entry key="..\:/Rajat/AndroidProjects/Nesting India/app/src/main/res/drawable/footerbg.xml" value="0.2101851851851852" />
+        <entry key="..\:/Rajat/AndroidProjects/Nesting India/app/src/main/res/drawable/gradient_bg.xml" value="0.21388888888888888" />
+        <entry key="..\:/Rajat/AndroidProjects/Nesting India/app/src/main/res/drawable/mainhome_btn_bg.xml" value="0.2203125" />
+        <entry key="..\:/Rajat/AndroidProjects/Nesting India/app/src/main/res/layout/activity_login.xml" value="0.21" />
+        <entry key="..\:/Rajat/AndroidProjects/Nesting India/app/src/main/res/layout/activity_main.xml" value="0.1712962962962963" />
+        <entry key="..\:/Rajat/AndroidProjects/Nesting India/app/src/main/res/layout/activity_registration.xml" value="0.1675925925925926" />
+        <entry key="..\:/Rajat/AndroidProjects/Nesting India/app/src/main/res/layout/activity_splash_screen.xml" value="0.20416666666666666" />
+        <entry key="..\:/Rajat/AndroidProjects/Nesting India/app/src/main/res/layout/app_bar_main.xml" value="0.20416666666666666" />
+        <entry key="..\:/Rajat/AndroidProjects/Nesting India/app/src/main/res/layout/footer.xml" value="0.20416666666666666" />
+        <entry key="..\:/Rajat/AndroidProjects/Nesting India/app/src/main/res/layout/nav_header_main.xml" value="0.1675925925925926" />
+        <entry key="..\:/Rajat/AndroidProjects/Nesting India/app/src/main/res/layout/property12.xml" value="0.20416666666666666" />
+        <entry key="..\:/Rajat/AndroidProjects/Nesting India/app/src/main/res/menu/activity_main_drawer.xml" value="0.20416666666666666" />
+        <entry key="..\:/Rajat/AndroidProjects/Nesting India/app/src/main/res/menu/activity_main_drawer2.xml" value="0.20102564102564102" />
+        <entry key="..\:/Users/RAJAT/AndroidProjects/app/src/main/res/layout/activity_about.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/RAJAT/AndroidProjects/app/src/main/res/layout/activity_main.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/RAJAT/AndroidProjects/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
