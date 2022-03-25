@@ -19,11 +19,12 @@ public class SmsData {
 
 
 
+/*
 
     String atthe = "@";
     String url = "www.nestingindia.com/contact";
-    public String Username = "9ninesquareproperty";
-    public String Password = "99700151";
+    public String Username = "shailendramahanande";
+    public String Password = "48601128";
     public String source = "NSQPRP";
     public String dltentityid = "1501782580000035825";
     public String dltheaderid = "1505164559938666054";
@@ -39,11 +40,9 @@ public class SmsData {
     }
 
 
+*/
 
-
-
-
-/*    String atthe = "@";
+    String atthe = "@";
     String url = "www.nestingindia.com/contact";
     public String Username = "shailendramahanande";
     public String Password = "48601128";
@@ -59,5 +58,5 @@ public class SmsData {
     public String token = "hguyngjkkfuids_koihacknhikrskta_hjkhdgh789fjghju";
 
     public SmsData() {
-    }*/
+    }
 }
