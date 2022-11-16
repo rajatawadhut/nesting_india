@@ -227,7 +227,7 @@ public class SettingActivity extends AppCompatActivity {
 //                startActivity(intent);
 
                 Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-                sharingIntent.putExtra(Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details?id=com.Nesting India.nesting_india");
+                sharingIntent.putExtra(Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details?id=com.nesting_india_property.property");
                 sharingIntent.setType("text/plain");
                 startActivity(Intent.createChooser(sharingIntent, "Share Request Post"));
             }

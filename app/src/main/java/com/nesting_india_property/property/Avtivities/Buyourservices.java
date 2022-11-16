@@ -6,6 +6,7 @@ import androidx.cardview.widget.CardView;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -43,7 +44,7 @@ public class Buyourservices extends AppCompatActivity implements PaymentResultLi
     CardView cvBalance;
     TextView tvBalance;
 
-    Button btn700,btn1200,btn2000;
+    Button btn1500,btn2400,btn3000;
     String getsubscription= "";
     String amountValue= "";
     int valueInt;
@@ -69,20 +70,19 @@ public class Buyourservices extends AppCompatActivity implements PaymentResultLi
         progressDialog.setMessage("Please Wait...");
         progressDialog.setCancelable(false);
 
-
-        btn700 = findViewById(R.id.btn_700);
-        btn1200 = findViewById(R.id.btn_1200);
-        btn2000 = findViewById(R.id.btn_2000);
+        btn1500 = findViewById(R.id.btn_1500);
+        btn2400 = findViewById(R.id.btn_2400);
+        btn3000 = findViewById(R.id.btn_3000);
         cvBalance = findViewById(R.id.cv_balance);
         tvBalance = findViewById(R.id.tv_balance);
 
 
         if(VolleySingleton.getInstance(getApplicationContext()).isLogin()){
-            getsubscription();
+//            getsubscription();
         }
 
 
-        btn700.setOnClickListener(new View.OnClickListener() {
+        btn1500.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -90,7 +90,7 @@ public class Buyourservices extends AppCompatActivity implements PaymentResultLi
 //                    startpayment("700");
 //                    valueInt = 4;
 //                    amountValue = "700";
-                    
+                    openPaymentUrl();
                 }else{
                     showmessage("Please login first!!");
                     startActivity(new Intent(Buyourservices.this, LoginActivity.class));
@@ -100,7 +100,7 @@ public class Buyourservices extends AppCompatActivity implements PaymentResultLi
             }
         });
 
-        btn1200.setOnClickListener(new View.OnClickListener() {
+        btn2400.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -108,7 +108,7 @@ public class Buyourservices extends AppCompatActivity implements PaymentResultLi
 //                    startpayment("1200");
 //                    valueInt = 8;
 //                    amountValue = "1200";
-                    
+                    openPaymentUrl();
                 }else{
                     showmessage("Please login first!!");
                     startActivity(new Intent(Buyourservices.this, LoginActivity.class));
@@ -118,13 +118,14 @@ public class Buyourservices extends AppCompatActivity implements PaymentResultLi
             }
         });
 
-        btn2000.setOnClickListener(new View.OnClickListener() {
+        btn3000.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(VolleySingleton.getInstance(getApplicationContext()).isLogin()){
 //                    startpayment("2000");
 //                    valueInt = 12;
 //                    amountValue = "2000";
+                    openPaymentUrl();
                     
                 }else{
                     showmessage("Please login first!!");
@@ -135,6 +136,11 @@ public class Buyourservices extends AppCompatActivity implements PaymentResultLi
         });
 
 
+    }
+
+    public void openPaymentUrl() {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://nestingindia.com/buy-service"));
+        startActivity(browserIntent);
     }
 
     public void startpayment(String value){

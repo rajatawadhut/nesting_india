@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.nine_square.property", appContext.getPackageName());
+        assertEquals("com.nesting_india_property.property", appContext.getPackageName());
     }
 }

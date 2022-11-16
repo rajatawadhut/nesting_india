@@ -45,8 +45,10 @@ public class SmsData {
     String atthe = "@";
     String url = "www.nestingindia.com/contact";
     public String Username = "shailendramahanande";
-    public String Password = "48601128";
-    public String source = "NSTIND";
+    public String Password = "48601128"; // correct
+//    public String Password = "486"; // wrong
+    public String source = "NSTIND"; // correct
+//    public String source = "N"; // wrong
     public String dltentityid = "1501394680000022547";
     public String dltheaderid = "1505161285152442705";
     public String dlttempid = "1507162065221907548";
