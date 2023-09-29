@@ -3,14 +3,14 @@ plugins {
 }
 
 android {
-    compileSdk 31
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.nesting_india_property.property"
         minSdk 21
-        targetSdk 31
-        versionCode 6
-        versionName "1.5"
+        targetSdk 33
+        versionCode 7
+        versionName "1.6"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
