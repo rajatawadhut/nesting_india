@@ -54,6 +54,7 @@ public class Endpoints {
     public  static final String reviewpost = base_url+"reviewpost.php";
     public  static final String getreview = base_url+"getreview.php";
     public  static final String getsubscription = base_url+"getsubscription.php";
+    public  static final String getSubscriptionPlans = base_url+"getSubscriptionPlans.php";
 
     public  static final String sendsubscription = base_url+"sendsubscription.php";
     public  static final String contactproperty = base_url+"contactproperty.php";

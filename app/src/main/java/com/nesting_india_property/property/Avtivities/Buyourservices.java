@@ -3,7 +3,9 @@ package com.nesting_india_property.property.Avtivities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -21,6 +23,10 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.nesting_india_property.property.Adapter.AdsViewPager;
+import com.nesting_india_property.property.Adapter.SubscriptionPlanAdapter;
+import com.nesting_india_property.property.Models.AdsDataModel;
+import com.nesting_india_property.property.Models.SubscriptionPlanModel;
 import com.nesting_india_property.property.R;
 import com.nesting_india_property.property.Utils.Endpoints;
 import com.nesting_india_property.property.Utils.SmsData;
@@ -29,26 +35,27 @@ import com.nesting_india_property.property.Utils.VolleySingleton;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentResultListener;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class Buyourservices extends AppCompatActivity implements PaymentResultListener {
+public class Buyourservices extends AppCompatActivity implements PaymentResultListener, SubscriptionPlanAdapter.SubscriptionListener {
 
 
-    Button payment;
-    ImageView back;
     private ProgressDialog progressDialog;
-    CardView cvBalance;
-    TextView tvBalance;
 
-    Button btn1500,btn2400,btn3000;
+    RecyclerView recyclerview;
+    List<SubscriptionPlanModel> subscriptionList;
     String getsubscription= "";
     String amountValue= "";
     int valueInt;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,76 +72,97 @@ public class Buyourservices extends AppCompatActivity implements PaymentResultLi
                 finish();
             }
         });
-
+        subscriptionList = new ArrayList<SubscriptionPlanModel>();
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Please Wait...");
         progressDialog.setCancelable(false);
 
-        btn1500 = findViewById(R.id.btn_1500);
-        btn2400 = findViewById(R.id.btn_2400);
-        btn3000 = findViewById(R.id.btn_3000);
-        cvBalance = findViewById(R.id.cv_balance);
-        tvBalance = findViewById(R.id.tv_balance);
-
+        recyclerview = findViewById(R.id.recyclerview);
 
         if(VolleySingleton.getInstance(getApplicationContext()).isLogin()){
-//            getsubscription();
+            getsubscription();
         }
+        getSubscriptionPlans();
+
+       /* if(VolleySingleton.getInstance(getApplicationContext()).isLogin()){
+            startpayment("700");
+            valueInt = 4;
+            amountValue = "700";
+//                    openPaymentUrl();
+        }else{
+            showmessage("Please login first!!");
+            startActivity(new Intent(Buyourservices.this, LoginActivity.class));
+            finish();
+        }*/
 
 
-        btn1500.setOnClickListener(new View.OnClickListener() {
+
+
+    }
+
+    private void getSubscriptionPlans() {
+        progressDialog.show();
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Endpoints.getSubscriptionPlans, new Response.Listener<String>() {
+
             @Override
-            public void onClick(View v) {
+            public void onResponse(String response) {
+                System.out.println("response :: " +response);
+                progressDialog.dismiss();
 
-                if(VolleySingleton.getInstance(getApplicationContext()).isLogin()){
-//                    startpayment("700");
-//                    valueInt = 4;
-//                    amountValue = "700";
-                    openPaymentUrl();
-                }else{
-                    showmessage("Please login first!!");
-                    startActivity(new Intent(Buyourservices.this, LoginActivity.class));
-                    finish();
+                try {
+                    JSONObject obj = new JSONObject(response);
+                    String succes = obj.getString("success");
+                    JSONArray jsonArray = obj.getJSONArray("data");
+
+                    if(succes.equals("1")){
+
+                        for(int i=0; i<jsonArray.length();i++){
+                            JSONObject object = jsonArray.getJSONObject(i);
+
+                            String id = object.getString("id");
+                            String subscription_title = object.getString("subscription_title");
+                            String subscription_price = object.getString("subscription_price");
+                            String subscription_duration = object.getString("subscription_duration");
+                            String subscription_description = object.getString("subscription_description");
+                            String subscription_offer = object.getString("subscription_offer");
+                            String subscription_type = object.getString("subscription_type");
+                            String status = object.getString("status");
+
+
+                            SubscriptionPlanModel model = new SubscriptionPlanModel(id,subscription_title,subscription_price, subscription_duration, subscription_description, subscription_offer, subscription_type, status);
+                            subscriptionList.add(model);
+                            SubscriptionPlanAdapter adapter = new SubscriptionPlanAdapter(subscriptionList, Buyourservices.this, Buyourservices.this);
+                            recyclerview.setAdapter(adapter);
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    showmessage("Server Error...");
+                    System.out.println("problem ::"+e);
+                    e.printStackTrace();
                 }
 
             }
-        });
 
-        btn2400.setOnClickListener(new View.OnClickListener() {
+        }, new Response.ErrorListener() {
             @Override
-            public void onClick(View v) {
-
-                if(VolleySingleton.getInstance(getApplicationContext()).isLogin()){
-//                    startpayment("1200");
-//                    valueInt = 8;
-//                    amountValue = "1200";
-                    openPaymentUrl();
-                }else{
-                    showmessage("Please login first!!");
-                    startActivity(new Intent(Buyourservices.this, LoginActivity.class));
-                    finish();
-                }
-
+            public void onErrorResponse(VolleyError error) {
+                progressDialog.dismiss();
+                Toast.makeText(Buyourservices.this,"Something Went Wrong",Toast.LENGTH_SHORT).show();
             }
-        });
-
-        btn3000.setOnClickListener(new View.OnClickListener() {
+        }){
             @Override
-            public void onClick(View v) {
-                if(VolleySingleton.getInstance(getApplicationContext()).isLogin()){
-//                    startpayment("2000");
-//                    valueInt = 12;
-//                    amountValue = "2000";
-                    openPaymentUrl();
-                    
-                }else{
-                    showmessage("Please login first!!");
-                    startActivity(new Intent(Buyourservices.this, LoginActivity.class));
-                    finish();
-                }
+            protected Map<String, String> getParams() throws AuthFailureError {
+                SmsData smsData = new SmsData();
+                Map<String, String> params = new HashMap<>();
+                params.put("header", smsData.token);
+                return params;
             }
-        });
+        };
 
+
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
 
     }
 
@@ -189,8 +217,9 @@ public class Buyourservices extends AppCompatActivity implements PaymentResultLi
                         showmessage(obj.getString("message"));
                     }else{
                         String result = obj.getString("subscriptionplan");
-                        cvBalance.setVisibility(View.VISIBLE);
-                        tvBalance.setText(result);
+
+                        showmessage(result);
+
                         StorageSome.getInstance(getApplicationContext()).setsubsription(result);
 
 
@@ -326,14 +355,21 @@ public class Buyourservices extends AppCompatActivity implements PaymentResultLi
         sendsubscription(s);
         sendPaymentDetail(s, amountValue);
         Toast.makeText(this,"Payment Successful", Toast.LENGTH_LONG).show();
+        Log.v("Payment Failed", s);
 
     }
 
     @Override
     public void onPaymentError(int i, String s) {
+        Log.v("Payment Failed", i +"   "+ s);
 
         Toast.makeText(this, "Payment Failed!!", Toast.LENGTH_LONG).show();
 
+    }
+
+    @Override
+    public void onSelectSubscription(SubscriptionPlanModel model) {
+        startpayment(model.getSubscription_price());
     }
 }
 
