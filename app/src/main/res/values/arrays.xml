@@ -21,6 +21,14 @@
         <item>Builder</item>
     </string-array>
 
+    <string-array name="usercategory">
+        <item>Select User Category</item>
+        <item>Owner</item>
+        <item>Dealer</item>
+        <item>Builder</item>
+        <item>Buyer</item>
+    </string-array>
+
 
     <string-array name="units">
         <item>Sq.Ft</item>

@@ -197,7 +197,11 @@ public class TestimonialsActivity extends AppCompatActivity {
             nav.setItemIconTintList(null);
         }else {
             nav.getMenu().clear();
-            nav.inflateMenu(R.menu.activity_main_drawer);
+            if(VolleySingleton.getInstance(getApplicationContext()).userCategory().equals("4")) {
+                nav.inflateMenu(R.menu.activity_main_drawer_buyer);
+            }else {
+                nav.inflateMenu(R.menu.activity_main_drawer);
+            }
             nav.setItemIconTintList(null);
             showmsgcounter();
         }
@@ -495,21 +499,21 @@ public class TestimonialsActivity extends AppCompatActivity {
 //                    if(getmsgcounter.contains()){
 //                        System.out.println(" dataataataa :;  "+ counter + "    "+ getmsgcounter.size() );
 //                    }
+                    if(!VolleySingleton.getInstance(getApplicationContext()).userCategory().equals("4")) {
+
+                        LayoutInflater li = LayoutInflater.from(TestimonialsActivity.this);
+                        tv_counter = (TextView) li.inflate(R.layout.counter_layout, null);
+                        nav.getMenu().findItem(R.id.myproperty).setActionView(tv_counter);
 
 
-                    LayoutInflater li = LayoutInflater.from(TestimonialsActivity.this);
-                    tv_counter = (TextView)li.inflate(R.layout.counter_layout, null);
-                    nav.getMenu().findItem(R.id.myproperty).setActionView(tv_counter);
+                        if (getmsgcounter.get(0).length() != 2) {
+                            tv_counter.setText(String.valueOf(getmsgcounter.size()));
+                        } else {
+                            tv_counter.setText("");
+                        }
 
 
-                    if(getmsgcounter.get(0).length() != 2){
-                        tv_counter.setText(String.valueOf(getmsgcounter.size()));
-                    }else {
-                        tv_counter.setText("");
                     }
-
-
-
 
 
                 } catch (JSONException e) {

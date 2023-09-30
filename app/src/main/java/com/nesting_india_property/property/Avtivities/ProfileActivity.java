@@ -342,7 +342,8 @@ public class ProfileActivity extends AppCompatActivity {
                                 "",
                                 obj.getString("state"),
                                 Endpoints.base_url + obj.getString("profilepic"),
-                                obj.getString("date")
+                                obj.getString("date"),
+                                obj.getString("usercategory")
                         );
 //                            startActivity(new Intent(ProfileActivity.this, HomeActivity.class));
 //                            ProfileActivity.this.finish();

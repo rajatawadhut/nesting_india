@@ -825,18 +825,42 @@ public class BasicDetails extends AppCompatActivity {
 
 
         //user clicklistner color change
-        rowner.setOnClickListener(new View.OnClickListener() {
+                if(VolleySingleton.getInstance(getApplicationContext()).userCategory().equals("1")){
+                    rowner.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
+                    rdealer.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_IN);
+                    rbuilder.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_IN);
+                    ownert.setTextColor(getResources().getColor(R.color.selected));
+                    dealert.setTextColor(getResources().getColor(R.color.black));
+                    buildert.setTextColor(getResources().getColor(R.color.black));
+                    usertype = "Owner";
+                } else if (VolleySingleton.getInstance(getApplicationContext()).userCategory().equals("2")) {
+                    rowner.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_IN);
+                    rdealer.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_IN);
+                    rbuilder.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
+                    ownert.setTextColor(getResources().getColor(R.color.black));
+                    dealert.setTextColor(getResources().getColor(R.color.black));
+                    buildert.setTextColor(getResources().getColor(R.color.selected));
+                    usertype = "Builder";
+
+                }else if(VolleySingleton.getInstance(getApplicationContext()).userCategory().equals("3")){
+                    rowner.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_IN);
+                    rdealer.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_IN);
+                    rbuilder.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
+                    ownert.setTextColor(getResources().getColor(R.color.black));
+                    dealert.setTextColor(getResources().getColor(R.color.black));
+                    buildert.setTextColor(getResources().getColor(R.color.selected));
+                    usertype = "Builder";
+                }
+
+            /*rowner.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 rowner.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
                 rdealer.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_IN);
                 rbuilder.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_IN);
-
                 ownert.setTextColor(getResources().getColor(R.color.selected));
                 dealert.setTextColor(getResources().getColor(R.color.black));
                 buildert.setTextColor(getResources().getColor(R.color.black));
-
-
                 usertype = "Owner";
 
             }
@@ -849,11 +873,9 @@ public class BasicDetails extends AppCompatActivity {
                 rowner.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_IN);
                 rdealer.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
                 rbuilder.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_IN);
-
                 ownert.setTextColor(getResources().getColor(R.color.black));
                 dealert.setTextColor(getResources().getColor(R.color.selected));
                 buildert.setTextColor(getResources().getColor(R.color.black));
-
                 usertype = "Dealer";
 
             }
@@ -866,15 +888,13 @@ public class BasicDetails extends AppCompatActivity {
                 rowner.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_IN);
                 rdealer.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_IN);
                 rbuilder.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
-
                 ownert.setTextColor(getResources().getColor(R.color.black));
                 dealert.setTextColor(getResources().getColor(R.color.black));
                 buildert.setTextColor(getResources().getColor(R.color.selected));
-
                 usertype = "Builder";
 
             }
-        });
+        });*/
 
 
         //listing for

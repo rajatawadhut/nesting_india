@@ -260,7 +260,11 @@ public class MainActivity extends AppCompatActivity {
 
         }else {
             nav.getMenu().clear();
-            nav.inflateMenu(R.menu.activity_main_drawer);
+            if(VolleySingleton.getInstance(getApplicationContext()).userCategory().equals("4")) {
+                nav.inflateMenu(R.menu.activity_main_drawer_buyer);
+            }else {
+                nav.inflateMenu(R.menu.activity_main_drawer);
+            }
             nav.setItemIconTintList(null);
             userid = VolleySingleton.getInstance(getApplicationContext()).id();
 
@@ -284,6 +288,8 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             }
+
+
 
 
 
@@ -452,6 +458,12 @@ public class MainActivity extends AppCompatActivity {
 
         postproperty = findViewById(R.id.postproperty);
 
+
+        if(VolleySingleton.getInstance(getApplicationContext()).userCategory() != null && VolleySingleton.getInstance(getApplicationContext()).userCategory().equals("4")) {
+            postproperty.setVisibility(View.GONE);
+        }else{
+            postproperty.setVisibility(View.VISIBLE);
+        }
 
         search.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -6823,21 +6835,18 @@ public class MainActivity extends AppCompatActivity {
                         String counter = obj.getString("number");
                         number = Integer.parseInt(counter);
 
+                    if(!VolleySingleton.getInstance(getApplicationContext()).userCategory().equals("4")) {
                         LayoutInflater li = LayoutInflater.from(MainActivity.this);
                         tv_counter = (TextView)li.inflate(R.layout.counter_layout, null);
                         nav.getMenu().findItem(R.id.lead).setActionView(tv_counter);
 
+                        if(Integer.parseInt(counter)   > 0){
+                            tv_counter.setText(counter);
+                        }else {
+                            tv_counter.setText("");
+                        }
 
-
-
-
-
-                    if(Integer.parseInt(counter)   > 0){
-                        tv_counter.setText(counter);
-                    }else {
-                        tv_counter.setText("");
                     }
-
 
 
                 } catch (JSONException e) {
@@ -6930,19 +6939,19 @@ public class MainActivity extends AppCompatActivity {
 //                        System.out.println(" dataataataa :;  "+ counter + "    "+ getmsgcounter.size() );
 //                    }
 
+                    if(!VolleySingleton.getInstance(getApplicationContext()).userCategory().equals("4")) {
+                        LayoutInflater li = LayoutInflater.from(MainActivity.this);
+                        tv_counter = (TextView) li.inflate(R.layout.counter_layout, null);
+                        nav.getMenu().findItem(R.id.myproperty).setActionView(tv_counter);
 
-                    LayoutInflater li = LayoutInflater.from(MainActivity.this);
-                    tv_counter = (TextView)li.inflate(R.layout.counter_layout, null);
-                    nav.getMenu().findItem(R.id.myproperty).setActionView(tv_counter);
 
+                        if (getmsgcounter.get(0).length() != 2) {
+                            tv_counter.setText(String.valueOf(getmsgcounter.size()));
+                        } else {
+                            tv_counter.setText("");
+                        }
 
-                    if(getmsgcounter.get(0).length() != 2){
-                        tv_counter.setText(String.valueOf(getmsgcounter.size()));
-                    }else {
-                        tv_counter.setText("");
                     }
-
-
 
 
 

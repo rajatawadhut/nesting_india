@@ -97,10 +97,13 @@ public class SettingActivity extends AppCompatActivity {
             nav.getMenu().clear();
             nav.inflateMenu(R.menu.activity_main_drawer2);
             nav.setItemIconTintList(null);
-
         }else {
             nav.getMenu().clear();
-            nav.inflateMenu(R.menu.activity_main_drawer);
+            if(VolleySingleton.getInstance(getApplicationContext()).userCategory().equals("4")) {
+                nav.inflateMenu(R.menu.activity_main_drawer_buyer);
+            }else {
+                nav.inflateMenu(R.menu.activity_main_drawer);
+            }
             nav.setItemIconTintList(null);
             showmsgcounter();
 
@@ -530,18 +533,19 @@ public class SettingActivity extends AppCompatActivity {
 //                    }
 
 
-                    LayoutInflater li = LayoutInflater.from(SettingActivity.this);
-                    tv_counter = (TextView)li.inflate(R.layout.counter_layout, null);
-                    nav.getMenu().findItem(R.id.myproperty).setActionView(tv_counter);
+                    if(!VolleySingleton.getInstance(getApplicationContext()).userCategory().equals("4")) {
+                        LayoutInflater li = LayoutInflater.from(SettingActivity.this);
+                        tv_counter = (TextView) li.inflate(R.layout.counter_layout, null);
+                        nav.getMenu().findItem(R.id.myproperty).setActionView(tv_counter);
 
 
-                    if(getmsgcounter.get(0).length() != 2){
-                        tv_counter.setText(String.valueOf(getmsgcounter.size()));
-                    }else {
-                        tv_counter.setText("");
+                        if (getmsgcounter.get(0).length() != 2) {
+                            tv_counter.setText(String.valueOf(getmsgcounter.size()));
+                        } else {
+                            tv_counter.setText("");
+                        }
+
                     }
-
-
 
 
 
@@ -585,7 +589,11 @@ public class SettingActivity extends AppCompatActivity {
         super.onResume();
         // to check current activity in the navigation drawer
         if(VolleySingleton.getInstance(getApplicationContext()).isLogin()){
-            nav.getMenu().getItem(13).setChecked(true);
+            if(VolleySingleton.getInstance(getApplicationContext()).userCategory().equals("4")) {
+                nav.getMenu().getItem(9).setChecked(true);
+            }else {
+                nav.getMenu().getItem(13).setChecked(true);
+            }
         }else{
             nav.getMenu().getItem(7).setChecked(true);
         }

@@ -262,7 +262,8 @@ public class RegistrationOTP extends AppCompatActivity {
                                 "",
                                 obj.getString("state"),
                                 Endpoints.base_url+obj.getString("profilepic"),
-                                obj.getString("date")
+                                obj.getString("date"),
+                                obj.getString("usercategory")
                         );
 
                         showmessage(obj.getString("message"));

@@ -15,11 +15,14 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -54,13 +57,14 @@ public class RegistrationActivity extends AppCompatActivity {
     private EditText fnameEt, lnameEt, passwordEt, mobileEt, emailEt, addressEt, designationEt, experienceEt, firmEt, cityEt, countryEt,stateEt;
     private Button registration, button_hide;
     private AutoCompleteTextView districtEt;
+    private Spinner usercategoryspin;
     private ProgressDialog progressDialog;
     private RadioButton rcustomer, rdeveloper, rbroker;
     private ImageView profile_image;
     private Bitmap bitmap;
     private String encodedImage;
     private String imageName;
-    private String radio_selecton;
+    private String radio_selecton, userCategory;
     private String firm, expe, otp;
     SmsData smsData;
     TextInputLayout citylay, statelay;
@@ -68,7 +72,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
 
 
-    @SuppressLint("DefaultLocale")
+    @SuppressLint({"DefaultLocale", "MissingInflatedId"})
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +106,7 @@ public class RegistrationActivity extends AppCompatActivity {
         registration = findViewById(R.id.register);
         citylay = findViewById(R.id.citylay);
         statelay = findViewById(R.id.statelay);
+        usercategoryspin = findViewById(R.id.usercategoryspin);
 
 
         countryEt.setText("India");
@@ -257,6 +262,37 @@ public class RegistrationActivity extends AppCompatActivity {
 //                }).check();
 //            }
 //        });
+
+
+        ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(this, R.array.usercategory, android.R.layout.simple_spinner_item);
+        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        usercategoryspin.setAdapter(adapter2);
+
+
+
+        usercategoryspin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                userCategory = usercategoryspin.getSelectedItem().toString();
+                if(userCategory.equals("Owner")){
+                    userCategory = "1";
+                } else if (userCategory.equals("Dealer")) {
+                    userCategory = "2";
+                }  else if (userCategory.equals("Builder")) {
+                    userCategory = "3";
+                }  else if (userCategory.equals("Buyer")) {
+                    userCategory = "4";
+                } else {
+                    userCategory = "Select User Category";
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
     }
 
     //    private void register()
@@ -307,6 +343,8 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private void register(final String fname, final String lname, final String email, final String password, final String phone, final String district, final String state, final String city, final String address){
         progressDialog.show();
+
+
         StringRequest stringRequest = new StringRequest(Request.Method.POST, Endpoints.registration, new Response.Listener<String>() {
 
             @Override
@@ -361,6 +399,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 params.put("city", city);
                 params.put("address", address);
                 params.put("otp", otp);
+                params.put("usercategory", userCategory);
                 return params;
             }
         };
@@ -442,7 +481,10 @@ public class RegistrationActivity extends AppCompatActivity {
 //        Pattern passpattern = Pattern.compile(PASSWORD_PATTERN);
 //        Matcher passmatcher = passpattern.matcher(password);
 
-        if(fname.isEmpty()){
+        if(!userCategory.isEmpty() && userCategory.equals("Select User Category")){
+            showmessage("Please select User Category");
+            return false;
+        } else if(fname.isEmpty()){
             fnameEt.setError("First name is empty");
             return false;
         }

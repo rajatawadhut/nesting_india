@@ -278,7 +278,8 @@ public class LoginActivity extends AppCompatActivity {
                                 "",
                                 obj.getString("state"),
                                 Endpoints.base_url+obj.getString("profilepic"),
-                                obj.getString("date")
+                                obj.getString("date"),
+                                obj.getString("usercategory")
                         );
                         showmessage(obj.getString("message"));
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));

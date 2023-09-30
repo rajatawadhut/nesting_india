@@ -15,7 +15,6 @@ public class VolleySingleton {
     private static final String SHARED_NAME = "99acresProfile";
 
 
-
     private static final String ID = "id";
     private static final String FNAME = "fname";
     private static final String LNAME = "lname";
@@ -27,6 +26,7 @@ public class VolleySingleton {
     private static final String STATE = "state";
     private static final String PROFILEPIC = "profilepic";
     private static final String DATE = "date";
+    private static final String USER_CATEGORY = "usercategory";
     private static final String DATE2 = "date2";
     private static final String MSGDATE2 = "MSGDATE2";
     private static final String MSGLIST = "MSGLIST";
@@ -35,7 +35,6 @@ public class VolleySingleton {
     private static final String SETSEARCHSTATE = "setsearchstate";
     private static final String SETSEARCHPROJECT = "searchproject";
     private static final String SETSEARCHADDRESS = "searchaddress";
-
 
 
     private VolleySingleton(Context context) {
@@ -73,7 +72,7 @@ public class VolleySingleton {
     public boolean user(String id, String fname, String lname, String mobile,
                         String email, String address, String city,
                         String district, String state,
-                        String profilepic, String date) {
+                        String profilepic, String date, String userCategory) {
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(ID, id);
@@ -87,78 +86,82 @@ public class VolleySingleton {
         editor.putString(STATE, state);
         editor.putString(PROFILEPIC, profilepic);
         editor.putString(DATE, date);
+        editor.putString(USER_CATEGORY, userCategory);
 
         editor.apply();
         editor.commit();
         return true;
     }
 
-    public String id(){
+    public String id() {
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getString(ID, null);
     }
 
 
-    public String fname(){
+    public String fname() {
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getString(FNAME, null);
     }
 
 
-    public String lname(){
+    public String lname() {
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getString(LNAME, null);
     }
 
 
-    public String mobile(){
+    public String mobile() {
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getString(MOBILE, null);
     }
 
 
-
-    public String email(){
+    public String email() {
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getString(EMAIL, null);
     }
-    public String address(){
+
+    public String address() {
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getString(ADDRESS, null);
     }
 
-    public String city(){
+    public String city() {
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getString(CITY, null);
     }
 
-    public String district(){
+    public String district() {
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getString(DISTRICT, null);
     }
 
-    public String state(){
+    public String state() {
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getString(STATE, null);
     }
-    public String profilepic(){
+
+    public String profilepic() {
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getString(PROFILEPIC, null);
     }
 
-
-    public boolean isLogin(){
+    public String userCategory() {
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_NAME, Context.MODE_PRIVATE);
-        if(sharedPreferences.getString(FNAME, null) == null){
+        return sharedPreferences.getString(USER_CATEGORY, null);
+    }
+
+    public boolean isLogin() {
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_NAME, Context.MODE_PRIVATE);
+        if (sharedPreferences.getString(FNAME, null) == null) {
             return false;
         }
         return true;
     }
 
 
-
-
-    public boolean Logout(){
+    public boolean Logout() {
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
@@ -177,7 +180,8 @@ public class VolleySingleton {
         editor.commit();
         return true;
     }
-    public String getmsglist(){
+
+    public String getmsglist() {
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getString(MSGLIST, null);
     }
@@ -203,12 +207,12 @@ public class VolleySingleton {
     }
 
 
-    public String getcounterdate(){
+    public String getcounterdate() {
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getString(DATE2, null);
     }
 
-    public String getmsgcounterdate(){
+    public String getmsgcounterdate() {
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getString(MSGDATE2, null);
     }
@@ -224,7 +228,7 @@ public class VolleySingleton {
     }
 
 
-    public String getsearchcity(){
+    public String getsearchcity() {
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getString(SETSEARCHCITY, null);
     }
@@ -240,7 +244,7 @@ public class VolleySingleton {
     }
 
 
-    public String getsearchstate(){
+    public String getsearchstate() {
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getString(SETSEARCHSTATE, null);
     }
@@ -257,7 +261,7 @@ public class VolleySingleton {
     }
 
 
-    public String getsearchlocality(){
+    public String getsearchlocality() {
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getString(SETSEARCHLOCALITY, null);
     }
@@ -274,7 +278,7 @@ public class VolleySingleton {
     }
 
 
-    public String getsearchproject(){
+    public String getsearchproject() {
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getString(SETSEARCHPROJECT, null);
     }
@@ -291,12 +295,10 @@ public class VolleySingleton {
     }
 
 
-    public String getsearchaddress(){
+    public String getsearchaddress() {
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getString(SETSEARCHADDRESS, null);
     }
-
-
 
 
 }

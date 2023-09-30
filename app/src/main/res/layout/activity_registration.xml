@@ -29,6 +29,17 @@
 
 
 
+        <Spinner
+            android:id="@+id/usercategoryspin"
+            android:background="@drawable/spinner_bg"
+            android:layout_marginTop="@dimen/dimen10dp"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textSize="15sp"
+            android:textColor="@android:color/black"/>
+
+
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_marginTop="@dimen/dimen10dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
