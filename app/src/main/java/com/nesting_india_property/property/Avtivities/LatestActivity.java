@@ -387,7 +387,21 @@ public class LatestActivity extends AppCompatActivity {
                         drawer.closeDrawer(GravityCompat.START);
                         break;
 
+                    case R.id.enquiry:
+                        Intent intpur = new Intent(LatestActivity.this, PurchaseEnquiryActivity.class);
+                        intpur.putExtra("instance", "lead");
+                        intpur.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        startActivity(intpur);
+                        drawer.closeDrawer(GravityCompat.START);
+                        break;
 
+
+                    case R.id.partner:
+                        Intent cha = new Intent(LatestActivity.this, ChannelAdvisePartnerActivity.class);
+                        cha.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        startActivity(cha);
+                        drawer.closeDrawer(GravityCompat.START);
+                        break;
 
                     case R.id.shortlisted:
                         Intent intes = new Intent(LatestActivity.this, ShortlistedActivity.class);

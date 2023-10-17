@@ -404,4 +404,113 @@
     </string-array>
 
 
+
+    <string-array name="minenquiryPrice">
+        <item>Select Min Price</item>
+        <item>0</item>
+        <item>5000</item>
+        <item>10000</item>
+        <item>15000</item>
+        <item>20000</item>
+        <item>25000</item>
+        <item>30000</item>
+        <item>35000</item>
+        <item>40000</item>
+        <item>50000</item>
+        <item>60000</item>
+        <item>70000</item>
+        <item>80000</item>
+        <item>90000</item>
+        <item>1 Lac</item>
+        <item>1.5 Lac</item>
+        <item>2 Lac</item>
+        <item>4 Lac</item>
+        <item>7 Lac</item>
+        <item>10 Lac</item>
+        <item>20 Lac</item>
+        <item>30 Lac</item>
+        <item>40 Lac</item>
+        <item>50 Lac</item>
+        <item>60 Lac</item>
+        <item>70 Lac</item>
+        <item>80 Lac</item>
+        <item>90 Lac</item>
+        <item>1 Cr</item>
+        <item>1.2 Cr</item>
+        <item>1.5 Cr</item>
+        <item>1.6 Cr</item>
+        <item>1.8 Cr</item>
+        <item>2 Cr</item>
+        <item>2.3 Cr</item>
+        <item>2.6 Cr</item>
+        <item>3 Cr</item>
+        <item>3.5 Cr</item>
+        <item>4 Cr</item>
+        <item>4.5 Cr</item>
+        <item>5 Cr</item>
+        <item>10 Cr</item>
+        <item>15 Cr</item>
+    </string-array>
+    <string-array name="maxenquiryPrice">
+        <item>Select Max Price</item>
+        <item>0</item>
+        <item>5000</item>
+        <item>10000</item>
+        <item>15000</item>
+        <item>20000</item>
+        <item>25000</item>
+        <item>30000</item>
+        <item>35000</item>
+        <item>40000</item>
+        <item>50000</item>
+        <item>60000</item>
+        <item>70000</item>
+        <item>80000</item>
+        <item>90000</item>
+        <item>1 Lac</item>
+        <item>1.5 Lac</item>
+        <item>2 Lac</item>
+        <item>4 Lac</item>
+        <item>7 Lac</item>
+        <item>10 Lac</item>
+        <item>20 Lac</item>
+        <item>30 Lac</item>
+        <item>40 Lac</item>
+        <item>50 Lac</item>
+        <item>60 Lac</item>
+        <item>70 Lac</item>
+        <item>80 Lac</item>
+        <item>90 Lac</item>
+        <item>1 Cr</item>
+        <item>1.2 Cr</item>
+        <item>1.5 Cr</item>
+        <item>1.6 Cr</item>
+        <item>1.8 Cr</item>
+        <item>2 Cr</item>
+        <item>2.3 Cr</item>
+        <item>2.6 Cr</item>
+        <item>3 Cr</item>
+        <item>3.5 Cr</item>
+        <item>4 Cr</item>
+        <item>4.5 Cr</item>
+        <item>5 Cr</item>
+        <item>10 Cr</item>
+        <item>15 Cr</item>
+    </string-array>
+
+
+    <string-array name="enquiryTypeOfProperty">
+        <item>Select type of property</item>
+        <item>Residential</item>
+        <item>Commercial</item>
+    </string-array>
+
+    <string-array name="enquirySubTypeOfProperty">
+        <item>Select sub type of property</item>
+        <item>Apartment/ Flat / Builder Floor</item>
+        <item>Residential Land</item>
+        <item>House / Villa</item>
+    </string-array>
+
+
 </resources>

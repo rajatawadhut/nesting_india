@@ -423,7 +423,19 @@ public class MyPropertyActivity extends AppCompatActivity {
                         drawer.closeDrawer(GravityCompat.START);
                         break;
 
-
+                    case R.id.enquiry:
+                        Intent intpur = new Intent(MyPropertyActivity.this, PurchaseEnquiryActivity.class);
+                        intpur.putExtra("instance", "lead");
+                        intpur.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        startActivity(intpur);
+                        drawer.closeDrawer(GravityCompat.START);
+                        break;
+                    case R.id.partner:
+                        Intent cha = new Intent(MyPropertyActivity.this, ChannelAdvisePartnerActivity.class);
+                        cha.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        startActivity(cha);
+                        drawer.closeDrawer(GravityCompat.START);
+                        break;
 
                     case R.id.latest:
                         Intent intemy = new Intent(MyPropertyActivity.this, LatestActivity.class);

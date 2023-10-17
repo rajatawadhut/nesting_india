@@ -734,6 +734,22 @@ public class MainActivity extends AppCompatActivity {
                         break;
 
 
+                    case R.id.enquiry:
+                        Intent intpur = new Intent(MainActivity.this, PurchaseEnquiryActivity.class);
+                        intpur.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        startActivity(intpur);
+                        drawer.closeDrawer(GravityCompat.START);
+                        break;
+
+
+                    case R.id.partner:
+                        Intent cha = new Intent(MainActivity.this, ChannelAdvisePartnerActivity.class);
+                        cha.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        startActivity(cha);
+                        drawer.closeDrawer(GravityCompat.START);
+                        break;
+
+
 
                     case R.id.latest:
                         Intent intelp = new Intent(MainActivity.this, LatestActivity.class);

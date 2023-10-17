@@ -840,7 +840,7 @@ public class BasicDetails extends AppCompatActivity {
                     ownert.setTextColor(getResources().getColor(R.color.black));
                     dealert.setTextColor(getResources().getColor(R.color.black));
                     buildert.setTextColor(getResources().getColor(R.color.selected));
-                    usertype = "Builder";
+                    usertype = "Dealer";
 
                 }else if(VolleySingleton.getInstance(getApplicationContext()).userCategory().equals("3")){
                     rowner.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_IN);

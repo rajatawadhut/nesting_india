@@ -65,6 +65,11 @@
             android:title="Search Users" />
 
         <item
+            android:id="@+id/enquiry"
+            android:icon="@drawable/callproject"
+            android:title="Purchase Enquiry" />
+
+        <item
             android:id="@+id/navabout"
             android:icon="@drawable/about"
             android:title="About Us" />
@@ -77,6 +82,12 @@
             android:id="@+id/setting"
             android:icon="@drawable/settingfinal"
             android:title="Setting" />
+
+
+        <item
+            android:id="@+id/partner"
+            android:icon="@drawable/personimg"
+            android:title="Channel Partner/ Associate Agent" />
 
 
         <item

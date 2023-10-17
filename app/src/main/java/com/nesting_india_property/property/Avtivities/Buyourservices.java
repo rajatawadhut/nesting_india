@@ -126,10 +126,11 @@ public class Buyourservices extends AppCompatActivity implements PaymentResultLi
                             String subscription_description = object.getString("subscription_description");
                             String subscription_offer = object.getString("subscription_offer");
                             String subscription_type = object.getString("subscription_type");
+                            String subscription_credit = object.getString("subscription_credit");
                             String status = object.getString("status");
 
 
-                            SubscriptionPlanModel model = new SubscriptionPlanModel(id,subscription_title,subscription_price, subscription_duration, subscription_description, subscription_offer, subscription_type, status);
+                            SubscriptionPlanModel model = new SubscriptionPlanModel(id,subscription_title,subscription_price, subscription_duration, subscription_description, subscription_offer, subscription_type, status, subscription_credit);
                             subscriptionList.add(model);
                             SubscriptionPlanAdapter adapter = new SubscriptionPlanAdapter(subscriptionList, Buyourservices.this, Buyourservices.this);
                             recyclerview.setAdapter(adapter);
