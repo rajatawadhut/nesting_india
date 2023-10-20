@@ -116,7 +116,7 @@ public class LatestActivity extends AppCompatActivity {
             alcohol = "", event = "", anemitiesitem = "", moreanemitiesitem = "", watersourceitem = "", overlookingitem = "",
             somefeatureitem = "", byersitem = "", timeitems = "",
             widthfacingget = "", descriptionget = "", boundrywall = "",flattype = "", user_id = "", newprice ="", image = "", shortlistedvalue="",
-            getrera="", mobile = "", reg_date = "", fname = "", lname = "", latlong= "", email ="";
+            getrera="", mobile = "", reg_date = "", fname = "", lname = "", latlong= "", email ="", paymentStatus ="";
 
 
     private LinearLayout homeefooter, latestfooter, searchfooter, shortlistedfooter;
@@ -2032,6 +2032,7 @@ public class LatestActivity extends AppCompatActivity {
                             email= object.getString("email");
                             lname= object.getString("lname");
                             latlong= object.getString("latlong");
+                            paymentStatus = object.getString("paymentStatus");
 
 
 
@@ -2054,7 +2055,7 @@ public class LatestActivity extends AppCompatActivity {
                                     alcohol , event , anemitiesitem , moreanemitiesitem , watersourceitem , overlookingitem ,
                                     somefeatureitem , byersitem , timeitems ,
                                     widthfacingget , descriptionget , boundrywall ,flattype, user_id, newprice, image, shortlistedvalue, getrera, mobile, reg_date, fname,
-                                    lname, latlong , email);
+                                    lname, latlong , email, paymentStatus);
                             latestDataModels.add(latestDataModel);
                             latestAdapter.notifyDataSetChanged();
                         }

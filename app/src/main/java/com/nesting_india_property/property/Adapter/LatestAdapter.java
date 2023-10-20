@@ -76,6 +76,12 @@ public class LatestAdapter extends RecyclerView.Adapter<LatestAdapter.ShowData>{
     @Override
     public void onBindViewHolder(@NonNull final ShowData holder, final int position) {
 
+        if(dataSet.get(position).getPaymentStatus().equals("0")){
+            holder.verified.setVisibility(View.GONE);
+        }else{
+            holder.verified.setVisibility(View.VISIBLE);
+        }
+
 
         if(dataSet.get(position).getCategory().equals("Residential Land")){
             holder.bhk.setVisibility(View.GONE);
@@ -679,7 +685,7 @@ public class LatestAdapter extends RecyclerView.Adapter<LatestAdapter.ShowData>{
         TextView projectname,price, builtupa, builtupaunit,bhk, categorytype, address, listingfor, category, label, usertype, date, fname,lname;
         CardView cardview;
         RecyclerView recyclerviewlatest;
-        ImageView propertyimage, shortlisted, edit, delete, call_button, share_button, addimg, message;
+        ImageView propertyimage, shortlisted, edit, delete, call_button, share_button, addimg, message, verified;
         Button viewnumber;
         LinearLayout numbershare9;
 
@@ -711,6 +717,7 @@ public class LatestAdapter extends RecyclerView.Adapter<LatestAdapter.ShowData>{
             lname = itemView.findViewById(R.id.lname);
             addimg = itemView.findViewById(R.id.addimg);
             message = itemView.findViewById(R.id.message);
+            verified = itemView.findViewById(R.id.verified);
 
 
 

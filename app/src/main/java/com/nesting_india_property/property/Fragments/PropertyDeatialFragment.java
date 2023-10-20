@@ -146,7 +146,7 @@ public class PropertyDeatialFragment extends Fragment {
             alcohol = "", event = "", anemitiesitem = "", moreanemitiesitem = "", watersourceitem = "", overlookingitem = "",
             somefeatureitem = "", byersitem = "", timeitems = "",
             widthfacingget = "", descriptionget = "", boundrywall = "",flattype = "", user_id = "", propertyid = "", getrera="",
-            newprice="", image="", shortlistedvalue="", value ="", mobile ="" , reg_date = "", fname = "", lname = "", latlong = "", email ="";
+            newprice="", image="", shortlistedvalue="", value ="", mobile ="" , reg_date = "", fname = "", lname = "", latlong = "", email ="", paymentStatus ="";
 
 
     private List<SimilarPropertyDataModel> similarPropertyDataModels;
@@ -3197,7 +3197,7 @@ public class PropertyDeatialFragment extends Fragment {
                             email= object.getString("email");
                             lname= object.getString("lname");
                             latlong= object.getString("latlong");
-
+                            paymentStatus = object.getString("paymentStatus");
 
 
 
@@ -3217,7 +3217,7 @@ public class PropertyDeatialFragment extends Fragment {
                                     alcohol , event , anemitiesitem , moreanemitiesitem , watersourceitem , overlookingitem ,
                                     somefeatureitem , byersitem , timeitems ,
                                     widthfacingget , descriptionget , boundrywall ,flattype, user_id , newprice, image, shortlistedvalue ,
-                                    getrera,mobile, reg_date, fname, lname, latlong, email);
+                                    getrera,mobile, reg_date, fname, lname, latlong, email, paymentStatus);
                             similarPropertyDataModels.add(similarPropertyDataModel);
                             similarPropertyAdapter.notifyDataSetChanged();
                         }

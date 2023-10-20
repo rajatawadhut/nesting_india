@@ -128,7 +128,7 @@ public class MyPropertyActivity extends AppCompatActivity {
             alcohol = "", event = "", anemitiesitem = "", moreanemitiesitem = "", watersourceitem = "", overlookingitem = "",
             somefeatureitem = "", byersitem = "", timeitems = "",
             widthfacingget = "", descriptionget = "", boundrywall = "",flattype = "", user_id = "", newprice ="", image="",
-            shortlistedvalue="", getrera="", mobile ="", reg_date = "", fname = "", lname = "", latlong="", email ="";
+            shortlistedvalue="", getrera="", mobile ="", reg_date = "", fname = "", lname = "", latlong="", email ="", paymentStatus ="";
 
 
     private LinearLayout homeefooter, latestfooter, shortlistedfooter, searchfooter;
@@ -2016,6 +2016,7 @@ public class MyPropertyActivity extends AppCompatActivity {
                             lname= object.getString("lname");
                             email= object.getString("email");
                             latlong= object.getString("latlong");
+                            paymentStatus = object.getString("paymentStatus");
 
 
 
@@ -2039,7 +2040,7 @@ public class MyPropertyActivity extends AppCompatActivity {
                                     alcohol , event , anemitiesitem , moreanemitiesitem , watersourceitem , overlookingitem ,
                                     somefeatureitem , byersitem , timeitems ,
                                     widthfacingget , descriptionget , boundrywall ,flattype, user_id , newprice, image, shortlistedvalue,
-                                    getrera, mobile, reg_date, fname, lname, latlong,email);
+                                    getrera, mobile, reg_date, fname, lname, latlong,email,paymentStatus);
                             latestDataModels.add(latestDataModel);
                             latestAdapter.notifyDataSetChanged();
                         }

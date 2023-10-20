@@ -19,7 +19,7 @@ public class LatestDataModel {
             alcohol , event , anemitiesitem , moreanemitiesitem , watersourceitem , overlookingitem ,
             somefeatureitem , byersitem , timeitems ,
             widthfacingget , descriptionget , boundrywall ,flattype, user_id, newprice, image,
-            shortlistedvalue, rera, mobile, reg_date, fname, lname, latlong, email;
+            shortlistedvalue, rera, mobile, reg_date, fname, lname, latlong, email, paymentStatus;
 
     public LatestDataModel(String id, String usertype, String type, String category,
                            String categorytype, String agrement, String pgavaliablefor,
@@ -40,7 +40,7 @@ public class LatestDataModel {
                            String alcohol, String event, String anemitiesitem, String moreanemitiesitem, String watersourceitem,
                            String overlookingitem, String somefeatureitem, String byersitem, String timeitems,
                            String widthfacingget, String descriptionget, String boundrywall, String flattype, String user_id,
-                           String newprice, String image, String shortlistedvalue, String rera, String mobile, String reg_date, String fname, String lname, String latlong, String email){
+                           String newprice, String image, String shortlistedvalue, String rera, String mobile, String reg_date, String fname, String lname, String latlong, String email, String paymentStatus){
         this.id = id;
         this.usertype = usertype;
         this.type =type;
@@ -129,8 +129,16 @@ public class LatestDataModel {
         this.lname=lname;
         this.latlong=latlong;
         this.email=email;
+        this.paymentStatus=paymentStatus;
     }
 
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
 
     public String getEmail() {
         return email;

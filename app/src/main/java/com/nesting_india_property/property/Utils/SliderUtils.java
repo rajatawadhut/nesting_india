@@ -17,7 +17,7 @@ public class SliderUtils {
             alcohol , event , anemitiesitem , moreanemitiesitem , watersourceitem , overlookingitem ,
             somefeatureitem , byersitem , timeitems ,
             widthfacingget , descriptionget , boundrywall ,flattype, user_id, newprice, image, shortlistedvalue, rera,
-            mobile, reg_date, fname, lname, latlong, email;
+            mobile, reg_date, fname, lname, latlong, email, paymentStatus;
 
 
     public SliderUtils(String id, String usertype, String type, String category,
@@ -40,7 +40,7 @@ public class SliderUtils {
                        String overlookingitem, String somefeatureitem, String byersitem, String timeitems,
                        String widthfacingget, String descriptionget, String boundrywall, String flattype, String user_id,
                        String newprice, String image, String shortlistedvalue, String rera, String mobile, String reg_date,
-                       String fname, String lname, String latlong, String email){
+                       String fname, String lname, String latlong, String email, String paymentStatus){
 
         this.id = id;
         this.usertype = usertype;
@@ -130,6 +130,15 @@ public class SliderUtils {
         this.lname=lname;
         this.latlong=latlong;
         this.email=email;
+        this.paymentStatus=paymentStatus;
+    }
+
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
 
     public String getEmail() {

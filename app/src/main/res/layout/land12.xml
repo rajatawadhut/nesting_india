@@ -61,6 +61,17 @@
                     android:textColor="@android:color/white"
                     android:textSize="12sp" />
 
+                <ImageView
+                    android:paddingRight="35dp"
+                    android:layout_gravity="right"
+                    android:src="@drawable/ic_verified"
+                    android:layout_toLeftOf="@+id/message"
+                    android:id="@+id/verified"
+                    app:tint="@color/colorPrimary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+
 
 
                 <LinearLayout

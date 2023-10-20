@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
             alcohol = "", event = "", anemitiesitem = "", moreanemitiesitem = "", watersourceitem = "", overlookingitem = "",
             somefeatureitem = "", byersitem = "", timeitems = "",
             widthfacingget = "", descriptionget = "", boundrywall = "",flattype = "", user_id = "", newprice ="", image = "", shortlistedvalue="",
-            getrera="", mobile ="", reg_date = "", fname = "", lname = "", latlong = "", email= "";
+            getrera="", mobile ="", reg_date = "", fname = "", lname = "", latlong = "", email= "", paymentStatus= "";
 
 
 
@@ -2291,6 +2291,8 @@ public class MainActivity extends AppCompatActivity {
                             lname= object.getString("lname");
                             email= object.getString("email");
                             latlong= object.getString("latlong");
+                            paymentStatus = object.getString("paymentStatus");
+
 
 
 
@@ -2312,7 +2314,7 @@ public class MainActivity extends AppCompatActivity {
                                     alcohol , event , anemitiesitem , moreanemitiesitem , watersourceitem , overlookingitem ,
                                     somefeatureitem , byersitem , timeitems ,
                                     widthfacingget , descriptionget , boundrywall ,flattype, user_id, newprice, image, shortlistedvalue,
-                                    getrera, mobile, reg_date, fname, lname, latlong, email);
+                                    getrera, mobile, reg_date, fname, lname, latlong, email, paymentStatus);
                             sliderImg.add(sliderUtils);
                             ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(sliderImg,MainActivity.this);
                             viewPager.setAdapter(viewPagerAdapter);
@@ -3769,6 +3771,7 @@ public class MainActivity extends AppCompatActivity {
                             email= object.getString("email");
                             lname= object.getString("lname");
                             latlong= object.getString("latlong");
+                            paymentStatus = object.getString("paymentStatus");
 
 
 
@@ -3789,7 +3792,7 @@ public class MainActivity extends AppCompatActivity {
                                     alcohol , event , anemitiesitem , moreanemitiesitem , watersourceitem , overlookingitem ,
                                     somefeatureitem , byersitem , timeitems ,
                                     widthfacingget , descriptionget , boundrywall ,flattype, user_id, newprice, image,
-                                    shortlistedvalue, getrera , mobile, reg_date, fname, lname, latlong, email);
+                                    shortlistedvalue, getrera , mobile, reg_date, fname, lname, latlong, email, paymentStatus);
                             sellDataModels.add(sellDataModel);
                             sellAdapter.notifyDataSetChanged();
                         }
@@ -5236,6 +5239,7 @@ public class MainActivity extends AppCompatActivity {
                             lname= object.getString("lname");
                             email= object.getString("email");
                             latlong= object.getString("latlong");
+                            paymentStatus = object.getString("paymentStatus");
 
 
 
@@ -5258,7 +5262,7 @@ public class MainActivity extends AppCompatActivity {
                                     alcohol , event , anemitiesitem , moreanemitiesitem , watersourceitem , overlookingitem ,
                                     somefeatureitem , byersitem , timeitems ,
                                     widthfacingget , descriptionget ,
-                                    boundrywall ,flattype, user_id, newprice, image, shortlistedvalue, getrera , mobile, reg_date, fname, lname, latlong, email);
+                                    boundrywall ,flattype, user_id, newprice, image, shortlistedvalue, getrera , mobile, reg_date, fname, lname, latlong, email, paymentStatus);
                             rentDataModels.add(rentDataModel);
                             rentAdapter.notifyDataSetChanged();
                         }
@@ -6700,6 +6704,7 @@ public class MainActivity extends AppCompatActivity {
                             lname= object.getString("lname");
                             email= object.getString("email");
                             latlong= object.getString("latlong");
+                            paymentStatus = object.getString("paymentStatus");
 
 
 
@@ -6720,7 +6725,7 @@ public class MainActivity extends AppCompatActivity {
                                     alcohol , event , anemitiesitem , moreanemitiesitem , watersourceitem , overlookingitem ,
                                     somefeatureitem , byersitem , timeitems ,
                                     widthfacingget , descriptionget , boundrywall ,flattype, user_id, newprice,
-                                    image, shortlistedvalue, getrera, mobile , reg_date, fname, lname, latlong, email);
+                                    image, shortlistedvalue, getrera, mobile , reg_date, fname, lname, latlong, email, paymentStatus);
                             pgDataModels.add(pgDataModel);
                             pgAdapter.notifyDataSetChanged();
                         }

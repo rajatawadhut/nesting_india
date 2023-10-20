@@ -104,7 +104,7 @@ public class ShowSearchProperty extends AppCompatActivity {
             alcohol = "", event = "", anemitiesitem = "", moreanemitiesitem = "", watersourceitem = "", overlookingitem = "",
             somefeatureitem = "", byersitem = "", timeitems = "",
             widthfacingget = "", descriptionget = "", boundrywall = "",flattype = "", user_id = "", newprice ="", image = "",
-            shortlistedvalue="", getrera="", mobile= "", reg_date = "", fname = "", lname = "", latlong = "", email="";
+            shortlistedvalue="", getrera="", mobile= "", reg_date = "", fname = "", lname = "", latlong = "", email="", paymentStatus="";
 
 
 
@@ -1846,6 +1846,7 @@ public class ShowSearchProperty extends AppCompatActivity {
                             lname= object.getString("lname");
                             email= object.getString("email");
                             latlong= object.getString("latlong");
+                            paymentStatus = object.getString("paymentStatus");
 
 
 
@@ -1868,7 +1869,7 @@ public class ShowSearchProperty extends AppCompatActivity {
                                     alcohol , event , anemitiesitem , moreanemitiesitem , watersourceitem , overlookingitem ,
                                     somefeatureitem , byersitem , timeitems ,
                                     widthfacingget , descriptionget , boundrywall ,flattype, user_id, newprice, image,
-                                    shortlistedvalue, getrera, mobile, reg_date, fname, lname , latlong, email);
+                                    shortlistedvalue, getrera, mobile, reg_date, fname, lname , latlong, email, paymentStatus);
                             latestDataModels.add(latestDataModel);
                             latestAdapter.notifyDataSetChanged();
                         }

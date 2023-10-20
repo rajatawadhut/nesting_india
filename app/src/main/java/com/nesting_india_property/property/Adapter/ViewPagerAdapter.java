@@ -1,5 +1,6 @@
 package com.nesting_india_property.property.Adapter;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -46,7 +47,7 @@ public class ViewPagerAdapter extends PagerAdapter {
     TextView projectname,price, builtupa, builtupaunit,bhk, address, listingfor, category, usertype, fname,lname;;
     CardView cardview;
     RecyclerView recyclerviewlatest;
-    ImageView propertyimage, shortlisted, edit;
+    ImageView propertyimage, shortlisted, edit, verified;
 //    private Integer [] images = {R.drawable.about, R.drawable.about, R.drawable.about, R.drawable.about, R.drawable.about};
 
     public ViewPagerAdapter(List<SliderUtils> sliderImg, Context context) {
@@ -64,6 +65,7 @@ public class ViewPagerAdapter extends PagerAdapter {
         return view == object;
     }
 
+    @SuppressLint("MissingInflatedId")
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, final int position) {
@@ -97,6 +99,7 @@ public class ViewPagerAdapter extends PagerAdapter {
         usertype = view.findViewById(R.id.usertype);
         fname = view.findViewById(R.id.fname);
         lname = view.findViewById(R.id.lname);
+        verified = view.findViewById(R.id.verified);
 
 
         {
@@ -129,6 +132,12 @@ public class ViewPagerAdapter extends PagerAdapter {
             }else{
                 address.setText(value2);
 
+            }
+
+            if(utils.getPaymentStatus().equals("0")){
+                verified.setVisibility(View.GONE);
+            }else{
+                verified.setVisibility(View.VISIBLE);
             }
 
 

@@ -1510,7 +1510,7 @@ public class TextHelp extends AppCompatActivity {
                                     alcohol , event , anemitiesitem , moreanemitiesitem , watersourceitem , overlookingitem ,
                                     somefeatureitem , byersitem , timeitems ,
                                     widthfacingget , descriptionget , boundrywall ,flattype, user_id, newprice, image, shortlistedvalue,
-                                    getrera, mobile, reg_date, fname, lname, latlong, email);
+                                    getrera, mobile, reg_date, fname, lname, latlong, email, "0");
                             latestDataModels.add(latestDataModel);
                             latestAdapter.notifyDataSetChanged();
                         }

@@ -64,6 +64,11 @@ public class SellAdapter extends RecyclerView.Adapter<SellAdapter.ShowData>{
     public void onBindViewHolder(@NonNull final ShowData holder, final int position) {
 
 
+        if(dataSet.get(position).getPaymentStatus().equals("0")){
+            holder.verified.setVisibility(View.GONE);
+        }else{
+            holder.verified.setVisibility(View.VISIBLE);
+        }
 
         if(dataSet.get(position).getCategory().equals("Residential Land") || dataSet.get(position).getCategory().equals("Others")){
             holder.bhk.setVisibility(View.GONE);
@@ -485,7 +490,7 @@ public class SellAdapter extends RecyclerView.Adapter<SellAdapter.ShowData>{
         TextView projectname,price, builtupa, builtupaunit,bhk, categorytype, address, listingfor, category, label, usertype, date, fname,lname;
         CardView cardview;
         RecyclerView recyclerviewlatest;
-        ImageView propertyimage, shortlisted, edit;
+        ImageView propertyimage, shortlisted, edit, verified;
 
         public ShowData(@NonNull View itemView) {
             super(itemView);
@@ -508,6 +513,7 @@ public class SellAdapter extends RecyclerView.Adapter<SellAdapter.ShowData>{
             date = itemView.findViewById(R.id.date);
             fname = itemView.findViewById(R.id.fname);
             lname = itemView.findViewById(R.id.lname);
+            verified = itemView.findViewById(R.id.verified);
 
 
 

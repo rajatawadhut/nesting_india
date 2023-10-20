@@ -307,7 +307,7 @@ public class CallBackForm extends AppCompatActivity {
                             }
 */
 
-                        showmessage("Buy our services");
+                        showmessage("You do not have enough credit to view detail");
 
                     }
 
@@ -693,7 +693,7 @@ public class CallBackForm extends AppCompatActivity {
         }
 
         else if(creditStatus.equals("0") || credit.equals("0")){
-            showmessage("Buy our services");
+            showmessage("You do not have enough credit to view detail");
 /*            startActivity(new Intent(CallBackForm.this, Buyourservices.class));
             finish();*/
             return false;
