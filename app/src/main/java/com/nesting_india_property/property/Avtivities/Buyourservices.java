@@ -51,9 +51,9 @@ public class Buyourservices extends AppCompatActivity implements PaymentResultLi
 
     RecyclerView recyclerview;
     List<SubscriptionPlanModel> subscriptionList;
-    String getsubscription= "";
-    String amountValue= "";
-    int valueInt;
+
+    SubscriptionPlanModel planModel;
+
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -79,23 +79,9 @@ public class Buyourservices extends AppCompatActivity implements PaymentResultLi
 
         recyclerview = findViewById(R.id.recyclerview);
 
-        if(VolleySingleton.getInstance(getApplicationContext()).isLogin()){
-            getsubscription();
+        if (VolleySingleton.getInstance(getApplicationContext()).isLogin()) {
+            getSubscriptionPlans();
         }
-        getSubscriptionPlans();
-
-       /* if(VolleySingleton.getInstance(getApplicationContext()).isLogin()){
-            startpayment("700");
-            valueInt = 4;
-            amountValue = "700";
-//                    openPaymentUrl();
-        }else{
-            showmessage("Please login first!!");
-            startActivity(new Intent(Buyourservices.this, LoginActivity.class));
-            finish();
-        }*/
-
-
 
 
     }
@@ -106,7 +92,7 @@ public class Buyourservices extends AppCompatActivity implements PaymentResultLi
 
             @Override
             public void onResponse(String response) {
-                System.out.println("response :: " +response);
+                System.out.println("response :: " + response);
                 progressDialog.dismiss();
 
                 try {
@@ -114,9 +100,9 @@ public class Buyourservices extends AppCompatActivity implements PaymentResultLi
                     String succes = obj.getString("success");
                     JSONArray jsonArray = obj.getJSONArray("data");
 
-                    if(succes.equals("1")){
+                    if (succes.equals("1")) {
 
-                        for(int i=0; i<jsonArray.length();i++){
+                        for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject object = jsonArray.getJSONObject(i);
 
                             String id = object.getString("id");
@@ -130,7 +116,7 @@ public class Buyourservices extends AppCompatActivity implements PaymentResultLi
                             String status = object.getString("status");
 
 
-                            SubscriptionPlanModel model = new SubscriptionPlanModel(id,subscription_title,subscription_price, subscription_duration, subscription_description, subscription_offer, subscription_type, status, subscription_credit);
+                            SubscriptionPlanModel model = new SubscriptionPlanModel(id, subscription_title, subscription_price, subscription_duration, subscription_description, subscription_offer, subscription_type, status, subscription_credit);
                             subscriptionList.add(model);
                             SubscriptionPlanAdapter adapter = new SubscriptionPlanAdapter(subscriptionList, Buyourservices.this, Buyourservices.this);
                             recyclerview.setAdapter(adapter);
@@ -139,7 +125,7 @@ public class Buyourservices extends AppCompatActivity implements PaymentResultLi
 
                 } catch (JSONException e) {
                     showmessage("Server Error...");
-                    System.out.println("problem ::"+e);
+                    System.out.println("problem ::" + e);
                     e.printStackTrace();
                 }
 
@@ -149,9 +135,9 @@ public class Buyourservices extends AppCompatActivity implements PaymentResultLi
             @Override
             public void onErrorResponse(VolleyError error) {
                 progressDialog.dismiss();
-                Toast.makeText(Buyourservices.this,"Something Went Wrong",Toast.LENGTH_SHORT).show();
+                Toast.makeText(Buyourservices.this, "Something Went Wrong", Toast.LENGTH_SHORT).show();
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 SmsData smsData = new SmsData();
@@ -167,12 +153,7 @@ public class Buyourservices extends AppCompatActivity implements PaymentResultLi
 
     }
 
-    public void openPaymentUrl() {
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://nestingindia.com/buy-service"));
-        startActivity(browserIntent);
-    }
-
-    public void startpayment(String value){
+    public void startpayment(String value) {
 
 
         Checkout checkout = new Checkout();
@@ -185,73 +166,18 @@ public class Buyourservices extends AppCompatActivity implements PaymentResultLi
 
             double total = Double.parseDouble(value);
             total = total * 100;
-            orderRequest.put("theme.color","#008B8B");
+            orderRequest.put("theme.color", "#008B8B");
             orderRequest.put("amount", total);
             orderRequest.put("image", Endpoints.homeicon);
             orderRequest.put("prefill.email", VolleySingleton.getInstance(getApplicationContext()).email());
-            orderRequest.put("prefill.contact",VolleySingleton.getInstance(getApplicationContext()).mobile());
+            orderRequest.put("prefill.contact", VolleySingleton.getInstance(getApplicationContext()).mobile());
 
             checkout.open(this, orderRequest);
 
 
-
-
-        }
-        catch (Exception e){
+        } catch (Exception e) {
 
         }
-    }
-
-
-    private void getsubscription() {
-        final String userid = VolleySingleton.getInstance(getApplicationContext()).id();
-        progressDialog.show();
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, Endpoints.getsubscription, new Response.Listener<String>() {
-
-            @Override
-            public void onResponse(String response) {
-                System.out.println("response :: " +response);
-                progressDialog.dismiss();
-                try {
-                    JSONObject obj = new JSONObject(response);
-                    if(obj.getBoolean("error")){
-                        showmessage(obj.getString("message"));
-                    }else{
-                        String result = obj.getString("subscriptionplan");
-
-                        showmessage(result);
-
-                        StorageSome.getInstance(getApplicationContext()).setsubsription(result);
-
-
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }
-
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                progressDialog.dismiss();
-                Toast.makeText(Buyourservices.this,"Something Went Wrong",Toast.LENGTH_SHORT).show();
-            }
-        }){
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                SmsData smsData = new SmsData();
-                Map<String, String> params = new HashMap<>();
-                params.put("header", smsData.token);
-                params.put("userid", userid);
-                return params;
-            }
-        };
-
-
-        stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
-
     }
 
 
@@ -260,65 +186,13 @@ public class Buyourservices extends AppCompatActivity implements PaymentResultLi
     }
 
 
-    private void sendsubscription(String tansId) {
+    private void sendPaymentDetail(String transId) {
 
-        int getsub = Integer.parseInt(StorageSome.getInstance(getApplicationContext()).getsubsription());
-        int a = getsub + valueInt;
-
-        getsubscription = String.valueOf(a);
-
-        progressDialog.show();
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, Endpoints.sendsubscription, new Response.Listener<String>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Endpoints.addPayment, new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
-                System.out.println("response ::::: "+ response);
-                progressDialog.dismiss();
-                try {
-                    JSONObject obj = new JSONObject(response);
-                    if(obj.getBoolean("error")){
-                        showmessage(obj.getString("message"));
-                    }else{
-                        getsubscription();
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(Buyourservices.this,"Something Went Wrong",Toast.LENGTH_SHORT).show();
-                Log.d("VOLLEY", String.valueOf(error));
-            }
-        }){
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                SmsData smsData = new SmsData();
-                Map<String, String> params = new HashMap<>();
-                params.put("header", smsData.token);
-                params.put("userid", VolleySingleton.getInstance(getApplicationContext()).id());
-                params.put("subscription", getsubscription);
-
-                return params;
-            }
-        };
-        stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        VolleySingleton.getInstance(Buyourservices.this).addToRequestQueue(stringRequest);
-
-
-    }
-
-
-
-    private void sendPaymentDetail(String transId, String amount) {
-
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, Endpoints.payment_detail, new Response.Listener<String>() {
-
-            @Override
-            public void onResponse(String response) {
-                System.out.println("response ::::: "+ response);
+                System.out.println("response ::::: " + response);
                 try {
                     JSONObject obj = new JSONObject(response);
                     progressDialog.dismiss();
@@ -330,18 +204,26 @@ public class Buyourservices extends AppCompatActivity implements PaymentResultLi
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(Buyourservices.this,"Something Went Wrong",Toast.LENGTH_SHORT).show();
+                Toast.makeText(Buyourservices.this, "Something Went Wrong", Toast.LENGTH_SHORT).show();
                 Log.d("VOLLEY", String.valueOf(error));
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 SmsData smsData = new SmsData();
                 Map<String, String> params = new HashMap<>();
                 params.put("header", smsData.token);
                 params.put("userid", VolleySingleton.getInstance(getApplicationContext()).id());
-                params.put("amount", amount);
-                params.put("transactionid", transId);
+                params.put("email", VolleySingleton.getInstance(getApplicationContext()).email());
+                params.put("phone", VolleySingleton.getInstance(getApplicationContext()).mobile());
+                params.put("name", VolleySingleton.getInstance(getApplicationContext()).fname() + " " + VolleySingleton.getInstance(getApplicationContext()).lname());
+                params.put("plan_name", planModel.getSubscription_title());
+                params.put("plan_credit", planModel.getSubscription_credit());
+                params.put("plan_id", planModel.getId());
+                params.put("plan_price", planModel.getSubscription_price());
+                params.put("plan_duration", planModel.getSubscription_duration());
+                params.put("transaction_id", transId);
+                params.put("status", "1");
                 return params;
             }
         };
@@ -353,16 +235,15 @@ public class Buyourservices extends AppCompatActivity implements PaymentResultLi
 
     @Override
     public void onPaymentSuccess(String s) {
-        sendsubscription(s);
-        sendPaymentDetail(s, amountValue);
-        Toast.makeText(this,"Payment Successful", Toast.LENGTH_LONG).show();
+        sendPaymentDetail(s);
+        Toast.makeText(this, "Payment Successful", Toast.LENGTH_LONG).show();
         Log.v("Payment Failed", s);
 
     }
 
     @Override
     public void onPaymentError(int i, String s) {
-        Log.v("Payment Failed", i +"   "+ s);
+        Log.v("Payment Failed", i + "   " + s);
 
         Toast.makeText(this, "Payment Failed!!", Toast.LENGTH_LONG).show();
 
@@ -370,6 +251,7 @@ public class Buyourservices extends AppCompatActivity implements PaymentResultLi
 
     @Override
     public void onSelectSubscription(SubscriptionPlanModel model) {
+        planModel = model;
         startpayment(model.getSubscription_price());
     }
 }

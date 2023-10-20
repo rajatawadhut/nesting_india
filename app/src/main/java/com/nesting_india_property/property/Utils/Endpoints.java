@@ -85,6 +85,9 @@ public class Endpoints {
     public  static final String loginotpinsert = base_url+"loginotpinsert.php";
     public  static final String addUserSearchData = base_url+"usersearchdata.php";
     public  static final String homeicon = base_url+"profilepic/home_icon.png";
-    public  static final String payment_detail = base_url+"payment_detail.php";
+    public  static final String addPayment = base_url+"addPayment.php";
+    public  static final String getCreditCounter = base_url+"getCreditCounter.php";
+    public  static final String updateCreditCounter = base_url+"updateCreditCounter.php";
+    public  static final String updateLeadStatus = base_url+"updateLeadStatus.php";
 
 }

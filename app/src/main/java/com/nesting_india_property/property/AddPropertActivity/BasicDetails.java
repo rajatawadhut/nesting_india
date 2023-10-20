@@ -1622,8 +1622,9 @@ public class BasicDetails extends AppCompatActivity {
                 }
                 else if(category.equals("Others") && propertylistfor.equals("Sell")){
 
-                        if(getsubcription1.get(0).equals("0")){
+                        if(getsubcription1.get(0).equals("0") && getsubcription1.get(1).equals("0")){
                             startActivity(new Intent(BasicDetails.this, Buyourservices.class));
+                            finish();
                         }else{
                             if(sharingspinnumber.equals("Select")){
                                 sharingspinnumber = "";
@@ -1644,8 +1645,9 @@ public class BasicDetails extends AppCompatActivity {
                 }
                 else if(category.equals("Residential Land") && propertylistfor.equals("Sell")){
 
-                    if(getsubcription1.get(0).equals("0")){
+                    if(getsubcription1.get(0).equals("0") && getsubcription1.get(1).equals("0")){
                         startActivity(new Intent(BasicDetails.this, Buyourservices.class));
+                        finish();
                     }else{
                         if(sharingspinnumber.equals("Select")){
                             sharingspinnumber = "";
@@ -1698,8 +1700,9 @@ public class BasicDetails extends AppCompatActivity {
 
                 else {
 
-                    if(getsubcription1.get(0).equals("0")){
+                    if(getsubcription1.get(0).equals("0") && getsubcription1.get(1).equals("0")){
                         startActivity(new Intent(BasicDetails.this, Buyourservices.class));
+                        finish();
                     } else {
                         if (sharingspinnumber.equals("Select")) {
                             sharingspinnumber = "";
@@ -1720,8 +1723,9 @@ public class BasicDetails extends AppCompatActivity {
         });
     }
 
-    private void   getsubscription() {
+    private void getsubscription() {
         final String userid = VolleySingleton.getInstance(getApplicationContext()).id();
+        final String email = VolleySingleton.getInstance(getApplicationContext()).email();
         progressDialog.show();
         StringRequest stringRequest = new StringRequest(Request.Method.POST, Endpoints.getsubscription, new Response.Listener<String>() {
 
@@ -1735,7 +1739,9 @@ public class BasicDetails extends AppCompatActivity {
                         showmessage(obj.getString("message"));
                     }else{
                         String result = obj.getString("subscriptionplan");
+                        String result2 = obj.getString("paymentstatus");
                         getsubcription1.add(result);
+                        getsubcription1.add(result2);
 
 
                     }
@@ -1758,6 +1764,7 @@ public class BasicDetails extends AppCompatActivity {
                 Map<String, String> params = new HashMap<>();
                 params.put("header", smsData.token);
                 params.put("userid", userid);
+                params.put("email", email);
                 return params;
             }
         };

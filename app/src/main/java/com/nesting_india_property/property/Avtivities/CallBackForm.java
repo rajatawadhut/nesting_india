@@ -21,6 +21,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.nesting_india_property.property.AddPropertActivity.BasicDetails;
 import com.nesting_india_property.property.R;
 import com.nesting_india_property.property.Utils.Endpoints;
 import com.nesting_india_property.property.Utils.JavaMailLead;
@@ -48,6 +49,7 @@ public class CallBackForm extends AppCompatActivity {
     TextView textview;
 
     SmsData smsData;
+    String credit = "0", creditStatus = "0";
 
     @SuppressLint("DefaultLocale")
     @Override
@@ -142,6 +144,8 @@ public class CallBackForm extends AppCompatActivity {
             mobile.setFocusable(false);
             mobile.setFocusableInTouchMode(false);
             mobile.setClickable(false);
+
+            getCreditCounter();
         }
 
         if(getinstance.equals("share")){
@@ -275,7 +279,7 @@ public class CallBackForm extends AppCompatActivity {
                         showmessage("Incorrect OTP");
                     }else{
 
-                        contactpropertystatus(mobile1,email1);
+                      /*  contactpropertystatus(mobile1,email1);
 
                             showmessage(obj.getString("message"));
 
@@ -301,7 +305,9 @@ public class CallBackForm extends AppCompatActivity {
                                 startActivity(Intent.createChooser(sharingIntent, "Share Request Post"));
                                 finish();
                             }
+*/
 
+                        showmessage("Buy our services");
 
                     }
 
@@ -379,6 +385,7 @@ public class CallBackForm extends AppCompatActivity {
                                 finish();
 
                             }
+                            updateCreditCounter();
                         }else{
 
                             showmessage("Otp hs been sent to your mail");
@@ -434,6 +441,60 @@ public class CallBackForm extends AppCompatActivity {
         VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
     }
 
+    private void updateCreditCounter() {
+        String credit2 = credit;
+        if(Integer.parseInt(credit) > 0) {
+            credit2 = String.valueOf(Integer.parseInt(credit) - 1);
+        }
+
+        final String userid = VolleySingleton.getInstance(getApplicationContext()).id();
+        final String email = VolleySingleton.getInstance(getApplicationContext()).email();
+        progressDialog.show();
+        String finalCredit = credit2;
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Endpoints.updateCreditCounter, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                System.out.println("response :: " +response);
+                progressDialog.dismiss();
+                try {
+                    JSONObject obj = new JSONObject(response);
+                    if(obj.getBoolean("error")){
+                        showmessage(obj.getString("message"));
+                    }else{
+
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                progressDialog.dismiss();
+                Toast.makeText(CallBackForm.this,"Something Went Wrong",Toast.LENGTH_SHORT).show();
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                SmsData smsData = new SmsData();
+                Map<String, String> params = new HashMap<>();
+                params.put("header", smsData.token);
+                params.put("userid", userid);
+                params.put("credit", finalCredit);
+                return params;
+            }
+        };
+
+
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
+
+    }
+
     private void sendMail(String otp1) {
 
         String mail = email.getText().toString().trim();
@@ -471,6 +532,59 @@ public class CallBackForm extends AppCompatActivity {
 
 
     }
+
+    private void getCreditCounter() {
+        final String userid = VolleySingleton.getInstance(getApplicationContext()).id();
+        final String email = VolleySingleton.getInstance(getApplicationContext()).email();
+        progressDialog.show();
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Endpoints.getCreditCounter, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                System.out.println("response :: " +response);
+                progressDialog.dismiss();
+                try {
+                    JSONObject obj = new JSONObject(response);
+                    if(obj.getBoolean("error")){
+                        showmessage(obj.getString("message"));
+                    }else{
+                        credit = obj.getString("credit");
+                        creditStatus = obj.getString("status");
+
+
+
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                progressDialog.dismiss();
+                Toast.makeText(CallBackForm.this,"Something Went Wrong",Toast.LENGTH_SHORT).show();
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                SmsData smsData = new SmsData();
+                Map<String, String> params = new HashMap<>();
+                params.put("header", smsData.token);
+                params.put("userid", userid);
+                params.put("email", email);
+                return params;
+            }
+        };
+
+
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
+
+    }
+
 
 
 
@@ -575,6 +689,13 @@ public class CallBackForm extends AppCompatActivity {
 
         else if(city1.isEmpty()){
             city.setError("Please select Your City");
+            return false;
+        }
+
+        else if(creditStatus.equals("0") || credit.equals("0")){
+            showmessage("Buy our services");
+/*            startActivity(new Intent(CallBackForm.this, Buyourservices.class));
+            finish();*/
             return false;
         }
 

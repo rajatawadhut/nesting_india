@@ -1,4 +1,5 @@
 package com.nesting_india_property.property.Avtivities;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -25,6 +26,7 @@ import com.nesting_india_property.property.R;
 import com.nesting_india_property.property.Utils.Endpoints;
 import com.nesting_india_property.property.Utils.SmsData;
 import com.nesting_india_property.property.Utils.VolleySingleton;
+import com.nesting_india_property.property.listener.OnLeadClickListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,9 +37,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class LeadSearch extends AppCompatActivity {
+public class LeadSearch extends AppCompatActivity implements OnLeadClickListener {
 
-    RecyclerView  recyclerviewlead;
+    RecyclerView recyclerviewlead;
 
     private List<LeadDataModel> leadDataModels;
     private LeadAdapter leadAdapter;
@@ -48,15 +50,11 @@ public class LeadSearch extends AppCompatActivity {
     int offset = 0;
 
     LinearLayoutManager layoutManager;
-    String fullname, email, mobile, city, date, time, propertyid, type, category,locality, subscriptionplan;
-    String type1, propertylistfor, city1 , type2="";
+    String id, fullname, email, mobile, city, date, time, propertyid, type, category, locality, leadStatus;
+    String credit = "0", creditStatus = "0";
+    String type1, propertylistfor, city1, type2 = "";
 
     LinearLayout nodata;
-
-
-
-
-
 
 
     @Override
@@ -67,7 +65,6 @@ public class LeadSearch extends AppCompatActivity {
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Please Wait...");
         progressDialog.setCancelable(true);
-
 
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -82,16 +79,19 @@ public class LeadSearch extends AppCompatActivity {
         });
 
 
+        type1 = getIntent().getStringExtra("type");
+        propertylistfor = getIntent().getStringExtra("propertylistfor");
+        city1 = getIntent().getStringExtra("city");
 
-        type1 =  getIntent().getStringExtra("type");
-        propertylistfor =  getIntent().getStringExtra("propertylistfor");
-        city1 =  getIntent().getStringExtra("city");
-        subscriptionplan =  getIntent().getStringExtra("subscriptionplan");
+        if (VolleySingleton.getInstance(getApplicationContext()).isLogin()) {
+
+            getCreditCounter();
+        }
 
 
         progresscustom = findViewById(R.id.progresscustom);
 
-        System.out.println("gettttypesss ::: "+ type1);
+        System.out.println("gettttypesss ::: " + type1);
 
 
         recyclerviewlead = findViewById(R.id.recyclerviewlead);
@@ -102,23 +102,17 @@ public class LeadSearch extends AppCompatActivity {
         nodata.setVisibility(View.GONE);
 
 
-
-
-
         layoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         recyclerviewlead.setLayoutManager(layoutManager);
-        leadAdapter = new LeadAdapter(leadDataModels,this);
+        leadAdapter = new LeadAdapter(leadDataModels, this, this);
         recyclerviewlead.setAdapter(leadAdapter);
-
-
 
 
         recyclerviewlead.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if(newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL)
-                {
+                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
                     isScrolling = true;
                 }
             }
@@ -130,15 +124,14 @@ public class LeadSearch extends AppCompatActivity {
                 totalItems = layoutManager.getItemCount();
                 scrollOutItems = layoutManager.findFirstVisibleItemPosition();
 
-                if(isScrolling && (currentItems + scrollOutItems == totalItems))
-                {
+                if (isScrolling && (currentItems + scrollOutItems == totalItems)) {
                     offset = offset + 10;
                     isScrolling = false;
 
-                    if(getIntent().getStringExtra("propertylistfor").equals("Buyers")){
+                    if (getIntent().getStringExtra("propertylistfor").equals("Buyers")) {
                         System.out.println("get  Buyers");
                         LatestBuyres();
-                    }else{
+                    } else {
                         System.out.println("get  Buyers2");
                         LatestProperty();
                     }
@@ -146,54 +139,47 @@ public class LeadSearch extends AppCompatActivity {
             }
         });
 
-        if(propertylistfor.equals("Buyers")){
+        if (propertylistfor.equals("Buyers")) {
             LatestBuyres();
-        }else{
+        } else {
             LatestProperty();
         }
 
 
-
-
-
-        if(type1.equals("Residential")){
+        if (type1.equals("Residential")) {
             type1 = "1";
             type2 = "Residential";
-        }else if(type1.equals("Commercial")){
+        } else if (type1.equals("Commercial")) {
             type1 = "2";
             type2 = "Commercial";
-        }else{
+        } else {
             type2 = "";
         }
 
 
-
-        if(propertylistfor.equals("Sell")){
+        if (propertylistfor.equals("Sell")) {
             propertylistfor = "1";
-        }else if(propertylistfor.equals("Rent")){
+        } else if (propertylistfor.equals("Rent")) {
             propertylistfor = "2";
-        }else{
+        } else {
             propertylistfor = "3";
         }
-
-
-
 
 
     }
 
     private void LatestProperty() {
-        if(offset == 0){
+        if (offset == 0) {
             progressDialog.show();
             progresscustom.setVisibility(View.GONE);
 
-        }else{
+        } else {
             progresscustom.setVisibility(View.VISIBLE);
         }
         final String userid;
-        if(VolleySingleton.getInstance(getApplicationContext()).isLogin()){
+        if (VolleySingleton.getInstance(getApplicationContext()).isLogin()) {
             userid = VolleySingleton.getInstance(getApplicationContext()).id();
-        }else{
+        } else {
             userid = "no";
         }
 
@@ -203,7 +189,7 @@ public class LeadSearch extends AppCompatActivity {
             public void onResponse(String response) {
                 progressDialog.dismiss();
                 progresscustom.setVisibility(View.GONE);
-                System.out.println("response :: "+ response);
+                System.out.println("response :: " + response);
 
                 try {
                     JSONObject obj = new JSONObject(response);
@@ -211,77 +197,65 @@ public class LeadSearch extends AppCompatActivity {
 
                     String succes = obj.getString("success");
                     JSONArray jsonArray = obj.getJSONArray("data");
-                    if(jsonArray.isNull(0)){
+                    if (jsonArray.isNull(0)) {
                         nodata.setVisibility(View.VISIBLE);
                     }
-                    if(offset > 0){
+                    if (offset > 0) {
                         nodata.setVisibility(View.GONE);
 
                     }
 
-                    if(succes.equals("1")){
-                        for(int i=0; i<jsonArray.length();i++){
+                    if (succes.equals("1")) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
 
                             JSONObject object = jsonArray.getJSONObject(i);
 
 
-                            fullname= object.getString("fullname");
-                            email= object.getString("email");
-                            mobile= object.getString("mobile");
-                            city= object.getString("city");
-                            date= object.getString("date");
-                            time= object.getString("time");
-                            propertyid= object.getString("propertyid");
-                            type= object.getString("type");
+                            fullname = object.getString("fullname");
+                            email = object.getString("email");
+                            mobile = object.getString("mobile");
+                            city = object.getString("city");
+                            date = object.getString("date");
+                            time = object.getString("time");
+                            propertyid = object.getString("propertyid");
+                            type = object.getString("type");
+                            leadStatus = object.getString("status");
+                            id = object.getString("id");
 
 
-                            if(type.equals("1")){
+                            if (type.equals("1")) {
                                 type = "Residential";
-                            }else{
+                            } else {
                                 type = "Commercial";
                             }
 
 
                             category = object.getString("category");
 
-                            if(category.equals("1")){
+                            if (category.equals("1")) {
                                 category = "Apartment/Flat/Builder Floor";
-                            }
-                            else if(category.equals("2")){
+                            } else if (category.equals("2")) {
                                 category = "Residential Land";
-                            }
-                            else if(category.equals("3")){
+                            } else if (category.equals("3")) {
                                 category = "House/Villa";
-                            }
-                            else if(category.equals("4")){
+                            } else if (category.equals("4")) {
                                 category = "Offices";
-                            }
-                            else if(category.equals("5")){
+                            } else if (category.equals("5")) {
                                 category = "Retail";
-                            }
-                            else if(category.equals("6")){
+                            } else if (category.equals("6")) {
                                 category = "Land";
-                            }
-                            else if(category.equals("7")){
+                            } else if (category.equals("7")) {
                                 category = "Industry";
-                            }
-                            else if(category.equals("8")){
+                            } else if (category.equals("8")) {
                                 category = "Storage";
-                            }
-                            else if(category.equals("9")){
+                            } else if (category.equals("9")) {
                                 category = "Hospitality";
-                            }
-                            else if(category.equals("10")){
+                            } else if (category.equals("10")) {
                                 category = "Others";
                             }
 
 
-
-
-
-
-
-                            LeadDataModel leadDataModel = new LeadDataModel(fullname,email,mobile,city,date,time,propertyid,type,category, "",subscriptionplan);
+                            LeadDataModel leadDataModel = new LeadDataModel(id,fullname, email, mobile, city, date, time, propertyid, type, category, "", credit, creditStatus, leadStatus);
                             leadDataModels.add(leadDataModel);
                             leadAdapter.notifyDataSetChanged();
                         }
@@ -290,8 +264,8 @@ public class LeadSearch extends AppCompatActivity {
                 } catch (JSONException e) {
                     progressDialog.dismiss();
                     progresscustom.setVisibility(View.GONE);
-                    showmessage("Something wrong please check network connection"+e);
-                    System.out.println("problem ::"+e);
+                    showmessage("Something wrong please check network connection" + e);
+                    System.out.println("problem ::" + e);
                     e.printStackTrace();
                 }
 
@@ -301,7 +275,7 @@ public class LeadSearch extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 showmessage(error.getMessage());
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 SmsData smsData = new SmsData();
@@ -321,23 +295,20 @@ public class LeadSearch extends AppCompatActivity {
     }
 
 
-
-
     private void LatestBuyres() {
 
 
-
-        if(offset == 0){
+        if (offset == 0) {
             progressDialog.show();
             progresscustom.setVisibility(View.GONE);
 
-        }else{
+        } else {
             progresscustom.setVisibility(View.VISIBLE);
         }
         final String userid;
-        if(VolleySingleton.getInstance(getApplicationContext()).isLogin()){
+        if (VolleySingleton.getInstance(getApplicationContext()).isLogin()) {
             userid = VolleySingleton.getInstance(getApplicationContext()).id();
-        }else{
+        } else {
             userid = "no";
         }
 
@@ -347,7 +318,7 @@ public class LeadSearch extends AppCompatActivity {
             public void onResponse(String response) {
                 progressDialog.dismiss();
                 progresscustom.setVisibility(View.GONE);
-                System.out.println("response :: "+ response);
+                System.out.println("response :: " + response);
 
                 try {
                     JSONObject obj = new JSONObject(response);
@@ -355,29 +326,31 @@ public class LeadSearch extends AppCompatActivity {
 
                     String succes = obj.getString("success");
                     JSONArray jsonArray = obj.getJSONArray("data");
-                    if(jsonArray.isNull(0)){
+                    if (jsonArray.isNull(0)) {
                         nodata.setVisibility(View.VISIBLE);
                     }
-                    if(offset > 0){
+                    if (offset > 0) {
                         nodata.setVisibility(View.GONE);
 
                     }
 
-                    if(succes.equals("1")){
-                        for(int i=0; i<jsonArray.length();i++){
+                    if (succes.equals("1")) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
 
                             JSONObject object = jsonArray.getJSONObject(i);
 
 
-                            fullname= object.getString("fullname");
-                            email= object.getString("email");
-                            mobile= object.getString("mobile");
-                            city= object.getString("city");
-                            date= object.getString("date");
-                            time= object.getString("time");
-                            propertyid= object.getString("propertyid");
-                            type= object.getString("type");
-                            locality= object.getString("locality");
+                            fullname = object.getString("fullname");
+                            email = object.getString("email");
+                            mobile = object.getString("mobile");
+                            city = object.getString("city");
+                            date = object.getString("date");
+                            time = object.getString("time");
+                            propertyid = object.getString("propertyid");
+                            type = object.getString("type");
+                            locality = object.getString("locality");
+                            leadStatus = object.getString("status");
+                            id = object.getString("id");
 
 
 //                            if(type.equals("Residential")){
@@ -421,12 +394,7 @@ public class LeadSearch extends AppCompatActivity {
 //                            }
 
 
-
-
-
-
-
-                            LeadDataModel leadDataModel = new LeadDataModel(fullname,email,mobile,city,date,time,propertyid,type,category, locality,subscriptionplan);
+                            LeadDataModel leadDataModel = new LeadDataModel(id, fullname, email, mobile, city, date, time, propertyid, type, category, locality, credit, creditStatus, leadStatus);
                             leadDataModels.add(leadDataModel);
                             leadAdapter.notifyDataSetChanged();
                         }
@@ -435,8 +403,8 @@ public class LeadSearch extends AppCompatActivity {
                 } catch (JSONException e) {
                     progressDialog.dismiss();
                     progresscustom.setVisibility(View.GONE);
-                    showmessage("Something wrong please check network connection"+e);
-                    System.out.println("problem ::"+e);
+                    showmessage("Something wrong please check network connection" + e);
+                    System.out.println("problem ::" + e);
                     e.printStackTrace();
                 }
 
@@ -446,7 +414,7 @@ public class LeadSearch extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 showmessage(error.getMessage());
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 SmsData smsData = new SmsData();
@@ -458,7 +426,7 @@ public class LeadSearch extends AppCompatActivity {
                 params.put("city", city1);
                 params.put("offset", String.valueOf(offset));
 
-                System.out.println("response :::; params :; + "+ params);
+                System.out.println("response :::; params :; + " + params);
 
                 return params;
             }
@@ -467,10 +435,183 @@ public class LeadSearch extends AppCompatActivity {
         VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
     }
 
+    private void getCreditCounter() {
+        final String userid = VolleySingleton.getInstance(getApplicationContext()).id();
+        final String email = VolleySingleton.getInstance(getApplicationContext()).email();
+        progressDialog.show();
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Endpoints.getCreditCounter, new Response.Listener<String>() {
 
-    public void showmessage(String m){
+            @Override
+            public void onResponse(String response) {
+                System.out.println("response :: " + response);
+                progressDialog.dismiss();
+                try {
+                    JSONObject obj = new JSONObject(response);
+                    if (obj.getBoolean("error")) {
+                        showmessage(obj.getString("message"));
+                    } else {
+                        credit = obj.getString("credit");
+                        creditStatus = obj.getString("status");
+
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                progressDialog.dismiss();
+                Toast.makeText(LeadSearch.this, "Something Went Wrong", Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                SmsData smsData = new SmsData();
+                Map<String, String> params = new HashMap<>();
+                params.put("header", smsData.token);
+                params.put("userid", userid);
+                params.put("email", email);
+                return params;
+            }
+        };
+
+
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
+
+    }
+
+
+    public void showmessage(String m) {
         Toast.makeText(this, m, Toast.LENGTH_SHORT).show();
     }
 
+
+    @Override
+    public void onClickLead(LeadDataModel model) {
+        updateCreditCounter(model.getId());
+    }
+
+    private void updateCreditCounter(String id) {
+        String credit2 = credit;
+        if (Integer.parseInt(credit) > 0) {
+            credit2 = String.valueOf(Integer.parseInt(credit) - 1);
+        }
+        String finalCredit = credit2;
+if(Integer.parseInt(credit) > 0) {
+    credit = finalCredit;
+
+    final String userid = VolleySingleton.getInstance(getApplicationContext()).id();
+    final String email = VolleySingleton.getInstance(getApplicationContext()).email();
+    progressDialog.show();
+    StringRequest stringRequest = new StringRequest(Request.Method.POST, Endpoints.updateCreditCounter, new Response.Listener<String>() {
+
+        @Override
+        public void onResponse(String response) {
+            System.out.println("response :: " + response);
+            progressDialog.dismiss();
+            try {
+                JSONObject obj = new JSONObject(response);
+                if (obj.getBoolean("error")) {
+                    showmessage(obj.getString("message"));
+                } else {
+                    updateLeadStatus(id);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+    }, new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            progressDialog.dismiss();
+            Toast.makeText(LeadSearch.this, "Something Went Wrong", Toast.LENGTH_SHORT).show();
+        }
+    }) {
+        @Override
+        protected Map<String, String> getParams() throws AuthFailureError {
+            SmsData smsData = new SmsData();
+            Map<String, String> params = new HashMap<>();
+            params.put("header", smsData.token);
+            params.put("userid", userid);
+            params.put("credit", finalCredit);
+            return params;
+        }
+    };
+
+
+    stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+    VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
+
+}else{
+    showmessage("You do not have enough credit to view detail");
+}
+    }
+
+    private void updateLeadStatus(String id1) {
+
+
+        final String userid = VolleySingleton.getInstance(getApplicationContext()).id();
+        final String email = VolleySingleton.getInstance(getApplicationContext()).email();
+        progressDialog.show();
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Endpoints.updateLeadStatus, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                System.out.println("response :: " + response);
+                progressDialog.dismiss();
+                try {
+                    JSONObject obj = new JSONObject(response);
+                    if (obj.getBoolean("error")) {
+                        showmessage(obj.getString("message"));
+                    } else {
+                        callAgain();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                progressDialog.dismiss();
+                Toast.makeText(LeadSearch.this, "Something Went Wrong", Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                SmsData smsData = new SmsData();
+                Map<String, String> params = new HashMap<>();
+                params.put("header", smsData.token);
+                params.put("id", id1);
+                return params;
+            }
+        };
+
+
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
+
+    }
+
+
+    public void callAgain() {
+        leadDataModels.clear();
+        if (propertylistfor.equals("Buyers")) {
+            LatestBuyres();
+        } else {
+            LatestProperty();
+        }
+
+
+    }
 
 }

@@ -11,12 +11,16 @@ public class LeadDataModel {
     String propertyid;
     String type;
     String category;
-    String subscription;
     String locality;
+    String credit;
+    String creditStatus;
+    String leadStatus;
+    String id;
 
 
-    public LeadDataModel(String fullname, String email, String mobile, String city, String date, String time, String propertyid, String type, String category, String locality, String subscription){
+    public LeadDataModel(String id,String fullname, String email, String mobile, String city, String date, String time, String propertyid, String type, String category, String locality, String credit, String creditStatus, String leadStatus){
 
+        this.id = id;
         this.fullname = fullname;
         this.email = email;
         this.mobile = mobile;
@@ -26,9 +30,28 @@ public class LeadDataModel {
         this.propertyid = propertyid;
         this.type = type;
         this.category = category;
-        this.subscription = subscription;
         this.locality = locality;
+        this.credit = credit;
+        this.creditStatus = credit;
+        this.leadStatus = leadStatus;
 
+
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getLeadStatus() {
+        return leadStatus;
+    }
+
+    public void setLeadStatus(String leadStatus) {
+        this.leadStatus = leadStatus;
     }
 
     public String getLocality() {
@@ -39,12 +62,20 @@ public class LeadDataModel {
         this.locality = locality;
     }
 
-    public String getSubscription() {
-        return subscription;
+    public String getCredit() {
+        return credit;
     }
 
-    public void setSubscription(String subscription) {
-        this.subscription = subscription;
+    public void setCredit(String credit) {
+        this.credit = credit;
+    }
+
+    public String getCreditStatus() {
+        return creditStatus;
+    }
+
+    public void setCreditStatus(String creditStatus) {
+        this.creditStatus = creditStatus;
     }
 
     public String getType() {

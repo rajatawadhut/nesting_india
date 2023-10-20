@@ -1626,6 +1626,7 @@ public class SearchProperty extends AppCompatActivity {
     private void getsubscription() {
         progressDialog.show();
         final String userid = VolleySingleton.getInstance(getApplicationContext()).id();
+        final String email = VolleySingleton.getInstance(getApplicationContext()).email();
         StringRequest stringRequest = new StringRequest(Request.Method.POST, Endpoints.getsubscription, new Response.Listener<String>() {
 
             @Override
@@ -1658,6 +1659,7 @@ public class SearchProperty extends AppCompatActivity {
                 Map<String, String> params = new HashMap<>();
                 params.put("header", smsData.token);
                 params.put("userid", userid);
+                params.put("email", email);
                 return params;
             }
         };

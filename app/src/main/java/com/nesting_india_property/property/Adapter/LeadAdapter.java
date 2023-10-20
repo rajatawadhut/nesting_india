@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.nesting_india_property.property.Models.LeadDataModel;
 import com.nesting_india_property.property.R;
+import com.nesting_india_property.property.listener.OnLeadClickListener;
 
 import java.util.List;
 
@@ -24,10 +26,14 @@ public class LeadAdapter extends RecyclerView.Adapter<LeadAdapter.ShowData>{
     private List<LeadDataModel> dataSet;
     private Context context;
 
+    OnLeadClickListener listener;
+
+
     public LeadAdapter(
-            List<LeadDataModel> dataSet, Context context) {
+            List<LeadDataModel> dataSet, Context context, OnLeadClickListener listener) {
         this.dataSet = dataSet;
         this.context = context;
+        this.listener = listener;
     }
 
     @NonNull
@@ -60,7 +66,7 @@ public class LeadAdapter extends RecyclerView.Adapter<LeadAdapter.ShowData>{
 
 
 
-        if(dataSet.get(position).getSubscription().equals("0")){
+        if(dataSet.get(position).getLeadStatus().equals("0")){
             String mobile, firstFourChars;
 
             mobile = dataSet.get(position).getMobile();
@@ -70,8 +76,21 @@ public class LeadAdapter extends RecyclerView.Adapter<LeadAdapter.ShowData>{
                 firstFourChars = firstFourChars + "*";
             }
             holder.mobile.setText(firstFourChars);
-            holder.emaillayout.setVisibility(View.GONE);
+
+            String email, firstFourChars1;
+
+            email = dataSet.get(position).getEmail();
+            firstFourChars1 = email.substring(0, 3);
+
+            for (int i =0; i< 7; i++){
+                firstFourChars1 = firstFourChars1 + "*";
+            }
+            holder.email.setText(firstFourChars1);
             holder.call_button.setVisibility(View.GONE);
+            holder.showCall.setVisibility(View.VISIBLE);
+        }else{
+            holder.call_button.setVisibility(View.VISIBLE);
+            holder.showCall.setVisibility(View.GONE);
         }
 
 
@@ -87,6 +106,12 @@ public class LeadAdapter extends RecyclerView.Adapter<LeadAdapter.ShowData>{
 
             }
         });
+        holder.showCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onClickLead(dataSet.get(position));
+            }
+        });
 
 
 
@@ -98,9 +123,10 @@ public class LeadAdapter extends RecyclerView.Adapter<LeadAdapter.ShowData>{
     }
 
     class ShowData extends RecyclerView.ViewHolder {
-        TextView fullname, email, mobile, city, property, date;
-        LinearLayout namelayout, emaillayout, mobilelayout, citylayout, propertylayout, call_button, datelayout;
+        TextView fullname, email, mobile, city, property, date, showCall;
+        LinearLayout namelayout, emaillayout, mobilelayout, citylayout, propertylayout, datelayout;
 
+        ImageView call_button;
 
         public ShowData(@NonNull View itemView) {
             super(itemView);
@@ -119,6 +145,7 @@ public class LeadAdapter extends RecyclerView.Adapter<LeadAdapter.ShowData>{
             call_button = itemView.findViewById(R.id.call_button);
             datelayout = itemView.findViewById(R.id.datelayout);
             date = itemView.findViewById(R.id.date);
+            showCall = itemView.findViewById(R.id.showCall);
 
 
 

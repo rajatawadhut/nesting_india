@@ -150,6 +150,7 @@ public class BuyService2 extends AppCompatActivity implements PaymentResultListe
 
     private void getsubscription() {
         final String userid = VolleySingleton.getInstance(getApplicationContext()).id();
+        final String email = VolleySingleton.getInstance(getApplicationContext()).email();
         progressDialog.show();
         StringRequest stringRequest = new StringRequest(Request.Method.POST, Endpoints.getsubscription, new Response.Listener<String>() {
 
@@ -187,6 +188,7 @@ public class BuyService2 extends AppCompatActivity implements PaymentResultListe
                 Map<String, String> params = new HashMap<>();
                 params.put("header", smsData.token);
                 params.put("userid", userid);
+                params.put("email", email);
                 return params;
             }
         };
