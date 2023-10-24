@@ -107,10 +107,11 @@ public class ShowMyPurchaseEnquiryActivity extends AppCompatActivity {
                             String date = object.getString("date");
                             String time = object.getString("time");
                             String status = object.getString("status");
+                            String propertylistfor = object.getString("propertylistfor");
 
 
 
-                            MyPurchaseEnquiryModel model = new MyPurchaseEnquiryModel(id, userid, minprice, maxprice, type, category, state, city, locality, name, email, date, time, status);
+                            MyPurchaseEnquiryModel model = new MyPurchaseEnquiryModel(id, userid, minprice, maxprice, type, category, state, city, locality, name, email, date, time, status, propertylistfor);
                             purchaseEnquiryList.add(model);
                             MyPurchaseEnquiryAdapter adapter = new MyPurchaseEnquiryAdapter(purchaseEnquiryList, ShowMyPurchaseEnquiryActivity.this);
                             recyclerView.setAdapter(adapter);

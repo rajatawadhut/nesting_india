@@ -15,8 +15,10 @@
             app:titleTextColor="@color/white" />
 
 
-        <WebView
-            android:id="@+id/webview"
+        <androidx.recyclerview.widget.RecyclerView
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:id="@+id/recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

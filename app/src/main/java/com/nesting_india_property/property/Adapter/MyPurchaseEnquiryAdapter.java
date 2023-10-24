@@ -46,6 +46,7 @@ public class MyPurchaseEnquiryAdapter extends RecyclerView.Adapter<MyPurchaseEnq
         holder.tv_city.setText(model.getCity());
         holder.tv_locality.setText(model.getLocality());
         holder.tv_state.setText(model.getState());
+        holder.tv_propertyfor.setText(model.getPropertylistfor());
         holder.tv_price.setText(model.getMinprice() + " - " + model.getMaxprice());
     }
 
@@ -56,7 +57,7 @@ public class MyPurchaseEnquiryAdapter extends RecyclerView.Adapter<MyPurchaseEnq
     }
 
     class ShowData extends RecyclerView.ViewHolder {
-        TextView tv_property_type, tv_city, tv_state, tv_price, tv_locality;
+        TextView tv_property_type, tv_city, tv_state, tv_price, tv_locality, tv_propertyfor;
         public ShowData(@NonNull View itemView) {
             super(itemView);
             tv_property_type = itemView.findViewById(R.id.tv_property_type);
@@ -64,6 +65,7 @@ public class MyPurchaseEnquiryAdapter extends RecyclerView.Adapter<MyPurchaseEnq
             tv_city = itemView.findViewById(R.id.tv_city);
             tv_price = itemView.findViewById(R.id.tv_price);
             tv_locality = itemView.findViewById(R.id.tv_locality);
+            tv_propertyfor = itemView.findViewById(R.id.tv_propertyfor);
 
 
         }

@@ -38,8 +38,8 @@ public class PurchaseEnquiryActivity extends AppCompatActivity {
 
 
     private ProgressDialog progressDialog;
-    private Spinner typeofproperty, subtypeofproperty, minPrice, maxPrice;
-    String min = "", max = "";
+    private Spinner typeofproperty, subtypeofproperty, minPrice, maxPrice, spi_property_for;
+    String min = "", max = "", propertyfor = "";
 
     Button btnEnquiry, btnShowEnquiry;
 
@@ -77,6 +77,7 @@ public class PurchaseEnquiryActivity extends AppCompatActivity {
         maxPrice = findViewById(R.id.maxPrice);
         btnEnquiry = findViewById(R.id.btnEnquiry);
         btnShowEnquiry = findViewById(R.id.btnShowEnquiry);
+        spi_property_for = findViewById(R.id.spi_property_for);
 
 
 
@@ -119,7 +120,7 @@ public class PurchaseEnquiryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(isValid()) {
-                    postEnquiry(VolleySingleton.getInstance(getApplicationContext()).id(), min, max, typeofproperty.getSelectedItem().toString(), subtypeofproperty.getSelectedItem().toString(),state.getText().toString(),city.getText().toString(), locality.getText().toString(),VolleySingleton.getInstance(getApplicationContext()).fname() + " " +VolleySingleton.getInstance(getApplicationContext()).lname(),VolleySingleton.getInstance(getApplicationContext()).email(),VolleySingleton.getInstance(getApplicationContext()).mobile(),"Recieved");
+                    postEnquiry(VolleySingleton.getInstance(getApplicationContext()).id(), min, max, typeofproperty.getSelectedItem().toString(), subtypeofproperty.getSelectedItem().toString(),state.getText().toString(),city.getText().toString(), locality.getText().toString(),VolleySingleton.getInstance(getApplicationContext()).fname() + " " +VolleySingleton.getInstance(getApplicationContext()).lname(),VolleySingleton.getInstance(getApplicationContext()).email(),VolleySingleton.getInstance(getApplicationContext()).mobile(),"Recieved", propertyfor);
                 }
             }
         });
@@ -150,6 +151,22 @@ public class PurchaseEnquiryActivity extends AppCompatActivity {
         enquirysubTypeOfPropertyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         subtypeofproperty.setAdapter(enquirysubTypeOfPropertyAdapter);
 
+        ArrayAdapter<CharSequence> spi_property_forAdapter = ArrayAdapter.createFromResource(PurchaseEnquiryActivity.this, R.array.propertyfor, android.R.layout.simple_spinner_item);
+        spi_property_forAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spi_property_for.setAdapter(spi_property_forAdapter);
+
+
+        spi_property_for.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                propertyfor = spi_property_for.getSelectedItem().toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         minPrice.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -612,7 +629,11 @@ public class PurchaseEnquiryActivity extends AppCompatActivity {
     }
 
     private boolean isValid() {
-        if(state.getText().toString().isEmpty()) {
+        if(propertyfor.isEmpty() || propertyfor.equals("Select Looking Property")) {
+            showmessage("Please Select Looking Property!");
+            return false;
+        }
+        else if(state.getText().toString().isEmpty()) {
             showmessage("Please Select State!");
             return false;
         }else if (city.getText().toString().isEmpty()){
@@ -662,17 +683,18 @@ public class PurchaseEnquiryActivity extends AppCompatActivity {
 
 
     private void postEnquiry(final String userid,
-                          final String minprice,
-                          final String maxprice,
-                          final String type,
-                          final String category,
-                          final String state,
-                          final String city,
-                          final String locality,
-                          final String name,
-                          final String email,
-                          final String mobile,
-                          final String status){
+                             final String minprice,
+                             final String maxprice,
+                             final String type,
+                             final String category,
+                             final String state,
+                             final String city,
+                             final String locality,
+                             final String name,
+                             final String email,
+                             final String mobile,
+                             final String status,
+                             final String propertyfor){
         progressDialog.show();
 
 
@@ -721,6 +743,7 @@ public class PurchaseEnquiryActivity extends AppCompatActivity {
                 params.put("email", email);
                 params.put("mobile", mobile);
                 params.put("status", status);
+                params.put("propertylistfor", propertyfor);
                 return params;
             }
         };

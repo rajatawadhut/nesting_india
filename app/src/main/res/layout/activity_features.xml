@@ -44,7 +44,7 @@
                     android:background="@drawable/home_btn_bg"
                     android:textColor="@android:color/white"
                     android:textAllCaps="false"
-                    android:text="Pick Image"
+                    android:text="Upload Property Image"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"/>
 

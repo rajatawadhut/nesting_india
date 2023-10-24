@@ -206,7 +206,7 @@ public class ProfileActivity extends AppCompatActivity {
 
 
                 if(isValidDonor(fname, lname, email, phone, state, city, address)){
-                    update(fname, lname, email, phone, state, city, address);
+                    update(fname, lname, email, phone, state, city, address, VolleySingleton.getInstance(getApplicationContext()).userCategory());
                 }
 
             }
@@ -308,7 +308,8 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void update (final String fname, final String lname, final String email,
                          final String phone, final String state, final String city,
-                         final String address){
+                         final String address,
+                         final String usercategory){
         progressDialog.show();
 
         if (encodedImage == null) {
@@ -375,6 +376,7 @@ public class ProfileActivity extends AppCompatActivity {
                 params.put("city", city);
                 params.put("address", address);
                 params.put("image", encodedimage2);
+                params.put("usercategory", usercategory);
                 return params;
             }
         };

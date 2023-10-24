@@ -8,6 +8,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,6 +17,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -53,10 +55,13 @@ import android.view.Window;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,6 +70,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 
 import com.nesting_india_property.property.Utils.Endpoints;
@@ -107,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
 
     public int number = 0;
     public int number2 = 0;
-    TextView tv_counter,cancel;
+    TextView tv_counter, cancel;
 
     ArrayList<String> getmsgcounter;
     CardView cardImage, post_property, post_pro, feelfree, why, make;
@@ -125,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
     private PgAdapter pgAdapter;
 
     private LinearLayout homeefooter, latestfooter, shortlisted, searchfooter, postproperty;
-    ImageView footerh,footerl, footerp, footers, footershort;
+    ImageView footerh, footerl, footerp, footers, footershort, google, playstore;
     private TextView homeefooter1, latestfooter1, searchfooter1, shortlistedfooter1;
 
     private ViewPager viewPager, advertisement;
@@ -155,7 +161,6 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> timeitems1 = new ArrayList<>();
 
 
-
     ArrayList<String> moreanemitiesitem2 = new ArrayList<>();
     ArrayList<String> moreanemitiesitem3;
     ArrayList<String> homethings2 = new ArrayList<>();
@@ -166,17 +171,14 @@ public class MainActivity extends AppCompatActivity {
     ImageView nointernet;
 
 
-
-
-
-    String id = "",usertype = "", type = "", category = "", categorytype = "", agrement = "", pgavaliablefor = "", pgshareprivate = "",
-            sharingspinnumber = "", propertylistfor = "", willing = "", pgsuitablefor = "",state= "", city = "", locality = "", projectname = "", address = "",
-            unit1 = "",unit2 = "",unit3 = "",availabilitydate = "", otherroom = "", homethings = "", builtupa = "", carpeta = "", plota = "", bed = "",
+    String id = "", usertype = "", type = "", category = "", categorytype = "", agrement = "", pgavaliablefor = "", pgshareprivate = "",
+            sharingspinnumber = "", propertylistfor = "", willing = "", pgsuitablefor = "", state = "", city = "", locality = "", projectname = "", address = "",
+            unit1 = "", unit2 = "", unit3 = "", availabilitydate = "", otherroom = "", homethings = "", builtupa = "", carpeta = "", plota = "", bed = "",
             bath = "", balconie = "", totalfloorget = "", reservedpark = "", availabilityspinget = "", ageofpropertyspinget = "",
-            furnishedspinget = "",possessionbyspinget = "",
+            furnishedspinget = "", possessionbyspinget = "",
             noofroomspinget = "", qualityratingspinget = "", floorallowedspinget = "", roomavailabespinget = "", priceget = "", maintenanceget = "",
             bookingamountget = "",
-            durationofrentagget = "", monthofnoticeget = "",  securitydepositspinget = "", maintenancemonthlyspinget = "",
+            durationofrentagget = "", monthofnoticeget = "", securitydepositspinget = "", maintenancemonthlyspinget = "",
             ownweshipspinget = "",
             typeoffood = "", pricestep = "", facilityincluded = "", weekdays = "", weeends = "", earlylivingchargesget = "", contractdurationget = "",
             annualduespayableget = "",
@@ -184,11 +186,9 @@ public class MainActivity extends AppCompatActivity {
             pet = "", visiter = "", smoking = "",
             alcohol = "", event = "", anemitiesitem = "", moreanemitiesitem = "", watersourceitem = "", overlookingitem = "",
             somefeatureitem = "", byersitem = "", timeitems = "",
-            widthfacingget = "", descriptionget = "", boundrywall = "",flattype = "", user_id = "", newprice ="", image = "", shortlistedvalue="",
-            getrera="", mobile ="", reg_date = "", fname = "", lname = "", latlong = "", email= "", paymentStatus= "";
-
-
-
+            widthfacingget = "", descriptionget = "", boundrywall = "", flattype = "", user_id = "", newprice = "", image = "", shortlistedvalue = "",
+            getrera = "", mobile = "", reg_date = "", fname = "", lname = "", latlong = "", email = "", paymentStatus = "";
+    String userCategoryAlert = "";
 
 
     @Override
@@ -197,7 +197,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Nesting India");
-
 
 
         settingsDialog = new Dialog(this);
@@ -218,16 +217,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
-
-
-
-
-
-
-
-
-
+        if (VolleySingleton.getInstance(getApplicationContext()).userCategory() == null || VolleySingleton.getInstance(getApplicationContext()).userCategory().isEmpty() || VolleySingleton.getInstance(getApplicationContext()).userCategory().equals("null")) {
+            updateUserCategory();
+        }
 
 
         drawer = findViewById(R.id.drawer_layout);
@@ -238,6 +230,8 @@ public class MainActivity extends AppCompatActivity {
         feelfree = findViewById(R.id.feelfree);
         why = findViewById(R.id.why);
         make = findViewById(R.id.make);
+        google = findViewById(R.id.google);
+        playstore = findViewById(R.id.playstore);
         btnbuyservice = findViewById(R.id.btnbuyservice);
 
         progressDialog = new ProgressDialog(this);
@@ -245,12 +239,31 @@ public class MainActivity extends AppCompatActivity {
         progressDialog.setCancelable(false);
 
 
+        google.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com/search?q=nesting+india&oq=nesting+india&aqs=chrome.0.35i39i650j46i175i199i512j0i22i30j0i15i22i30j0i22i30l2j69i60l2.2141j0j4&sourceid=chrome&ie=UTF-8#lrd=0x3bd4c13e137361bf:0x49a4482166cead26,1"));
+                startActivity(intent);
+            }
+        });
+        playstore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Uri uri = Uri.parse("market://details?id=" + getPackageName());
+                Intent myAppLinkToMarket = new Intent(Intent.ACTION_VIEW, uri);
+                try {
+                    startActivity(myAppLinkToMarket);
+                } catch (ActivityNotFoundException e) {
+
+                }
+            }
+        });
 
         // for removing error
         ListingData.getInstance(getApplicationContext()).setinstrance("1");
 
 
-        if(!VolleySingleton.getInstance(getApplicationContext()).isLogin()){
+        if (!VolleySingleton.getInstance(getApplicationContext()).isLogin()) {
             nav.getMenu().clear();
             nav.inflateMenu(R.menu.activity_main_drawer2);
             userid = "no";
@@ -258,11 +271,11 @@ public class MainActivity extends AppCompatActivity {
             nav.setItemIconTintList(ColorStateList.valueOf(getResources().getColor(R.color.icon_color)));
 
 
-        }else {
+        } else {
             nav.getMenu().clear();
-            if(VolleySingleton.getInstance(getApplicationContext()).userCategory().equals("4")) {
+            if (VolleySingleton.getInstance(getApplicationContext()).userCategory().equals("4")) {
                 nav.inflateMenu(R.menu.activity_main_drawer_buyer);
-            }else {
+            } else {
                 nav.inflateMenu(R.menu.activity_main_drawer);
             }
             nav.setItemIconTintList(null);
@@ -273,25 +286,21 @@ public class MainActivity extends AppCompatActivity {
             String date2, date3;
             date2 = dateOnly.format(cal.getTime());
 
-            if(VolleySingleton.getInstance(getApplicationContext()).getcounterdate() != null){
+            if (VolleySingleton.getInstance(getApplicationContext()).getcounterdate() != null) {
                 date3 = VolleySingleton.getInstance(getApplicationContext()).getcounterdate();
 
-                System.out.println("dattessss : " +date2 +"     " + date3);
+                System.out.println("dattessss : " + date2 + "     " + date3);
 
-                if(date3.equals(date2)){
-                    System.out.println("dattessss : yes" );
+                if (date3.equals(date2)) {
+                    System.out.println("dattessss : yes");
 
-                }else{
-                    System.out.println("dattessss : no" );
+                } else {
+                    System.out.println("dattessss : no");
 
                     showcounter();
 
                 }
             }
-
-
-
-
 
 
             View headerView = nav.getHeaderView(0);
@@ -352,12 +361,10 @@ public class MainActivity extends AppCompatActivity {
 //                }
 //            }
 
-                        showmsgcounter();
-
+            showmsgcounter();
 
 
         }
-
 
 
         rq = Volley.newRequestQueue(this);
@@ -379,16 +386,14 @@ public class MainActivity extends AppCompatActivity {
 //        });
 
 
-                getallproperty();
-                getads();
-
+        getallproperty();
+        getads();
 
 
         sellDataModels = new ArrayList<>();
         pgDataModels = new ArrayList<>();
         rentDataModels = new ArrayList<>();
         adsDataModels = new ArrayList<>();
-
 
 
         recyclerViewsell = findViewById(R.id.sellproperty);
@@ -403,40 +408,34 @@ public class MainActivity extends AppCompatActivity {
         sellviewmore = findViewById(R.id.sellviewmore);
 
 
-
 //        RecyclerView.LayoutManager layoutManagera = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
 //        advertisement.setLayoutManager(layoutManagera);
 //        adsAdapter = new AdsAdapter(adsDataModels,this);
 //        advertisement.setAdapter(adsAdapter);
 
 
-
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
         recyclerViewsell.setLayoutManager(layoutManager);
-        sellAdapter = new SellAdapter(sellDataModels,this);
+        sellAdapter = new SellAdapter(sellDataModels, this);
         recyclerViewsell.setAdapter(sellAdapter);
 
         RecyclerView.LayoutManager layoutManager2 = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
         recyclerViewrent.setLayoutManager(layoutManager2);
-        rentAdapter = new RentAdapter(rentDataModels,this);
+        rentAdapter = new RentAdapter(rentDataModels, this);
         recyclerViewrent.setAdapter(rentAdapter);
 
         RecyclerView.LayoutManager layoutManager3 = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
         recyclerViewpg.setLayoutManager(layoutManager3);
-        pgAdapter = new PgAdapter(pgDataModels,this);
+        pgAdapter = new PgAdapter(pgDataModels, this);
         recyclerViewpg.setAdapter(pgAdapter);
 
 
-            getsellproperty();
-            getrentproperty();
-            getpgproperty();
-
-
-
+        getsellproperty();
+        getrentproperty();
+        getpgproperty();
 
 
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-
 
 
         homeefooter = findViewById(R.id.homefooter);
@@ -455,13 +454,12 @@ public class MainActivity extends AppCompatActivity {
         footers = findViewById(R.id.footers);
 
 
-
         postproperty = findViewById(R.id.postproperty);
 
 
-        if(VolleySingleton.getInstance(getApplicationContext()).userCategory() != null && VolleySingleton.getInstance(getApplicationContext()).userCategory().equals("4")) {
+        if (VolleySingleton.getInstance(getApplicationContext()).userCategory() != null && VolleySingleton.getInstance(getApplicationContext()).userCategory().equals("4")) {
             postproperty.setVisibility(View.GONE);
-        }else{
+        } else {
             postproperty.setVisibility(View.VISIBLE);
         }
 
@@ -479,9 +477,9 @@ public class MainActivity extends AppCompatActivity {
         sellviewmore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                        Intent intent = new Intent(MainActivity.this, ViewMoreActivity.class);
-                            intent.putExtra("listfor", "Sell");
-                            startActivity(intent);
+                Intent intent = new Intent(MainActivity.this, ViewMoreActivity.class);
+                intent.putExtra("listfor", "Sell");
+                startActivity(intent);
             }
         });
 
@@ -512,8 +510,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
-
         homeefooter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -533,11 +529,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(VolleySingleton.getInstance(getApplicationContext()).isLogin()){
+                if (VolleySingleton.getInstance(getApplicationContext()).isLogin()) {
                     Intent footorlatest = new Intent(MainActivity.this, ShortlistedActivity.class);
                     footorlatest.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(footorlatest);
-                }else{
+                } else {
                     Intent footorlatest = new Intent(MainActivity.this, LoginActivity.class);
                     footorlatest.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(footorlatest);
@@ -557,16 +553,15 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
         postproperty.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if(VolleySingleton.getInstance(getApplicationContext()).isLogin()){
+                if (VolleySingleton.getInstance(getApplicationContext()).isLogin()) {
                     ListingData.getInstance(getApplicationContext()).Logout();
                     ListingData.getInstance(getApplicationContext()).setinstrance("Add");
                     startActivity(new Intent(MainActivity.this, BasicDetails.class));
-                }else{
+                } else {
                     startActivity(new Intent(MainActivity.this, LoginActivity.class));
                     finish();
 
@@ -580,24 +575,26 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intsl = new Intent(MainActivity.this, SearchProperty.class);
                 intsl.putExtra("instance", "search");
-                startActivity(intsl);            }
+                startActivity(intsl);
+            }
         });
         make.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intsl = new Intent(MainActivity.this, SearchProperty.class);
                 intsl.putExtra("instance", "search");
-                startActivity(intsl);            }
+                startActivity(intsl);
+            }
         });
 
         post_property.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(VolleySingleton.getInstance(getApplicationContext()).isLogin()){
+                if (VolleySingleton.getInstance(getApplicationContext()).isLogin()) {
                     ListingData.getInstance(getApplicationContext()).Logout();
                     ListingData.getInstance(getApplicationContext()).setinstrance("Add");
                     startActivity(new Intent(MainActivity.this, BasicDetails.class));
-                }else{
+                } else {
                     startActivity(new Intent(MainActivity.this, LoginActivity.class));
                     finish();
 
@@ -636,8 +633,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
-        toggle = new ActionBarDrawerToggle(MainActivity.this,drawer,toolbar,R.string.open,R.string.close);
+        toggle = new ActionBarDrawerToggle(MainActivity.this, drawer, toolbar, R.string.open, R.string.close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -661,11 +657,11 @@ public class MainActivity extends AppCompatActivity {
                         ListingData.getInstance(getApplicationContext()).Logout();
                         ListingData.getInstance(getApplicationContext()).setinstrance("Add");
 
-                        if(VolleySingleton.getInstance(getApplicationContext()).isLogin()){
+                        if (VolleySingleton.getInstance(getApplicationContext()).isLogin()) {
                             Intent inte = new Intent(MainActivity.this, BasicDetails.class);
                             inte.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(inte);
-                        }else{
+                        } else {
                             Intent inte = new Intent(MainActivity.this, LoginActivity.class);
                             inte.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(inte);
@@ -750,7 +746,6 @@ public class MainActivity extends AppCompatActivity {
                         break;
 
 
-
                     case R.id.latest:
                         Intent intelp = new Intent(MainActivity.this, LatestActivity.class);
                         intelp.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -768,11 +763,11 @@ public class MainActivity extends AppCompatActivity {
 
                     case R.id.contact:
 
-                        if(VolleySingleton.getInstance(getApplicationContext()).isLogin()){
+                        if (VolleySingleton.getInstance(getApplicationContext()).isLogin()) {
                             Intent intc = new Intent(MainActivity.this, ContactActivity.class);
                             intc.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(intc);
-                        }else{
+                        } else {
                             Intent intc = new Intent(MainActivity.this, LoginActivity.class);
                             intc.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(intc);
@@ -815,7 +810,145 @@ public class MainActivity extends AppCompatActivity {
         timer.scheduleAtFixedRate(new MyTimertask(), 5000, 3500);
     }
 
-    private void getads(){
+    private void updateUserCategory() {
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.usertype, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.custom_alert_dialog_usercategory, null);
+        builder.setView(dialogView);
+
+        Spinner spinner = dialogView.findViewById(R.id.spi_user_type);
+        Button btnDone = dialogView.findViewById(R.id.btnDone);
+
+        spinner.setAdapter(adapter);
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+        alertDialog.setCancelable(false);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String selectedItem = spinner.getSelectedItem().toString();
+                if (selectedItem.equals("Select")) {
+                    userCategoryAlert = "Select";
+                    showmessage("Please Select User Type!");
+                } else if (selectedItem.equals("Owner")) {
+                    userCategoryAlert = "1";
+                } else if (selectedItem.equals("Dealer")) {
+                    userCategoryAlert = "2";
+                } else if (selectedItem.equals("Builder")) {
+                    userCategoryAlert = "3";
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        btnDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!userCategoryAlert.equals("Select")) {
+                    alertDialog.dismiss();
+                    update(
+                            VolleySingleton.getInstance(getApplicationContext()).fname(),
+                            VolleySingleton.getInstance(getApplicationContext()).lname(),
+                            VolleySingleton.getInstance(getApplicationContext()).email(),
+                            VolleySingleton.getInstance(getApplicationContext()).mobile(),
+                            VolleySingleton.getInstance(getApplicationContext()).state(),
+                            VolleySingleton.getInstance(getApplicationContext()).city(),
+                            VolleySingleton.getInstance(getApplicationContext()).address(),
+                            userCategoryAlert
+                    );
+                } else {
+                    showmessage("Please Select User Type!");
+                }
+
+            }
+        });
+
+    }
+
+    private void update(final String fname, final String lname, final String email,
+                        final String phone, final String state, final String city,
+                        final String address,
+                        final String usercategory) {
+        progressDialog.show();
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Endpoints.updateprofile, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                progressDialog.dismiss();
+                try {
+                    JSONObject obj = new JSONObject(response);
+                    if (obj.getBoolean("error")) {
+                        showmessage(obj.getString("message"));
+                    } else {
+                        showmessage(obj.getString("message"));
+//                        (String id, String fname, String lname, String mobile,
+//                                String email, String address, String city,
+//                                String district, String state,
+//                                String profilepic, String date) {
+                        VolleySingleton.getInstance(getApplicationContext()).user(
+                                obj.getString("id"),
+                                obj.getString("fname"),
+                                obj.getString("lname"),
+                                obj.getString("mobile"),
+                                obj.getString("email"),
+                                obj.getString("address"),
+                                obj.getString("city"),
+                                "",
+                                obj.getString("state"),
+                                Endpoints.base_url + obj.getString("profilepic"),
+                                obj.getString("date"),
+                                obj.getString("usercategory")
+                        );
+//                            startActivity(new Intent(ProfileActivity.this, HomeActivity.class));
+//                            ProfileActivity.this.finish();
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(MainActivity.this, "Something Went Wrong", Toast.LENGTH_SHORT).show();
+                Log.d("VOLLEY", String.valueOf(error));
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                SmsData smsData = new SmsData();
+                Map<String, String> params = new HashMap<>();
+                params.put("header", smsData.token);
+                params.put("fname", fname);
+                params.put("lname", lname);
+                params.put("email", email);
+                params.put("mobile", phone);
+                params.put("state", state);
+                params.put("city", city);
+                params.put("address", address);
+                params.put("image", "1");
+                params.put("usercategory", usercategory);
+                return params;
+            }
+        };
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
+    }
+
+
+    private void getads() {
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, Endpoints.getadsimage, new Response.Listener<String>() {
             @Override
@@ -827,9 +960,9 @@ public class MainActivity extends AppCompatActivity {
                     String succes = obj.getString("success");
                     JSONArray jsonArray = obj.getJSONArray("data");
 
-                    if(succes.equals("1")){
+                    if (succes.equals("1")) {
 
-                        for(int i=0; i<jsonArray.length();i++){
+                        for (int i = 0; i < jsonArray.length(); i++) {
 
                             JSONObject object = jsonArray.getJSONObject(i);
 
@@ -841,19 +974,16 @@ public class MainActivity extends AppCompatActivity {
                             url1 = object.getString("url");
 
 
-
-
-
                             AdsDataModel adsDataModel = new AdsDataModel(id1, image1, url1);
                             adsDataModels.add(adsDataModel);
-                            AdsViewPager adsViewPager = new AdsViewPager(adsDataModels,MainActivity.this);
+                            AdsViewPager adsViewPager = new AdsViewPager(adsDataModels, MainActivity.this);
                             advertisement.setAdapter(adsViewPager);
                         }
                     }
 
                 } catch (JSONException e) {
                     showmessage("Server Error...");
-                    System.out.println("problem ::"+e);
+                    System.out.println("problem ::" + e);
                     e.printStackTrace();
                 }
 
@@ -878,17 +1008,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
-
-
-
-
-
     private void getallproperty() {
         sliderImg.clear();
         progressDialog.show();
-
 
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, Endpoints.getallproperty, new Response.Listener<String>() {
@@ -902,9 +1024,9 @@ public class MainActivity extends AppCompatActivity {
                     String succes = obj.getString("success");
                     JSONArray jsonArray = obj.getJSONArray("data");
 
-                    if(succes.equals("1")){
+                    if (succes.equals("1")) {
 
-                        for(int i=0; i<jsonArray.length();i++){
+                        for (int i = 0; i < jsonArray.length(); i++) {
 
 
                             willing1.clear();
@@ -925,29 +1047,26 @@ public class MainActivity extends AppCompatActivity {
                             homethings2.clear();
 
 
-
                             JSONObject object = jsonArray.getJSONObject(i);
-                            id =object.getString("id");
+                            id = object.getString("id");
                             //usertype
                             usertype = object.getString("usertype");
 
-                            if(usertype.equals("1")){
+                            if (usertype.equals("1")) {
                                 usertype = "Owner";
-                            }else if (usertype.equals("2")){
+                            } else if (usertype.equals("2")) {
                                 usertype = "Dealer";
-                            }
-                            else if (usertype.equals("3")){
+                            } else if (usertype.equals("3")) {
                                 usertype = "Builder";
                             }
-
 
 
                             // type
                             type = object.getString("type");
 
-                            if(type.equals("1")){
+                            if (type.equals("1")) {
                                 type = "Residential";
-                            }else{
+                            } else {
                                 type = "Commercial";
                             }
 
@@ -955,146 +1074,108 @@ public class MainActivity extends AppCompatActivity {
                             //category
                             category = object.getString("category");
 
-                            if(category.equals("1")){
+                            if (category.equals("1")) {
                                 category = "Apartment/Flat/Builder Floor";
-                            }
-                            else if(category.equals("2")){
+                            } else if (category.equals("2")) {
                                 category = "Residential Land";
-                            }
-                            else if(category.equals("3")){
+                            } else if (category.equals("3")) {
                                 category = "House/Villa";
-                            }
-                            else if(category.equals("4")){
+                            } else if (category.equals("4")) {
                                 category = "Offices";
-                            }
-                            else if(category.equals("5")){
+                            } else if (category.equals("5")) {
                                 category = "Retail";
-                            }
-                            else if(category.equals("6")){
+                            } else if (category.equals("6")) {
                                 category = "Land";
-                            }
-                            else if(category.equals("7")){
+                            } else if (category.equals("7")) {
                                 category = "Industry";
-                            }
-                            else if(category.equals("8")){
+                            } else if (category.equals("8")) {
                                 category = "Storage";
-                            }
-                            else if(category.equals("9")){
+                            } else if (category.equals("9")) {
                                 category = "Hospitality";
-                            }
-                            else if(category.equals("10")){
+                            } else if (category.equals("10")) {
                                 category = "Others";
                             }
-
 
 
                             //categorytype
                             categorytype = object.getString("categorytype");
 
 
-                            if (categorytype.equals("1")){
+                            if (categorytype.equals("1")) {
                                 categorytype = "Residential Apartment";
-                            }
-
-                            else if (categorytype.equals("2")){
+                            } else if (categorytype.equals("2")) {
                                 categorytype = "Independent/Builder Floor";
-                            }
-                            else if (categorytype.equals("3")){
+                            } else if (categorytype.equals("3")) {
                                 categorytype = "Studio Apartment";
-                            }
-                            else if (categorytype.equals("4")){
+                            } else if (categorytype.equals("4")) {
                                 categorytype = "Serviced Apartments";
-                            }
-                            else if (categorytype.equals("5")){
+                            } else if (categorytype.equals("5")) {
                                 categorytype = "Independent House/Villa";
-                            }
-                            else if (categorytype.equals("6")){
+                            } else if (categorytype.equals("6")) {
                                 categorytype = "Farm House";
-                            }
-                            else if (categorytype.equals("7")){
+                            } else if (categorytype.equals("7")) {
                                 categorytype = "Ready to move office space";
-                            }
-                            else if (categorytype.equals("8")){
+                            } else if (categorytype.equals("8")) {
                                 categorytype = "Bare shell office space";
-                            }
-                            else if (categorytype.equals("9")){
+                            } else if (categorytype.equals("9")) {
                                 categorytype = "Co-working office space";
-                            }
-                            else if (categorytype.equals("10")){
+                            } else if (categorytype.equals("10")) {
                                 categorytype = "Commercial Shops";
-                            }
-                            else if (categorytype.equals("11")){
+                            } else if (categorytype.equals("11")) {
                                 categorytype = "Commercial Showrooms";
-                            }
-                            else if (categorytype.equals("12")){
+                            } else if (categorytype.equals("12")) {
                                 categorytype = "Space in Retail Mall";
-                            }
-                            else if (categorytype.equals("13")){
+                            } else if (categorytype.equals("13")) {
                                 categorytype = "Commercial Land/Inst. Land";
-                            }
-                            else if (categorytype.equals("14")){
+                            } else if (categorytype.equals("14")) {
                                 categorytype = "Agricultural/Farm Land";
-                            }
-                            else if (categorytype.equals("15")){
+                            } else if (categorytype.equals("15")) {
                                 categorytype = "Industrial Lands/Plots";
-                            }
-                            else if (categorytype.equals("16")){
+                            } else if (categorytype.equals("16")) {
                                 categorytype = "Factory";
-                            }
-                            else if (categorytype.equals("17")){
+                            } else if (categorytype.equals("17")) {
                                 categorytype = "Manufacturing";
-                            }
-                            else if (categorytype.equals("18")){
+                            } else if (categorytype.equals("18")) {
                                 categorytype = "Ware House";
-                            }
-                            else if (categorytype.equals("19")){
+                            } else if (categorytype.equals("19")) {
                                 categorytype = "Cold Storage";
-                            }
-                            else if (categorytype.equals("20")){
+                            } else if (categorytype.equals("20")) {
                                 categorytype = "Hotel/Resorts";
-                            }
-                            else if (categorytype.equals("21")){
+                            } else if (categorytype.equals("21")) {
                                 categorytype = "Guest-House/Banquet-Hallsage";
                             }
-
-
 
 
                             //agrement
                             agrement = object.getString("agrement");
 
-                            if(agrement.equals("1")){
+                            if (agrement.equals("1")) {
                                 agrement = "Company Lease Agreement";
-                            }else{
+                            } else {
                                 agrement = "Any";
                             }
-
 
 
                             //pgavailablefor
                             pgavaliablefor = object.getString("pgavaliablefor");
 
-                            if(pgavaliablefor.equals("1")){
+                            if (pgavaliablefor.equals("1")) {
                                 pgavaliablefor = "Girls";
-                            }else if (pgavaliablefor.equals("2")){
-                                pgavaliablefor ="Boys";
-                            }else{
+                            } else if (pgavaliablefor.equals("2")) {
+                                pgavaliablefor = "Boys";
+                            } else {
                                 pgavaliablefor = "Any";
                             }
-
-
 
 
                             //pgshareprivate
                             pgshareprivate = object.getString("pgshareprivate");
 
-                            if (pgshareprivate.equals("1")){
+                            if (pgshareprivate.equals("1")) {
                                 pgshareprivate = "Private";
-                            }else {
+                            } else {
                                 pgshareprivate = "Sharing";
                             }
-
-
 
 
                             //sharingnumber
@@ -1103,24 +1184,24 @@ public class MainActivity extends AppCompatActivity {
                             //propertylistfor
                             propertylistfor = object.getString("propertylistfor");
 
-                            if(propertylistfor.equals("1")){
+                            if (propertylistfor.equals("1")) {
                                 propertylistfor = "Sell";
-                            }else if(propertylistfor.equals("2")){
+                            } else if (propertylistfor.equals("2")) {
                                 propertylistfor = "Rent";
-                            }else{
+                            } else {
                                 propertylistfor = "Paying Guest";
                             }
 
                             // willing
                             willing = object.getString("willing");
 
-                            if(willing.contains("1")){
+                            if (willing.contains("1")) {
                                 willing1.add("Family");
                             }
-                            if (willing.contains("2")){
+                            if (willing.contains("2")) {
                                 willing1.add("Single Men");
                             }
-                            if(willing.contains("3")){
+                            if (willing.contains("3")) {
                                 willing1.add("Single Women");
                             }
 
@@ -1130,10 +1211,10 @@ public class MainActivity extends AppCompatActivity {
                             //pgsuitablefor
                             pgsuitablefor = object.getString("pgsuitablefor");
 
-                            if(pgsuitablefor.contains("1")){
+                            if (pgsuitablefor.contains("1")) {
                                 pgsuitablefor1.add("Students");
                             }
-                            if(pgsuitablefor.contains("2")){
+                            if (pgsuitablefor.contains("2")) {
                                 pgsuitablefor1.add("Working Professionals");
                             }
 
@@ -1149,56 +1230,39 @@ public class MainActivity extends AppCompatActivity {
                             //unit1
                             unit1 = object.getString("unit1");
 
-                            if(unit1.equals("1")){
+                            if (unit1.equals("1")) {
                                 unit1 = "Sq.Ft";
-                            }
-                            else if(unit1.equals("2")){
+                            } else if (unit1.equals("2")) {
                                 unit1 = "Sq.yards";
-                            }else if(unit1.equals("3")){
+                            } else if (unit1.equals("3")) {
                                 unit1 = "Sq.m";
-                            }
-                            else if(unit1.equals("4")){
+                            } else if (unit1.equals("4")) {
                                 unit1 = "Acres";
-                            }
-                            else if(unit1.equals("5")){
+                            } else if (unit1.equals("5")) {
                                 unit1 = "Marla";
-                            }else if(unit1.equals("6")){
+                            } else if (unit1.equals("6")) {
                                 unit1 = "Cents";
-                            }
-                            else if(unit1.equals("7")){
+                            } else if (unit1.equals("7")) {
                                 unit1 = "Bigha";
-                            }else if(unit1.equals("8")){
+                            } else if (unit1.equals("8")) {
                                 unit1 = "Kottah";
-                            }
-                            else if(unit1.equals("9")){
+                            } else if (unit1.equals("9")) {
                                 unit1 = "Grounds";
-                            }
-                            else if(unit1.equals("10")){
+                            } else if (unit1.equals("10")) {
                                 unit1 = "Ares";
-                            }
-                            else if(unit1.equals("11")){
+                            } else if (unit1.equals("11")) {
                                 unit1 = "Biswa";
-                            }
-                            else if(unit1.equals("12")){
+                            } else if (unit1.equals("12")) {
                                 unit1 = "Guntha";
-                            }
-                            else if(unit1.equals("13")){
+                            } else if (unit1.equals("13")) {
                                 unit1 = "Aankadam";
-                            }
-
-                            else if(unit1.equals("14")){
+                            } else if (unit1.equals("14")) {
                                 unit1 = "Hectares";
-                            }
-
-                            else if(unit1.equals("15")){
+                            } else if (unit1.equals("15")) {
                                 unit1 = "Rood";
-                            }
-
-                            else if(unit1.equals("16")){
+                            } else if (unit1.equals("16")) {
                                 unit1 = "Chataks";
-                            }
-
-                            else if(unit1.equals("17")){
+                            } else if (unit1.equals("17")) {
                                 unit1 = "Perch";
                             }
 
@@ -1206,118 +1270,81 @@ public class MainActivity extends AppCompatActivity {
                             //unit2
                             unit2 = object.getString("unit2");
 
-                            if(unit2.equals("1")){
+                            if (unit2.equals("1")) {
                                 unit2 = "Sq.Ft";
-                            }
-                            else if(unit2.equals("2")){
+                            } else if (unit2.equals("2")) {
                                 unit2 = "Sq.yards";
-                            }else if(unit2.equals("3")){
+                            } else if (unit2.equals("3")) {
                                 unit2 = "Sq.m";
-                            }
-                            else if(unit2.equals("4")){
+                            } else if (unit2.equals("4")) {
                                 unit2 = "Acres";
-                            }
-                            else if(unit2.equals("5")){
+                            } else if (unit2.equals("5")) {
                                 unit2 = "Marla";
-                            }else if(unit2.equals("6")){
+                            } else if (unit2.equals("6")) {
                                 unit2 = "Cents";
-                            }
-                            else if(unit2.equals("7")){
+                            } else if (unit2.equals("7")) {
                                 unit2 = "Bigha";
-                            }else if(unit2.equals("8")){
+                            } else if (unit2.equals("8")) {
                                 unit2 = "Kottah";
-                            }
-                            else if(unit2.equals("9")){
+                            } else if (unit2.equals("9")) {
                                 unit2 = "Grounds";
-                            }
-                            else if(unit2.equals("10")){
+                            } else if (unit2.equals("10")) {
                                 unit2 = "Ares";
-                            }
-                            else if(unit2.equals("11")){
+                            } else if (unit2.equals("11")) {
                                 unit2 = "Biswa";
-                            }
-                            else if(unit2.equals("12")){
+                            } else if (unit2.equals("12")) {
                                 unit2 = "Guntha";
-                            }
-                            else if(unit2.equals("13")){
+                            } else if (unit2.equals("13")) {
                                 unit2 = "Aankadam";
-                            }
-
-                            else if(unit2.equals("14")){
+                            } else if (unit2.equals("14")) {
                                 unit2 = "Hectares";
-                            }
-
-                            else if(unit2.equals("15")){
+                            } else if (unit2.equals("15")) {
                                 unit2 = "Rood";
-                            }
-
-                            else if(unit2.equals("16")){
+                            } else if (unit2.equals("16")) {
                                 unit2 = "Chataks";
-                            }
-
-                            else if(unit2.equals("17")){
+                            } else if (unit2.equals("17")) {
                                 unit2 = "Perch";
                             }
-
 
 
                             //unit3
                             unit3 = object.getString("unit3");
 
-                            if(unit3.equals("1")){
+                            if (unit3.equals("1")) {
                                 unit3 = "Sq.Ft";
-                            }
-                            else if(unit3.equals("2")){
+                            } else if (unit3.equals("2")) {
                                 unit3 = "Sq.yards";
-                            }else if(unit3.equals("3")){
+                            } else if (unit3.equals("3")) {
                                 unit1 = "Sq.m";
-                            }
-                            else if(unit3.equals("4")){
+                            } else if (unit3.equals("4")) {
                                 unit3 = "Acres";
-                            }
-                            else if(unit3.equals("5")){
+                            } else if (unit3.equals("5")) {
                                 unit3 = "Marla";
-                            }else if(unit3.equals("6")){
+                            } else if (unit3.equals("6")) {
                                 unit3 = "Cents";
-                            }
-                            else if(unit3.equals("7")){
+                            } else if (unit3.equals("7")) {
                                 unit3 = "Bigha";
-                            }else if(unit3.equals("8")){
+                            } else if (unit3.equals("8")) {
                                 unit3 = "Kottah";
-                            }
-                            else if(unit3.equals("9")){
+                            } else if (unit3.equals("9")) {
                                 unit3 = "Grounds";
-                            }
-                            else if(unit3.equals("10")){
+                            } else if (unit3.equals("10")) {
                                 unit3 = "Ares";
-                            }
-                            else if(unit3.equals("11")){
+                            } else if (unit3.equals("11")) {
                                 unit3 = "Biswa";
-                            }
-                            else if(unit3.equals("12")){
+                            } else if (unit3.equals("12")) {
                                 unit3 = "Guntha";
-                            }
-                            else if(unit3.equals("13")){
+                            } else if (unit3.equals("13")) {
                                 unit3 = "Aankadam";
-                            }
-
-                            else if(unit3.equals("14")){
+                            } else if (unit3.equals("14")) {
                                 unit3 = "Hectares";
-                            }
-
-                            else if(unit3.equals("15")){
+                            } else if (unit3.equals("15")) {
                                 unit3 = "Rood";
-                            }
-
-                            else if(unit3.equals("16")){
+                            } else if (unit3.equals("16")) {
                                 unit3 = "Chataks";
-                            }
-
-                            else if(unit3.equals("17")){
+                            } else if (unit3.equals("17")) {
                                 unit3 = "Perch";
                             }
-
-
 
 
                             availabilitydate = object.getString("availabilitydate");
@@ -1325,24 +1352,22 @@ public class MainActivity extends AppCompatActivity {
                             //otherroom
                             otherroom = object.getString("otherroom");
 
-                            if(otherroom.contains("1")){
+                            if (otherroom.contains("1")) {
                                 otherroom1.add("Pooja Room");
                             }
-                            if(otherroom.contains("2")){
+                            if (otherroom.contains("2")) {
                                 otherroom1.add("Study Room");
                             }
 
-                            if(otherroom.contains("3")){
+                            if (otherroom.contains("3")) {
                                 otherroom1.add("Servant Room");
                             }
 
-                            if(otherroom.contains("4")){
+                            if (otherroom.contains("4")) {
                                 otherroom1.add("Others");
                             }
 
                             otherroom = String.valueOf(otherroom1);
-
-
 
 
                             //homethings
@@ -1358,78 +1383,74 @@ public class MainActivity extends AppCompatActivity {
                             homethings2.addAll(homethings3);
 
 
-                            if(homethings2.contains("1")){
+                            if (homethings2.contains("1")) {
                                 homethings1.add("Wardrobe");
                             }
 
 
-                            if(homethings2.contains("2")){
+                            if (homethings2.contains("2")) {
                                 homethings1.add("Modular Kitchen");
                             }
 
 
-                            if(homethings2.contains("3")){
+                            if (homethings2.contains("3")) {
                                 homethings1.add("Fridge");
                             }
 
 
-                            if(homethings2.contains("4")){
+                            if (homethings2.contains("4")) {
                                 homethings1.add("Ac");
                             }
 
 
-                            if(homethings2.contains("5")){
+                            if (homethings2.contains("5")) {
                                 homethings1.add("Stove");
                             }
 
 
-                            if(homethings2.contains("6")){
+                            if (homethings2.contains("6")) {
                                 homethings1.add("Geyser");
                             }
 
 
-                            if(homethings2.contains("7")){
+                            if (homethings2.contains("7")) {
                                 homethings1.add("Dinning Table");
                             }
 
-                            if(homethings2.contains("8")){
+                            if (homethings2.contains("8")) {
                                 homethings1.add("Sofa");
                             }
 
 
-                            if(homethings2.contains("9")){
+                            if (homethings2.contains("9")) {
                                 homethings1.add("Washing Machine");
                             }
 
 
-                            if(homethings2.contains("10")){
+                            if (homethings2.contains("10")) {
                                 homethings1.add("Water Purifier");
                             }
 
 
-                            if(homethings2.contains("11")){
+                            if (homethings2.contains("11")) {
                                 homethings1.add("Microwave");
                             }
 
 
-                            if(homethings2.contains("12")){
+                            if (homethings2.contains("12")) {
                                 homethings1.add("Curtains");
                             }
 
-                            if(homethings2.contains("13")){
+                            if (homethings2.contains("13")) {
                                 homethings1.add("Chimney");
                             }
 
-                            if(homethings2.contains("14")){
+                            if (homethings2.contains("14")) {
                                 homethings1.add("Exhaust Fan");
                             }
 
 
-
                             homethings = String.valueOf(homethings1);
-
-
-
 
 
                             builtupa = object.getString("builtupa");
@@ -1443,9 +1464,9 @@ public class MainActivity extends AppCompatActivity {
 
                             //reservvedpark
                             reservedpark = object.getString("reservedpark");
-                            if(reservedpark.equals("1")){
+                            if (reservedpark.equals("1")) {
                                 reservedpark = "Yes";
-                            }else{
+                            } else {
                                 reservedpark = "No";
                             }
 
@@ -1453,10 +1474,9 @@ public class MainActivity extends AppCompatActivity {
                             // availability
                             availabilityspinget = object.getString("availabilityspinget");
 
-                            if(availabilityspinget.equals("1")){
+                            if (availabilityspinget.equals("1")) {
                                 availabilityspinget = "Under Construction";
-                            }
-                            else if(availabilityspinget.equals("2")){
+                            } else if (availabilityspinget.equals("2")) {
                                 availabilityspinget = "Ready To Move";
 
                             }
@@ -1464,78 +1484,58 @@ public class MainActivity extends AppCompatActivity {
 
                             //ageofproperty
                             ageofpropertyspinget = object.getString("ageofpropertyspinget");
-                            if(ageofpropertyspinget.equals("1")){
+                            if (ageofpropertyspinget.equals("1")) {
                                 ageofpropertyspinget = "0-1 Year Old Property";
-                            }
-                            else if(ageofpropertyspinget.equals("2")){
+                            } else if (ageofpropertyspinget.equals("2")) {
                                 ageofpropertyspinget = "1-5 Year Old Property";
-                            }
-                            else if(ageofpropertyspinget.equals("3")){
+                            } else if (ageofpropertyspinget.equals("3")) {
                                 ageofpropertyspinget = "5-10 Year Old Property";
-                            }
-                            else if(ageofpropertyspinget.equals("4")){
+                            } else if (ageofpropertyspinget.equals("4")) {
                                 ageofpropertyspinget = "10+ Year Old Property";
-                            }
-                            else if(ageofpropertyspinget.equals("5")){
+                            } else if (ageofpropertyspinget.equals("5")) {
                                 ageofpropertyspinget = "Ready To Move";
                             }
 
 
-
                             //furnished
                             furnishedspinget = object.getString("furnishedspinget");
-                            if(furnishedspinget.equals("1")){
+                            if (furnishedspinget.equals("1")) {
                                 furnishedspinget = "Furnished";
-                            }
-                            else if(furnishedspinget.equals("2")){
+                            } else if (furnishedspinget.equals("2")) {
                                 furnishedspinget = "Semifurnished";
-                            }
-                            else if(furnishedspinget.equals("3")){
+                            } else if (furnishedspinget.equals("3")) {
                                 furnishedspinget = "Unfurnished";
                             }
-
 
 
                             //possessionby
                             possessionbyspinget = object.getString("possessionbyspinget");
 
-                            if(possessionbyspinget.equals("1")){
+                            if (possessionbyspinget.equals("1")) {
                                 possessionbyspinget = "Within 3 Months";
-                            }
-                            else if(possessionbyspinget.equals("2")){
+                            } else if (possessionbyspinget.equals("2")) {
                                 possessionbyspinget = "By 2021";
-                            }
-                            else if(possessionbyspinget.equals("3")){
+                            } else if (possessionbyspinget.equals("3")) {
                                 possessionbyspinget = "By 2022";
-                            }
-                            else if(possessionbyspinget.equals("4")){
+                            } else if (possessionbyspinget.equals("4")) {
                                 possessionbyspinget = "By 2023";
-                            }
-                            else if(possessionbyspinget.equals("5")){
+                            } else if (possessionbyspinget.equals("5")) {
                                 possessionbyspinget = "By 2024";
-                            }
-                            else if(possessionbyspinget.equals("6")){
+                            } else if (possessionbyspinget.equals("6")) {
                                 possessionbyspinget = "By 2025";
-                            }
-                            else if(possessionbyspinget.equals("7")){
+                            } else if (possessionbyspinget.equals("7")) {
                                 possessionbyspinget = "By 2026";
-                            }
-                            else if(possessionbyspinget.equals("8")){
+                            } else if (possessionbyspinget.equals("8")) {
                                 possessionbyspinget = "By 2027";
-                            }
-                            else if(possessionbyspinget.equals("9")){
+                            } else if (possessionbyspinget.equals("9")) {
                                 possessionbyspinget = "By 2028";
-                            }
-                            else if(possessionbyspinget.equals("10")){
+                            } else if (possessionbyspinget.equals("10")) {
                                 possessionbyspinget = "By 2029";
-                            }
-                            else if(possessionbyspinget.equals("11")){
+                            } else if (possessionbyspinget.equals("11")) {
                                 possessionbyspinget = "By 2030";
-                            }
-                            else if(possessionbyspinget.equals("12")){
+                            } else if (possessionbyspinget.equals("12")) {
                                 possessionbyspinget = "By 2031";
                             }
-
 
 
                             noofroomspinget = object.getString("noofroomspinget");
@@ -1544,34 +1544,25 @@ public class MainActivity extends AppCompatActivity {
                             //qualityrating
                             qualityratingspinget = object.getString("qualityratingspinget");
 
-                            if(qualityratingspinget.equals("1")){
+                            if (qualityratingspinget.equals("1")) {
                                 qualityratingspinget = "1 Star";
-                            }
-                            else if(qualityratingspinget.equals("2")){
+                            } else if (qualityratingspinget.equals("2")) {
                                 qualityratingspinget = "2 Star";
-                            }
-                            else if(qualityratingspinget.equals("3")){
+                            } else if (qualityratingspinget.equals("3")) {
                                 qualityratingspinget = "3 Star";
-                            }
-                            else if(qualityratingspinget.equals("4")){
+                            } else if (qualityratingspinget.equals("4")) {
                                 qualityratingspinget = "4 Star";
-                            }
-                            else if(qualityratingspinget.equals("5")){
+                            } else if (qualityratingspinget.equals("5")) {
                                 qualityratingspinget = "5 Star";
-                            }
-                            else if(qualityratingspinget.equals("6")){
+                            } else if (qualityratingspinget.equals("6")) {
                                 qualityratingspinget = "6 Star";
-                            }
-                            else if(qualityratingspinget.equals("7")){
+                            } else if (qualityratingspinget.equals("7")) {
                                 qualityratingspinget = "7 Star";
-                            }
-                            else if(qualityratingspinget.equals("8")){
+                            } else if (qualityratingspinget.equals("8")) {
                                 qualityratingspinget = "8 Star";
-                            }
-                            else if(qualityratingspinget.equals("9")){
+                            } else if (qualityratingspinget.equals("9")) {
                                 qualityratingspinget = "9 Star";
-                            }
-                            else if(qualityratingspinget.equals("10")){
+                            } else if (qualityratingspinget.equals("10")) {
                                 qualityratingspinget = "10 Star";
                             }
 
@@ -1588,46 +1579,37 @@ public class MainActivity extends AppCompatActivity {
                             securitydepositspinget = object.getString("securitydepositspinget");
 
 
-                            if(securitydepositspinget.equals("1")){
+                            if (securitydepositspinget.equals("1")) {
                                 securitydepositspinget = "Fixed";
-                            }
-                            else if(securitydepositspinget.equals("2")){
+                            } else if (securitydepositspinget.equals("2")) {
                                 securitydepositspinget = "Multiple Of Rent";
                             }
-
 
 
                             //maintenancemonthly
                             maintenancemonthlyspinget = object.getString("maintenancemonthlyspinget");
 
-                            if(maintenancemonthlyspinget.equals("1")){
+                            if (maintenancemonthlyspinget.equals("1")) {
                                 maintenancemonthlyspinget = "Monthly";
-                            }
-                            else if(maintenancemonthlyspinget.equals("2")){
+                            } else if (maintenancemonthlyspinget.equals("2")) {
                                 maintenancemonthlyspinget = "Annually";
-                            }
-                            else if(maintenancemonthlyspinget.equals("3")){
+                            } else if (maintenancemonthlyspinget.equals("3")) {
                                 maintenancemonthlyspinget = "One Time";
-                            }
-                            else if(maintenancemonthlyspinget.equals("4")){
+                            } else if (maintenancemonthlyspinget.equals("4")) {
                                 maintenancemonthlyspinget = "Per Unit/Monthly";
                             }
-
 
 
                             //ownership
                             ownweshipspinget = object.getString("ownweshipspinget");
 
-                            if(ownweshipspinget.equals("1")){
+                            if (ownweshipspinget.equals("1")) {
                                 ownweshipspinget = "Freehold";
-                            }
-                            else if(ownweshipspinget.equals("2")){
+                            } else if (ownweshipspinget.equals("2")) {
                                 ownweshipspinget = "Leasehold";
-                            }
-                            else if(ownweshipspinget.equals("3")){
+                            } else if (ownweshipspinget.equals("3")) {
                                 ownweshipspinget = "Co-Operative Society";
-                            }
-                            else if(ownweshipspinget.equals("4")){
+                            } else if (ownweshipspinget.equals("4")) {
                                 ownweshipspinget = "Power Of Attorney";
                             }
 
@@ -1635,98 +1617,91 @@ public class MainActivity extends AppCompatActivity {
                             //typeoffood
                             typeoffood = object.getString("typeoffood");
 
-                            if(typeoffood.equals("1")){
+                            if (typeoffood.equals("1")) {
                                 typeoffood = "Veg";
-                            }else{
+                            } else {
                                 typeoffood = "Ved and Non-Veg";
                             }
-
 
 
                             //pricestep
                             pricestep = object.getString("pricestep");
 
-                            if(pricestep.equals("1")){
+                            if (pricestep.equals("1")) {
                                 pricestep = "Price Negotiable";
-                            }else{
+                            } else {
                                 pricestep = "Electricity And Water Charges Excluded";
                             }
-
-
 
 
                             //facilityinculded
                             facilityincluded = object.getString("facilityincluded");
 
-                            if(facilityincluded.contains("1")){
+                            if (facilityincluded.contains("1")) {
                                 facilityincluded1.add("Food");
                             }
 
-                            if(facilityincluded.contains("2")){
+                            if (facilityincluded.contains("2")) {
                                 facilityincluded1.add("Laundry");
                             }
 
-                            if(facilityincluded.contains("3")){
+                            if (facilityincluded.contains("3")) {
                                 facilityincluded1.add("Fridge");
                             }
 
-                            if(facilityincluded.contains("4")){
+                            if (facilityincluded.contains("4")) {
                                 facilityincluded1.add("Electricity");
                             }
 
-                            if(facilityincluded.contains("5")){
+                            if (facilityincluded.contains("5")) {
                                 facilityincluded1.add("None Of the Above");
                             }
 
-                            if(facilityincluded.contains("6")){
+                            if (facilityincluded.contains("6")) {
                                 facilityincluded1.add("HouseKeeping");
                             }
 
-                            if(facilityincluded.contains("7")){
+                            if (facilityincluded.contains("7")) {
                                 facilityincluded1.add("DTH");
                             }
 
-                            if(facilityincluded.contains("8")){
+                            if (facilityincluded.contains("8")) {
                                 facilityincluded1.add("Water");
                             }
 
-                            if(facilityincluded.contains("9")){
+                            if (facilityincluded.contains("9")) {
                                 facilityincluded1.add("Wifi");
                             }
 
                             facilityincluded = String.valueOf(facilityincluded1);
 
 
-
-
-
                             //weekdays
                             weekdays = object.getString("weekdays");
 
-                            if(weekdays.contains("1")){
+                            if (weekdays.contains("1")) {
                                 weekdays1.add("Breakfast");
                             }
-                            if(weekdays.contains("2")){
+                            if (weekdays.contains("2")) {
                                 weekdays1.add("Lunch");
                             }
-                            if(weekdays.contains("3")){
+                            if (weekdays.contains("3")) {
                                 weekdays1.add("Dinner");
                             }
 
                             weekdays = String.valueOf(weekdays1);
 
 
-
                             //weekends
                             weeends = object.getString("weeends");
 
-                            if(weeends.contains("1")){
+                            if (weeends.contains("1")) {
                                 weekend1.add("Breakfast");
                             }
-                            if(weeends.contains("2")){
+                            if (weeends.contains("2")) {
                                 weekend1.add("Lunch");
                             }
-                            if(weeends.contains("3")){
+                            if (weeends.contains("3")) {
                                 weekend1.add("Dinner");
                             }
 
@@ -1742,137 +1717,95 @@ public class MainActivity extends AppCompatActivity {
                             //facing
                             facingspinget = object.getString("facingspinget");
 
-                            if(facingspinget.equals("1")){
+                            if (facingspinget.equals("1")) {
                                 facingspinget = "East";
-                            }
-                            else if(facingspinget.equals("2")){
+                            } else if (facingspinget.equals("2")) {
                                 facingspinget = "North-East";
-                            }
-                            else if(facingspinget.equals("3")){
+                            } else if (facingspinget.equals("3")) {
                                 facingspinget = "North";
-                            }
-                            else if(facingspinget.equals("4")){
+                            } else if (facingspinget.equals("4")) {
                                 facingspinget = "West";
-                            }
-                            else if(facingspinget.equals("5")){
+                            } else if (facingspinget.equals("5")) {
                                 facingspinget = "South";
-                            }
-                            else if(facingspinget.equals("6")){
+                            } else if (facingspinget.equals("6")) {
                                 facingspinget = "South-East";
-                            }
-                            else if(facingspinget.equals("7")){
+                            } else if (facingspinget.equals("7")) {
                                 facingspinget = "North-West";
-                            }
-                            else if(facingspinget.equals("8")){
+                            } else if (facingspinget.equals("8")) {
                                 facingspinget = "South-West";
                             }
-
-
 
 
                             //unitspinget
                             unitspinget = object.getString("unitspinget");
 
-                            if(unitspinget.equals("1")){
+                            if (unitspinget.equals("1")) {
                                 unitspinget = "Sq.Ft";
-                            }
-                            else if(unitspinget.equals("2")){
+                            } else if (unitspinget.equals("2")) {
                                 unitspinget = "Sq.yards";
-                            }else if(unitspinget.equals("3")){
+                            } else if (unitspinget.equals("3")) {
                                 unitspinget = "Sq.m";
-                            }
-                            else if(unitspinget.equals("4")){
+                            } else if (unitspinget.equals("4")) {
                                 unitspinget = "Acres";
-                            }
-                            else if(unitspinget.equals("5")){
+                            } else if (unitspinget.equals("5")) {
                                 unitspinget = "Marla";
-                            }else if(unitspinget.equals("6")){
+                            } else if (unitspinget.equals("6")) {
                                 unitspinget = "Cents";
-                            }
-                            else if(unitspinget.equals("7")){
+                            } else if (unitspinget.equals("7")) {
                                 unitspinget = "Bigha";
-                            }else if(unitspinget.equals("8")){
+                            } else if (unitspinget.equals("8")) {
                                 unitspinget = "Kottah";
-                            }
-                            else if(unitspinget.equals("9")){
+                            } else if (unitspinget.equals("9")) {
                                 unitspinget = "Grounds";
-                            }
-                            else if(unitspinget.equals("10")){
+                            } else if (unitspinget.equals("10")) {
                                 unitspinget = "Ares";
-                            }
-                            else if(unitspinget.equals("11")){
+                            } else if (unitspinget.equals("11")) {
                                 unitspinget = "Biswa";
-                            }
-                            else if(unitspinget.equals("12")){
+                            } else if (unitspinget.equals("12")) {
                                 unitspinget = "Guntha";
-                            }
-                            else if(unitspinget.equals("13")){
+                            } else if (unitspinget.equals("13")) {
                                 unitspinget = "Aankadam";
-                            }
-
-                            else if(unitspinget.equals("14")){
+                            } else if (unitspinget.equals("14")) {
                                 unitspinget = "Hectares";
-                            }
-
-                            else if(unitspinget.equals("15")){
+                            } else if (unitspinget.equals("15")) {
                                 unitspinget = "Rood";
-                            }
-
-                            else if(unitspinget.equals("16")){
+                            } else if (unitspinget.equals("16")) {
                                 unitspinget = "Chataks";
-                            }
-
-                            else if(unitspinget.equals("17")){
+                            } else if (unitspinget.equals("17")) {
                                 unitspinget = "Perch";
                             }
-
-
-
 
 
                             //typeofflooring
                             typeofflooringspinget = object.getString("typeofflooringspinget");
 
-                            if(typeofflooringspinget.equals("1")){
+                            if (typeofflooringspinget.equals("1")) {
                                 typeofflooringspinget = "Vitrified";
-                            }
-                            else if(typeofflooringspinget.equals("2")){
+                            } else if (typeofflooringspinget.equals("2")) {
                                 typeofflooringspinget = "Marble";
-                            }
-                            else if(typeofflooringspinget.equals("3")){
+                            } else if (typeofflooringspinget.equals("3")) {
                                 typeofflooringspinget = "Concrete";
-                            }
-                            else if(typeofflooringspinget.equals("4")){
+                            } else if (typeofflooringspinget.equals("4")) {
                                 typeofflooringspinget = "Ceramic";
-                            }
-                            else if(typeofflooringspinget.equals("5")){
+                            } else if (typeofflooringspinget.equals("5")) {
                                 typeofflooringspinget = "Polished Concrete";
-                            }
-                            else if(typeofflooringspinget.equals("6")){
+                            } else if (typeofflooringspinget.equals("6")) {
                                 typeofflooringspinget = "Mosaic";
-                            }
-                            else if(typeofflooringspinget.equals("7")){
+                            } else if (typeofflooringspinget.equals("7")) {
                                 typeofflooringspinget = "Wood";
-                            }
-                            else if(typeofflooringspinget.equals("8")){
+                            } else if (typeofflooringspinget.equals("8")) {
                                 typeofflooringspinget = "Granite";
-                            }
-                            else if(typeofflooringspinget.equals("9")){
+                            } else if (typeofflooringspinget.equals("9")) {
                                 typeofflooringspinget = "Spartex";
-                            }
-                            else if(typeofflooringspinget.equals("10")){
+                            } else if (typeofflooringspinget.equals("10")) {
                                 typeofflooringspinget = "Cement";
-                            }
-                            else if(typeofflooringspinget.equals("11")){
+                            } else if (typeofflooringspinget.equals("11")) {
                                 typeofflooringspinget = "Stone";
-                            }
-                            else if(typeofflooringspinget.equals("12")){
+                            } else if (typeofflooringspinget.equals("12")) {
                                 typeofflooringspinget = "Vinyl";
-                            }
-                            else if(typeofflooringspinget.equals("13")){
+                            } else if (typeofflooringspinget.equals("13")) {
                                 typeofflooringspinget = "IPSFinish";
-                            }
-                            else if(typeofflooringspinget.equals("14")){
+                            } else if (typeofflooringspinget.equals("14")) {
                                 typeofflooringspinget = "Others";
                             }
 
@@ -1880,77 +1813,64 @@ public class MainActivity extends AppCompatActivity {
                             //powerbackup
                             powerbackupspinget = object.getString("powerbackupspinget");
 
-                            if(powerbackupspinget.equals("1")){
+                            if (powerbackupspinget.equals("1")) {
                                 powerbackupspinget = "None";
-                            }
-                            else if(powerbackupspinget.equals("2")){
+                            } else if (powerbackupspinget.equals("2")) {
                                 powerbackupspinget = "Partial";
-                            }
-                            else if(powerbackupspinget.equals("3")){
+                            } else if (powerbackupspinget.equals("3")) {
                                 powerbackupspinget = "Full";
                             }
-
-
 
 
                             //lasttime
                             lasttimespinget = object.getString("lasttimespinget");
 
-                            if(lasttimespinget.contains("1")){
+                            if (lasttimespinget.contains("1")) {
                                 lasttimespinget = "7 PM";
                             }
-                            if(lasttimespinget.contains("2")){
+                            if (lasttimespinget.contains("2")) {
                                 lasttimespinget = "8 PM";
                             }
-                            if(lasttimespinget.contains("3")){
+                            if (lasttimespinget.contains("3")) {
                                 lasttimespinget = "9 PM";
                             }
-                            if(lasttimespinget.contains("4")){
+                            if (lasttimespinget.contains("4")) {
                                 lasttimespinget = "10 PM";
                             }
-                            if(lasttimespinget.contains("5")){
+                            if (lasttimespinget.contains("5")) {
                                 lasttimespinget = "11 PM";
                             }
-                            if(lasttimespinget.contains("6")){
+                            if (lasttimespinget.contains("6")) {
                                 lasttimespinget = "12 AM";
                             }
-                            if(lasttimespinget.contains("7")){
+                            if (lasttimespinget.contains("7")) {
                                 lasttimespinget = "1 AM";
                             }
-                            if(lasttimespinget.contains("8")){
+                            if (lasttimespinget.contains("8")) {
                                 lasttimespinget = "2 AM";
                             }
-                            if(lasttimespinget.contains("9")){
+                            if (lasttimespinget.contains("9")) {
                                 lasttimespinget = "3 AM";
                             }
-                            if(lasttimespinget.contains("10")){
+                            if (lasttimespinget.contains("10")) {
                                 lasttimespinget = "24 x 7";
                             }
 
 
-
-
-
-
-
-
-
-
-
                             //pet
                             pet = object.getString("pet");
-                            if(pet.equals("1")){
+                            if (pet.equals("1")) {
                                 pet = "Yes";
-                            }else {
+                            } else {
                                 pet = "No";
                             }
 
 
                             //visiter
                             visiter = object.getString("visiter");
-                            if(visiter.equals("1")){
+                            if (visiter.equals("1")) {
                                 visiter = "Yes";
-                            }else {
+                            } else {
                                 visiter = "No";
                             }
 
@@ -1958,27 +1878,27 @@ public class MainActivity extends AppCompatActivity {
                             //smoking
                             smoking = object.getString("smoking");
 
-                            if(smoking.equals("1")){
+                            if (smoking.equals("1")) {
                                 smoking = "Yes";
-                            }else {
+                            } else {
                                 smoking = "No";
                             }
 
 
                             //alcohol
                             alcohol = object.getString("alcohol");
-                            if(alcohol.equals("1")){
+                            if (alcohol.equals("1")) {
                                 alcohol = "Yes";
-                            }else {
+                            } else {
                                 alcohol = "No";
                             }
 
 
                             //event
                             event = object.getString("event");
-                            if(event.equals("1")){
+                            if (event.equals("1")) {
                                 event = "Yes";
-                            }else {
+                            } else {
                                 event = "No";
                             }
 
@@ -1987,43 +1907,39 @@ public class MainActivity extends AppCompatActivity {
                             anemitiesitem = object.getString("anemitiesitem");
 
 
-                            if(anemitiesitem.contains("1")){
+                            if (anemitiesitem.contains("1")) {
                                 anemitiesitem1.add("Lift");
                             }
 
-                            if(anemitiesitem.contains("2")){
+                            if (anemitiesitem.contains("2")) {
                                 anemitiesitem1.add("Park");
                             }
 
-                            if(anemitiesitem.contains("3")){
+                            if (anemitiesitem.contains("3")) {
                                 anemitiesitem1.add("Maintenance Staff");
                             }
 
-                            if(anemitiesitem.contains("4")){
+                            if (anemitiesitem.contains("4")) {
                                 anemitiesitem1.add("Visiter Parking");
                             }
 
-                            if(anemitiesitem.contains("5")){
+                            if (anemitiesitem.contains("5")) {
                                 anemitiesitem1.add("FengShui/Vaastu Compliant");
                             }
 
-                            if(anemitiesitem.contains("6")){
+                            if (anemitiesitem.contains("6")) {
                                 anemitiesitem1.add("Intercome Facility");
                             }
 
-                            if(anemitiesitem.contains("7")){
+                            if (anemitiesitem.contains("7")) {
                                 anemitiesitem1.add("Water Storage");
                             }
 
-                            if(anemitiesitem.contains("8")){
+                            if (anemitiesitem.contains("8")) {
                                 anemitiesitem1.add("Security/Fire Alaram");
                             }
 
                             anemitiesitem = String.valueOf(anemitiesitem1);
-
-
-
-
 
 
                             //moreanemities
@@ -2037,127 +1953,123 @@ public class MainActivity extends AppCompatActivity {
 
                             moreanemitiesitem2.addAll(moreanemitiesitem3);
 
-                            System.out.println("morrrrrrr ::: "+ moreanemitiesitem2);
+                            System.out.println("morrrrrrr ::: " + moreanemitiesitem2);
 
 
-                            if(moreanemitiesitem2.contains("1")){
+                            if (moreanemitiesitem2.contains("1")) {
                                 moreanemitiesitem1.add("Swimming Pool");
                             }
 
-                            if(moreanemitiesitem2.contains("2")){
+                            if (moreanemitiesitem2.contains("2")) {
                                 moreanemitiesitem1.add("Centrally Air Conditioned");
                             }
 
-                            if(moreanemitiesitem2.contains("3")){
+                            if (moreanemitiesitem2.contains("3")) {
                                 moreanemitiesitem1.add("Garden");
                             }
 
-                            if(moreanemitiesitem2.contains("4")){
+                            if (moreanemitiesitem2.contains("4")) {
                                 moreanemitiesitem1.add("Wifi");
                             }
 
-                            if(moreanemitiesitem2.contains("5")){
+                            if (moreanemitiesitem2.contains("5")) {
                                 moreanemitiesitem1.add("Piped-Gas");
                             }
 
-                            if(moreanemitiesitem2.contains("6")){
+                            if (moreanemitiesitem2.contains("6")) {
                                 moreanemitiesitem1.add("Water Purifier");
                             }
 
-                            if(moreanemitiesitem2.contains("7")){
+                            if (moreanemitiesitem2.contains("7")) {
                                 moreanemitiesitem1.add("Club House");
                             }
 
-                            if(moreanemitiesitem2.contains("8")){
+                            if (moreanemitiesitem2.contains("8")) {
                                 moreanemitiesitem1.add("Shopping Center");
                             }
 
-                            if(moreanemitiesitem2.contains("9")){
+                            if (moreanemitiesitem2.contains("9")) {
                                 moreanemitiesitem1.add("Water Disposal");
                             }
 
-                            if(moreanemitiesitem2.contains("10")){
+                            if (moreanemitiesitem2.contains("10")) {
                                 moreanemitiesitem1.add("RainWater Harvesting");
                             }
 
-                            if(moreanemitiesitem2.contains("11")){
+                            if (moreanemitiesitem2.contains("11")) {
                                 moreanemitiesitem1.add("Bank Attached Property");
                             }
 
-                            if(moreanemitiesitem2.contains("12")){
+                            if (moreanemitiesitem2.contains("12")) {
                                 moreanemitiesitem1.add("Gym");
                             }
 
                             moreanemitiesitem = String.valueOf(moreanemitiesitem1);
 
-                            System.out.println("morrrr more ::"+ moreanemitiesitem1);
-
+                            System.out.println("morrrr more ::" + moreanemitiesitem1);
 
 
                             //watersource
                             watersourceitem = object.getString("watersourceitem");
 
-                            if(watersourceitem.contains("1")){
+                            if (watersourceitem.contains("1")) {
                                 watersourceitem1.add("Municipal Corporation");
                             }
-                            if(watersourceitem.contains("2")){
+                            if (watersourceitem.contains("2")) {
                                 watersourceitem1.add("Borewell");
                             }
 
                             watersourceitem = String.valueOf(watersourceitem1);
 
 
-
                             //overlooking
                             overlookingitem = object.getString("overlookingitem");
 
-                            if(overlookingitem.contains("1")){
+                            if (overlookingitem.contains("1")) {
                                 overlookingitem1.add("Park/Garden");
                             }
 
-                            if(overlookingitem.contains("2")){
+                            if (overlookingitem.contains("2")) {
                                 overlookingitem1.add("Main Road");
                             }
 
-                            if(overlookingitem.contains("3")){
+                            if (overlookingitem.contains("3")) {
                                 overlookingitem1.add("Club");
                             }
 
-                            if(overlookingitem.contains("4")){
+                            if (overlookingitem.contains("4")) {
                                 overlookingitem1.add("Lake Facing");
                             }
 
-                            if(overlookingitem.contains("5")){
+                            if (overlookingitem.contains("5")) {
                                 overlookingitem1.add("Sea Facing");
                             }
 
-                            if(overlookingitem.contains("6")){
+                            if (overlookingitem.contains("6")) {
                                 overlookingitem1.add("Others");
                             }
 
                             overlookingitem = String.valueOf(overlookingitem1);
 
 
-
                             //somefeatures
                             somefeatureitem = object.getString("somefeatureitem");
-                            if(somefeatureitem.contains("1")){
+                            if (somefeatureitem.contains("1")) {
                                 somefeatureitem1.add("In a Gated Society");
                             }
 
-                            if(somefeatureitem.contains("2")){
+                            if (somefeatureitem.contains("2")) {
                                 somefeatureitem1.add("Corner Property");
                             }
-                            if(somefeatureitem.contains("3")){
+                            if (somefeatureitem.contains("3")) {
                                 somefeatureitem1.add("Pet Friendly");
                             }
 
-                            if(somefeatureitem.contains("4")){
+                            if (somefeatureitem.contains("4")) {
                                 somefeatureitem1.add("Wheelchair Friendly");
                             }
 
                             somefeatureitem = String.valueOf(somefeatureitem1);
-
 
 
                             //byres
@@ -2194,31 +2106,30 @@ public class MainActivity extends AppCompatActivity {
                             //times
                             timeitems = object.getString("timeitems");
 
-                            if(timeitems.contains("1")){
+                            if (timeitems.contains("1")) {
                                 timeitems1.add("8am - 12pm");
                             }
 
-                            if(timeitems.contains("2")){
+                            if (timeitems.contains("2")) {
                                 timeitems1.add("12pm - 3pm");
                             }
-                            if(timeitems.contains("3")){
+                            if (timeitems.contains("3")) {
                                 timeitems1.add("3pm - 6pm");
                             }
 
-                            if(timeitems.contains("4")){
+                            if (timeitems.contains("4")) {
                                 timeitems1.add("6pm - 9pm");
                             }
 
-                            if(timeitems.contains("5")){
+                            if (timeitems.contains("5")) {
                                 timeitems1.add("9pm - 11pm");
                             }
 
-                            if(timeitems.contains("6")){
+                            if (timeitems.contains("6")) {
                                 timeitems1.add("None");
                             }
 
                             timeitems = String.valueOf(timeitems1);
-
 
 
                             widthfacingget = object.getString("widthfacingget");
@@ -2227,9 +2138,9 @@ public class MainActivity extends AppCompatActivity {
 
                             //bowndywall
                             boundrywall = object.getString("boundrywall");
-                            if(boundrywall.equals("1")){
+                            if (boundrywall.equals("1")) {
                                 boundrywall = "Yes";
-                            }else {
+                            } else {
                                 boundrywall = "No";
                             }
 
@@ -2237,86 +2148,72 @@ public class MainActivity extends AppCompatActivity {
                             flattype = object.getString("flattype");
 
 
-                            if(flattype.equals("1")){
+                            if (flattype.equals("1")) {
                                 flattype = "1 BHK";
-                            }
-                            else if(flattype.equals("2")){
+                            } else if (flattype.equals("2")) {
                                 flattype = "2 BHK";
-                            }
-                            else if(flattype.equals("3")){
+                            } else if (flattype.equals("3")) {
                                 flattype = "3 BHK";
-                            }
-                            else if(flattype.equals("4")){
+                            } else if (flattype.equals("4")) {
                                 flattype = "4 BHK";
-                            }
-                            else if(flattype.equals("5")){
+                            } else if (flattype.equals("5")) {
                                 flattype = "5 BHK";
-                            }
-                            else if(flattype.equals("6")){
+                            } else if (flattype.equals("6")) {
                                 flattype = "6 BHK";
-                            }
-                            else if(flattype.equals("7")){
+                            } else if (flattype.equals("7")) {
                                 flattype = "7 BHK";
-                            }
-                            else if(flattype.equals("8")){
+                            } else if (flattype.equals("8")) {
                                 flattype = "8 BHK";
-                            }
-                            else if(flattype.equals("9")){
+                            } else if (flattype.equals("9")) {
                                 flattype = "9 BHK";
-                            }
-                            else if(flattype.equals("10")){
+                            } else if (flattype.equals("10")) {
                                 flattype = "10 BHK";
-                            }
-                            else if(flattype.equals("11")){
+                            } else if (flattype.equals("11")) {
                                 flattype = "11 BHK";
                             }
 
 
-                            user_id= object.getString("user_id");
-                            newprice= object.getString("newprice");
-                            image= Endpoints.base_url+ object.getString("image");
-                            shortlistedvalue= object.getString("shortlistedvalue");
+                            user_id = object.getString("user_id");
+                            newprice = object.getString("newprice");
+                            image = Endpoints.base_url + object.getString("image");
+                            shortlistedvalue = object.getString("shortlistedvalue");
 
                             //rera
-                            getrera= object.getString("rera");
-                            if(getrera.equals("1")){
+                            getrera = object.getString("rera");
+                            if (getrera.equals("1")) {
                                 getrera = "Yes";
-                            }else {
+                            } else {
                                 getrera = "No";
                             }
 
-                            mobile= object.getString("mobile");
-                            reg_date= object.getString("reg_date");
-                            fname= object.getString("fname");
-                            lname= object.getString("lname");
-                            email= object.getString("email");
-                            latlong= object.getString("latlong");
+                            mobile = object.getString("mobile");
+                            reg_date = object.getString("reg_date");
+                            fname = object.getString("fname");
+                            lname = object.getString("lname");
+                            email = object.getString("email");
+                            latlong = object.getString("latlong");
                             paymentStatus = object.getString("paymentStatus");
 
 
-
-
-
-
-                            SliderUtils sliderUtils = new SliderUtils(id ,usertype , type , category , categorytype , agrement , pgavaliablefor , pgshareprivate ,
-                                    sharingspinnumber , propertylistfor , willing , pgsuitablefor ,state, city , locality , projectname , address ,
-                                    unit1 ,unit2 ,unit3 ,availabilitydate , otherroom , homethings , builtupa , carpeta , plota , bed ,
-                                    bath , balconie , totalfloorget , reservedpark , availabilityspinget , ageofpropertyspinget ,
-                                     furnishedspinget ,possessionbyspinget ,
-                                    noofroomspinget , qualityratingspinget , floorallowedspinget , roomavailabespinget , priceget , maintenanceget ,
-                                    bookingamountget ,
-                                    durationofrentagget , monthofnoticeget , securitydepositspinget , maintenancemonthlyspinget ,
-                                    ownweshipspinget ,
-                                    typeoffood , pricestep , facilityincluded , weekdays , weeends , earlylivingchargesget , contractdurationget ,
-                                    annualduespayableget ,
-                                    depositeaget , facingspinget , unitspinget , typeofflooringspinget , powerbackupspinget , lasttimespinget ,
-                                    pet , visiter , smoking ,
-                                    alcohol , event , anemitiesitem , moreanemitiesitem , watersourceitem , overlookingitem ,
-                                    somefeatureitem , byersitem , timeitems ,
-                                    widthfacingget , descriptionget , boundrywall ,flattype, user_id, newprice, image, shortlistedvalue,
+                            SliderUtils sliderUtils = new SliderUtils(id, usertype, type, category, categorytype, agrement, pgavaliablefor, pgshareprivate,
+                                    sharingspinnumber, propertylistfor, willing, pgsuitablefor, state, city, locality, projectname, address,
+                                    unit1, unit2, unit3, availabilitydate, otherroom, homethings, builtupa, carpeta, plota, bed,
+                                    bath, balconie, totalfloorget, reservedpark, availabilityspinget, ageofpropertyspinget,
+                                    furnishedspinget, possessionbyspinget,
+                                    noofroomspinget, qualityratingspinget, floorallowedspinget, roomavailabespinget, priceget, maintenanceget,
+                                    bookingamountget,
+                                    durationofrentagget, monthofnoticeget, securitydepositspinget, maintenancemonthlyspinget,
+                                    ownweshipspinget,
+                                    typeoffood, pricestep, facilityincluded, weekdays, weeends, earlylivingchargesget, contractdurationget,
+                                    annualduespayableget,
+                                    depositeaget, facingspinget, unitspinget, typeofflooringspinget, powerbackupspinget, lasttimespinget,
+                                    pet, visiter, smoking,
+                                    alcohol, event, anemitiesitem, moreanemitiesitem, watersourceitem, overlookingitem,
+                                    somefeatureitem, byersitem, timeitems,
+                                    widthfacingget, descriptionget, boundrywall, flattype, user_id, newprice, image, shortlistedvalue,
                                     getrera, mobile, reg_date, fname, lname, latlong, email, paymentStatus);
                             sliderImg.add(sliderUtils);
-                            ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(sliderImg,MainActivity.this);
+                            ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(sliderImg, MainActivity.this);
                             viewPager.setAdapter(viewPagerAdapter);
 
                             Handler handler = new Handler();
@@ -2331,7 +2228,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                 } catch (JSONException e) {
-                    System.out.println("problem ::"+e);
+                    System.out.println("problem ::" + e);
                     e.printStackTrace();
                 }
 
@@ -2340,13 +2237,13 @@ public class MainActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("VOLLEY",error.getMessage());
+                Log.d("VOLLEY", error.getMessage());
 
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                
+
                 SmsData smsData = new SmsData();
                 Map<String, String> params = new HashMap<>();
                 params.put("header", smsData.token);
@@ -2374,7 +2271,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 //progressDialog.dismiss();
-                System.out.println("response :: "+ response);
+                System.out.println("response :: " + response);
 
                 try {
                     JSONObject obj = new JSONObject(response);
@@ -2384,9 +2281,9 @@ public class MainActivity extends AppCompatActivity {
                     JSONArray jsonArray = obj.getJSONArray("data");
 
 
-                    if(succes.equals("1")){
+                    if (succes.equals("1")) {
                         sellDataModels.clear();
-                        for(int i=0; i<jsonArray.length();i++){
+                        for (int i = 0; i < jsonArray.length(); i++) {
 
                             willing1.clear();
                             pgsuitablefor1.clear();
@@ -2406,29 +2303,26 @@ public class MainActivity extends AppCompatActivity {
                             homethings2.clear();
 
 
-
                             JSONObject object = jsonArray.getJSONObject(i);
-                            id =object.getString("id");
+                            id = object.getString("id");
                             //usertype
                             usertype = object.getString("usertype");
 
-                            if(usertype.equals("1")){
+                            if (usertype.equals("1")) {
                                 usertype = "Owner";
-                            }else if (usertype.equals("2")){
+                            } else if (usertype.equals("2")) {
                                 usertype = "Dealer";
-                            }
-                            else if (usertype.equals("3")){
+                            } else if (usertype.equals("3")) {
                                 usertype = "Builder";
                             }
-
 
 
                             // type
                             type = object.getString("type");
 
-                            if(type.equals("1")){
+                            if (type.equals("1")) {
                                 type = "Residential";
-                            }else{
+                            } else {
                                 type = "Commercial";
                             }
 
@@ -2436,146 +2330,108 @@ public class MainActivity extends AppCompatActivity {
                             //category
                             category = object.getString("category");
 
-                            if(category.equals("1")){
+                            if (category.equals("1")) {
                                 category = "Apartment/Flat/Builder Floor";
-                            }
-                            else if(category.equals("2")){
+                            } else if (category.equals("2")) {
                                 category = "Residential Land";
-                            }
-                            else if(category.equals("3")){
+                            } else if (category.equals("3")) {
                                 category = "House/Villa";
-                            }
-                            else if(category.equals("4")){
+                            } else if (category.equals("4")) {
                                 category = "Offices";
-                            }
-                            else if(category.equals("5")){
+                            } else if (category.equals("5")) {
                                 category = "Retail";
-                            }
-                            else if(category.equals("6")){
+                            } else if (category.equals("6")) {
                                 category = "Land";
-                            }
-                            else if(category.equals("7")){
+                            } else if (category.equals("7")) {
                                 category = "Industry";
-                            }
-                            else if(category.equals("8")){
+                            } else if (category.equals("8")) {
                                 category = "Storage";
-                            }
-                            else if(category.equals("9")){
+                            } else if (category.equals("9")) {
                                 category = "Hospitality";
-                            }
-                            else if(category.equals("10")){
+                            } else if (category.equals("10")) {
                                 category = "Others";
                             }
-
 
 
                             //categorytype
                             categorytype = object.getString("categorytype");
 
 
-                            if (categorytype.equals("1")){
+                            if (categorytype.equals("1")) {
                                 categorytype = "Residential Apartment";
-                            }
-
-                            else if (categorytype.equals("2")){
+                            } else if (categorytype.equals("2")) {
                                 categorytype = "Independent/Builder Floor";
-                            }
-                            else if (categorytype.equals("3")){
+                            } else if (categorytype.equals("3")) {
                                 categorytype = "Studio Apartment";
-                            }
-                            else if (categorytype.equals("4")){
+                            } else if (categorytype.equals("4")) {
                                 categorytype = "Serviced Apartments";
-                            }
-                            else if (categorytype.equals("5")){
+                            } else if (categorytype.equals("5")) {
                                 categorytype = "Independent House/Villa";
-                            }
-                            else if (categorytype.equals("6")){
+                            } else if (categorytype.equals("6")) {
                                 categorytype = "Farm House";
-                            }
-                            else if (categorytype.equals("7")){
+                            } else if (categorytype.equals("7")) {
                                 categorytype = "Ready to move office space";
-                            }
-                            else if (categorytype.equals("8")){
+                            } else if (categorytype.equals("8")) {
                                 categorytype = "Bare shell office space";
-                            }
-                            else if (categorytype.equals("9")){
+                            } else if (categorytype.equals("9")) {
                                 categorytype = "Co-working office space";
-                            }
-                            else if (categorytype.equals("10")){
+                            } else if (categorytype.equals("10")) {
                                 categorytype = "Commercial Shops";
-                            }
-                            else if (categorytype.equals("11")){
+                            } else if (categorytype.equals("11")) {
                                 categorytype = "Commercial Showrooms";
-                            }
-                            else if (categorytype.equals("12")){
+                            } else if (categorytype.equals("12")) {
                                 categorytype = "Space in Retail Mall";
-                            }
-                            else if (categorytype.equals("13")){
+                            } else if (categorytype.equals("13")) {
                                 categorytype = "Commercial Land/Inst. Land";
-                            }
-                            else if (categorytype.equals("14")){
+                            } else if (categorytype.equals("14")) {
                                 categorytype = "Agricultural/Farm Land";
-                            }
-                            else if (categorytype.equals("15")){
+                            } else if (categorytype.equals("15")) {
                                 categorytype = "Industrial Lands/Plots";
-                            }
-                            else if (categorytype.equals("16")){
+                            } else if (categorytype.equals("16")) {
                                 categorytype = "Factory";
-                            }
-                            else if (categorytype.equals("17")){
+                            } else if (categorytype.equals("17")) {
                                 categorytype = "Manufacturing";
-                            }
-                            else if (categorytype.equals("18")){
+                            } else if (categorytype.equals("18")) {
                                 categorytype = "Ware House";
-                            }
-                            else if (categorytype.equals("19")){
+                            } else if (categorytype.equals("19")) {
                                 categorytype = "Cold Storage";
-                            }
-                            else if (categorytype.equals("20")){
+                            } else if (categorytype.equals("20")) {
                                 categorytype = "Hotel/Resorts";
-                            }
-                            else if (categorytype.equals("21")){
+                            } else if (categorytype.equals("21")) {
                                 categorytype = "Guest-House/Banquet-Hallsage";
                             }
-
-
 
 
                             //agrement
                             agrement = object.getString("agrement");
 
-                            if(agrement.equals("1")){
+                            if (agrement.equals("1")) {
                                 agrement = "Company Lease Agreement";
-                            }else{
+                            } else {
                                 agrement = "Any";
                             }
-
 
 
                             //pgavailablefor
                             pgavaliablefor = object.getString("pgavaliablefor");
 
-                            if(pgavaliablefor.equals("1")){
+                            if (pgavaliablefor.equals("1")) {
                                 pgavaliablefor = "Girls";
-                            }else if (pgavaliablefor.equals("2")){
-                                pgavaliablefor ="Boys";
-                            }else{
+                            } else if (pgavaliablefor.equals("2")) {
+                                pgavaliablefor = "Boys";
+                            } else {
                                 pgavaliablefor = "Any";
                             }
-
-
 
 
                             //pgshareprivate
                             pgshareprivate = object.getString("pgshareprivate");
 
-                            if (pgshareprivate.equals("1")){
+                            if (pgshareprivate.equals("1")) {
                                 pgshareprivate = "Private";
-                            }else {
+                            } else {
                                 pgshareprivate = "Sharing";
                             }
-
-
 
 
                             //sharingnumber
@@ -2584,24 +2440,24 @@ public class MainActivity extends AppCompatActivity {
                             //propertylistfor
                             propertylistfor = object.getString("propertylistfor");
 
-                            if(propertylistfor.equals("1")){
+                            if (propertylistfor.equals("1")) {
                                 propertylistfor = "Sell";
-                            }else if(propertylistfor.equals("2")){
+                            } else if (propertylistfor.equals("2")) {
                                 propertylistfor = "Rent";
-                            }else{
+                            } else {
                                 propertylistfor = "Paying Guest";
                             }
 
                             // willing
                             willing = object.getString("willing");
 
-                            if(willing.contains("1")){
+                            if (willing.contains("1")) {
                                 willing1.add("Family");
                             }
-                            if (willing.contains("2")){
+                            if (willing.contains("2")) {
                                 willing1.add("Single Men");
                             }
-                            if(willing.contains("3")){
+                            if (willing.contains("3")) {
                                 willing1.add("Single Women");
                             }
 
@@ -2611,10 +2467,10 @@ public class MainActivity extends AppCompatActivity {
                             //pgsuitablefor
                             pgsuitablefor = object.getString("pgsuitablefor");
 
-                            if(pgsuitablefor.contains("1")){
+                            if (pgsuitablefor.contains("1")) {
                                 pgsuitablefor1.add("Students");
                             }
-                            if(pgsuitablefor.contains("2")){
+                            if (pgsuitablefor.contains("2")) {
                                 pgsuitablefor1.add("Working Professionals");
                             }
 
@@ -2630,56 +2486,39 @@ public class MainActivity extends AppCompatActivity {
                             //unit1
                             unit1 = object.getString("unit1");
 
-                            if(unit1.equals("1")){
+                            if (unit1.equals("1")) {
                                 unit1 = "Sq.Ft";
-                            }
-                            else if(unit1.equals("2")){
+                            } else if (unit1.equals("2")) {
                                 unit1 = "Sq.yards";
-                            }else if(unit1.equals("3")){
+                            } else if (unit1.equals("3")) {
                                 unit1 = "Sq.m";
-                            }
-                            else if(unit1.equals("4")){
+                            } else if (unit1.equals("4")) {
                                 unit1 = "Acres";
-                            }
-                            else if(unit1.equals("5")){
+                            } else if (unit1.equals("5")) {
                                 unit1 = "Marla";
-                            }else if(unit1.equals("6")){
+                            } else if (unit1.equals("6")) {
                                 unit1 = "Cents";
-                            }
-                            else if(unit1.equals("7")){
+                            } else if (unit1.equals("7")) {
                                 unit1 = "Bigha";
-                            }else if(unit1.equals("8")){
+                            } else if (unit1.equals("8")) {
                                 unit1 = "Kottah";
-                            }
-                            else if(unit1.equals("9")){
+                            } else if (unit1.equals("9")) {
                                 unit1 = "Grounds";
-                            }
-                            else if(unit1.equals("10")){
+                            } else if (unit1.equals("10")) {
                                 unit1 = "Ares";
-                            }
-                            else if(unit1.equals("11")){
+                            } else if (unit1.equals("11")) {
                                 unit1 = "Biswa";
-                            }
-                            else if(unit1.equals("12")){
+                            } else if (unit1.equals("12")) {
                                 unit1 = "Guntha";
-                            }
-                            else if(unit1.equals("13")){
+                            } else if (unit1.equals("13")) {
                                 unit1 = "Aankadam";
-                            }
-
-                            else if(unit1.equals("14")){
+                            } else if (unit1.equals("14")) {
                                 unit1 = "Hectares";
-                            }
-
-                            else if(unit1.equals("15")){
+                            } else if (unit1.equals("15")) {
                                 unit1 = "Rood";
-                            }
-
-                            else if(unit1.equals("16")){
+                            } else if (unit1.equals("16")) {
                                 unit1 = "Chataks";
-                            }
-
-                            else if(unit1.equals("17")){
+                            } else if (unit1.equals("17")) {
                                 unit1 = "Perch";
                             }
 
@@ -2687,118 +2526,81 @@ public class MainActivity extends AppCompatActivity {
                             //unit2
                             unit2 = object.getString("unit2");
 
-                            if(unit2.equals("1")){
+                            if (unit2.equals("1")) {
                                 unit2 = "Sq.Ft";
-                            }
-                            else if(unit2.equals("2")){
+                            } else if (unit2.equals("2")) {
                                 unit2 = "Sq.yards";
-                            }else if(unit2.equals("3")){
+                            } else if (unit2.equals("3")) {
                                 unit2 = "Sq.m";
-                            }
-                            else if(unit2.equals("4")){
+                            } else if (unit2.equals("4")) {
                                 unit2 = "Acres";
-                            }
-                            else if(unit2.equals("5")){
+                            } else if (unit2.equals("5")) {
                                 unit2 = "Marla";
-                            }else if(unit2.equals("6")){
+                            } else if (unit2.equals("6")) {
                                 unit2 = "Cents";
-                            }
-                            else if(unit2.equals("7")){
+                            } else if (unit2.equals("7")) {
                                 unit2 = "Bigha";
-                            }else if(unit2.equals("8")){
+                            } else if (unit2.equals("8")) {
                                 unit2 = "Kottah";
-                            }
-                            else if(unit2.equals("9")){
+                            } else if (unit2.equals("9")) {
                                 unit2 = "Grounds";
-                            }
-                            else if(unit2.equals("10")){
+                            } else if (unit2.equals("10")) {
                                 unit2 = "Ares";
-                            }
-                            else if(unit2.equals("11")){
+                            } else if (unit2.equals("11")) {
                                 unit2 = "Biswa";
-                            }
-                            else if(unit2.equals("12")){
+                            } else if (unit2.equals("12")) {
                                 unit2 = "Guntha";
-                            }
-                            else if(unit2.equals("13")){
+                            } else if (unit2.equals("13")) {
                                 unit2 = "Aankadam";
-                            }
-
-                            else if(unit2.equals("14")){
+                            } else if (unit2.equals("14")) {
                                 unit2 = "Hectares";
-                            }
-
-                            else if(unit2.equals("15")){
+                            } else if (unit2.equals("15")) {
                                 unit2 = "Rood";
-                            }
-
-                            else if(unit2.equals("16")){
+                            } else if (unit2.equals("16")) {
                                 unit2 = "Chataks";
-                            }
-
-                            else if(unit2.equals("17")){
+                            } else if (unit2.equals("17")) {
                                 unit2 = "Perch";
                             }
-
 
 
                             //unit3
                             unit3 = object.getString("unit3");
 
-                            if(unit3.equals("1")){
+                            if (unit3.equals("1")) {
                                 unit3 = "Sq.Ft";
-                            }
-                            else if(unit3.equals("2")){
+                            } else if (unit3.equals("2")) {
                                 unit3 = "Sq.yards";
-                            }else if(unit3.equals("3")){
+                            } else if (unit3.equals("3")) {
                                 unit1 = "Sq.m";
-                            }
-                            else if(unit3.equals("4")){
+                            } else if (unit3.equals("4")) {
                                 unit3 = "Acres";
-                            }
-                            else if(unit3.equals("5")){
+                            } else if (unit3.equals("5")) {
                                 unit3 = "Marla";
-                            }else if(unit3.equals("6")){
+                            } else if (unit3.equals("6")) {
                                 unit3 = "Cents";
-                            }
-                            else if(unit3.equals("7")){
+                            } else if (unit3.equals("7")) {
                                 unit3 = "Bigha";
-                            }else if(unit3.equals("8")){
+                            } else if (unit3.equals("8")) {
                                 unit3 = "Kottah";
-                            }
-                            else if(unit3.equals("9")){
+                            } else if (unit3.equals("9")) {
                                 unit3 = "Grounds";
-                            }
-                            else if(unit3.equals("10")){
+                            } else if (unit3.equals("10")) {
                                 unit3 = "Ares";
-                            }
-                            else if(unit3.equals("11")){
+                            } else if (unit3.equals("11")) {
                                 unit3 = "Biswa";
-                            }
-                            else if(unit3.equals("12")){
+                            } else if (unit3.equals("12")) {
                                 unit3 = "Guntha";
-                            }
-                            else if(unit3.equals("13")){
+                            } else if (unit3.equals("13")) {
                                 unit3 = "Aankadam";
-                            }
-
-                            else if(unit3.equals("14")){
+                            } else if (unit3.equals("14")) {
                                 unit3 = "Hectares";
-                            }
-
-                            else if(unit3.equals("15")){
+                            } else if (unit3.equals("15")) {
                                 unit3 = "Rood";
-                            }
-
-                            else if(unit3.equals("16")){
+                            } else if (unit3.equals("16")) {
                                 unit3 = "Chataks";
-                            }
-
-                            else if(unit3.equals("17")){
+                            } else if (unit3.equals("17")) {
                                 unit3 = "Perch";
                             }
-
-
 
 
                             availabilitydate = object.getString("availabilitydate");
@@ -2806,24 +2608,22 @@ public class MainActivity extends AppCompatActivity {
                             //otherroom
                             otherroom = object.getString("otherroom");
 
-                            if(otherroom.contains("1")){
+                            if (otherroom.contains("1")) {
                                 otherroom1.add("Pooja Room");
                             }
-                            if(otherroom.contains("2")){
+                            if (otherroom.contains("2")) {
                                 otherroom1.add("Study Room");
                             }
 
-                            if(otherroom.contains("3")){
+                            if (otherroom.contains("3")) {
                                 otherroom1.add("Servant Room");
                             }
 
-                            if(otherroom.contains("4")){
+                            if (otherroom.contains("4")) {
                                 otherroom1.add("Others");
                             }
 
                             otherroom = String.valueOf(otherroom1);
-
-
 
 
                             //homethings
@@ -2839,78 +2639,74 @@ public class MainActivity extends AppCompatActivity {
                             homethings2.addAll(homethings3);
 
 
-                            if(homethings2.contains("1")){
+                            if (homethings2.contains("1")) {
                                 homethings1.add("Wardrobe");
                             }
 
 
-                            if(homethings2.contains("2")){
+                            if (homethings2.contains("2")) {
                                 homethings1.add("Modular Kitchen");
                             }
 
 
-                            if(homethings2.contains("3")){
+                            if (homethings2.contains("3")) {
                                 homethings1.add("Fridge");
                             }
 
 
-                            if(homethings2.contains("4")){
+                            if (homethings2.contains("4")) {
                                 homethings1.add("Ac");
                             }
 
 
-                            if(homethings2.contains("5")){
+                            if (homethings2.contains("5")) {
                                 homethings1.add("Stove");
                             }
 
 
-                            if(homethings2.contains("6")){
+                            if (homethings2.contains("6")) {
                                 homethings1.add("Geyser");
                             }
 
 
-                            if(homethings2.contains("7")){
+                            if (homethings2.contains("7")) {
                                 homethings1.add("Dinning Table");
                             }
 
-                            if(homethings2.contains("8")){
+                            if (homethings2.contains("8")) {
                                 homethings1.add("Sofa");
                             }
 
 
-                            if(homethings2.contains("9")){
+                            if (homethings2.contains("9")) {
                                 homethings1.add("Washing Machine");
                             }
 
 
-                            if(homethings2.contains("10")){
+                            if (homethings2.contains("10")) {
                                 homethings1.add("Water Purifier");
                             }
 
 
-                            if(homethings2.contains("11")){
+                            if (homethings2.contains("11")) {
                                 homethings1.add("Microwave");
                             }
 
 
-                            if(homethings2.contains("12")){
+                            if (homethings2.contains("12")) {
                                 homethings1.add("Curtains");
                             }
 
-                            if(homethings2.contains("13")){
+                            if (homethings2.contains("13")) {
                                 homethings1.add("Chimney");
                             }
 
-                            if(homethings2.contains("14")){
+                            if (homethings2.contains("14")) {
                                 homethings1.add("Exhaust Fan");
                             }
 
 
-
                             homethings = String.valueOf(homethings1);
-
-
-
 
 
                             builtupa = object.getString("builtupa");
@@ -2924,9 +2720,9 @@ public class MainActivity extends AppCompatActivity {
 
                             //reservvedpark
                             reservedpark = object.getString("reservedpark");
-                            if(reservedpark.equals("1")){
+                            if (reservedpark.equals("1")) {
                                 reservedpark = "Yes";
-                            }else{
+                            } else {
                                 reservedpark = "No";
                             }
 
@@ -2934,10 +2730,9 @@ public class MainActivity extends AppCompatActivity {
                             // availability
                             availabilityspinget = object.getString("availabilityspinget");
 
-                            if(availabilityspinget.equals("1")){
+                            if (availabilityspinget.equals("1")) {
                                 availabilityspinget = "Under Construction";
-                            }
-                            else if(availabilityspinget.equals("2")){
+                            } else if (availabilityspinget.equals("2")) {
                                 availabilityspinget = "Ready To Move";
 
                             }
@@ -2945,78 +2740,58 @@ public class MainActivity extends AppCompatActivity {
 
                             //ageofproperty
                             ageofpropertyspinget = object.getString("ageofpropertyspinget");
-                            if(ageofpropertyspinget.equals("1")){
+                            if (ageofpropertyspinget.equals("1")) {
                                 ageofpropertyspinget = "0-1 Year Old Property";
-                            }
-                            else if(ageofpropertyspinget.equals("2")){
+                            } else if (ageofpropertyspinget.equals("2")) {
                                 ageofpropertyspinget = "1-5 Year Old Property";
-                            }
-                            else if(ageofpropertyspinget.equals("3")){
+                            } else if (ageofpropertyspinget.equals("3")) {
                                 ageofpropertyspinget = "5-10 Year Old Property";
-                            }
-                            else if(ageofpropertyspinget.equals("4")){
+                            } else if (ageofpropertyspinget.equals("4")) {
                                 ageofpropertyspinget = "10+ Year Old Property";
-                            }
-                            else if(ageofpropertyspinget.equals("5")){
+                            } else if (ageofpropertyspinget.equals("5")) {
                                 ageofpropertyspinget = "Ready To Move";
                             }
 
 
-
                             //furnished
                             furnishedspinget = object.getString("furnishedspinget");
-                            if(furnishedspinget.equals("1")){
+                            if (furnishedspinget.equals("1")) {
                                 furnishedspinget = "Furnished";
-                            }
-                            else if(furnishedspinget.equals("2")){
+                            } else if (furnishedspinget.equals("2")) {
                                 furnishedspinget = "Semifurnished";
-                            }
-                            else if(furnishedspinget.equals("3")){
+                            } else if (furnishedspinget.equals("3")) {
                                 furnishedspinget = "Unfurnished";
                             }
-
 
 
                             //possessionby
                             possessionbyspinget = object.getString("possessionbyspinget");
 
-                            if(possessionbyspinget.equals("1")){
+                            if (possessionbyspinget.equals("1")) {
                                 possessionbyspinget = "Within 3 Months";
-                            }
-                            else if(possessionbyspinget.equals("2")){
+                            } else if (possessionbyspinget.equals("2")) {
                                 possessionbyspinget = "By 2021";
-                            }
-                            else if(possessionbyspinget.equals("3")){
+                            } else if (possessionbyspinget.equals("3")) {
                                 possessionbyspinget = "By 2022";
-                            }
-                            else if(possessionbyspinget.equals("4")){
+                            } else if (possessionbyspinget.equals("4")) {
                                 possessionbyspinget = "By 2023";
-                            }
-                            else if(possessionbyspinget.equals("5")){
+                            } else if (possessionbyspinget.equals("5")) {
                                 possessionbyspinget = "By 2024";
-                            }
-                            else if(possessionbyspinget.equals("6")){
+                            } else if (possessionbyspinget.equals("6")) {
                                 possessionbyspinget = "By 2025";
-                            }
-                            else if(possessionbyspinget.equals("7")){
+                            } else if (possessionbyspinget.equals("7")) {
                                 possessionbyspinget = "By 2026";
-                            }
-                            else if(possessionbyspinget.equals("8")){
+                            } else if (possessionbyspinget.equals("8")) {
                                 possessionbyspinget = "By 2027";
-                            }
-                            else if(possessionbyspinget.equals("9")){
+                            } else if (possessionbyspinget.equals("9")) {
                                 possessionbyspinget = "By 2028";
-                            }
-                            else if(possessionbyspinget.equals("10")){
+                            } else if (possessionbyspinget.equals("10")) {
                                 possessionbyspinget = "By 2029";
-                            }
-                            else if(possessionbyspinget.equals("11")){
+                            } else if (possessionbyspinget.equals("11")) {
                                 possessionbyspinget = "By 2030";
-                            }
-                            else if(possessionbyspinget.equals("12")){
+                            } else if (possessionbyspinget.equals("12")) {
                                 possessionbyspinget = "By 2031";
                             }
-
 
 
                             noofroomspinget = object.getString("noofroomspinget");
@@ -3025,34 +2800,25 @@ public class MainActivity extends AppCompatActivity {
                             //qualityrating
                             qualityratingspinget = object.getString("qualityratingspinget");
 
-                            if(qualityratingspinget.equals("1")){
+                            if (qualityratingspinget.equals("1")) {
                                 qualityratingspinget = "1 Star";
-                            }
-                            else if(qualityratingspinget.equals("2")){
+                            } else if (qualityratingspinget.equals("2")) {
                                 qualityratingspinget = "2 Star";
-                            }
-                            else if(qualityratingspinget.equals("3")){
+                            } else if (qualityratingspinget.equals("3")) {
                                 qualityratingspinget = "3 Star";
-                            }
-                            else if(qualityratingspinget.equals("4")){
+                            } else if (qualityratingspinget.equals("4")) {
                                 qualityratingspinget = "4 Star";
-                            }
-                            else if(qualityratingspinget.equals("5")){
+                            } else if (qualityratingspinget.equals("5")) {
                                 qualityratingspinget = "5 Star";
-                            }
-                            else if(qualityratingspinget.equals("6")){
+                            } else if (qualityratingspinget.equals("6")) {
                                 qualityratingspinget = "6 Star";
-                            }
-                            else if(qualityratingspinget.equals("7")){
+                            } else if (qualityratingspinget.equals("7")) {
                                 qualityratingspinget = "7 Star";
-                            }
-                            else if(qualityratingspinget.equals("8")){
+                            } else if (qualityratingspinget.equals("8")) {
                                 qualityratingspinget = "8 Star";
-                            }
-                            else if(qualityratingspinget.equals("9")){
+                            } else if (qualityratingspinget.equals("9")) {
                                 qualityratingspinget = "9 Star";
-                            }
-                            else if(qualityratingspinget.equals("10")){
+                            } else if (qualityratingspinget.equals("10")) {
                                 qualityratingspinget = "10 Star";
                             }
 
@@ -3069,46 +2835,37 @@ public class MainActivity extends AppCompatActivity {
                             securitydepositspinget = object.getString("securitydepositspinget");
 
 
-                            if(securitydepositspinget.equals("1")){
+                            if (securitydepositspinget.equals("1")) {
                                 securitydepositspinget = "Fixed";
-                            }
-                            else if(securitydepositspinget.equals("2")){
+                            } else if (securitydepositspinget.equals("2")) {
                                 securitydepositspinget = "Multiple Of Rent";
                             }
-
 
 
                             //maintenancemonthly
                             maintenancemonthlyspinget = object.getString("maintenancemonthlyspinget");
 
-                            if(maintenancemonthlyspinget.equals("1")){
+                            if (maintenancemonthlyspinget.equals("1")) {
                                 maintenancemonthlyspinget = "Monthly";
-                            }
-                            else if(maintenancemonthlyspinget.equals("2")){
+                            } else if (maintenancemonthlyspinget.equals("2")) {
                                 maintenancemonthlyspinget = "Annually";
-                            }
-                            else if(maintenancemonthlyspinget.equals("3")){
+                            } else if (maintenancemonthlyspinget.equals("3")) {
                                 maintenancemonthlyspinget = "One Time";
-                            }
-                            else if(maintenancemonthlyspinget.equals("4")){
+                            } else if (maintenancemonthlyspinget.equals("4")) {
                                 maintenancemonthlyspinget = "Per Unit/Monthly";
                             }
-
 
 
                             //ownership
                             ownweshipspinget = object.getString("ownweshipspinget");
 
-                            if(ownweshipspinget.equals("1")){
+                            if (ownweshipspinget.equals("1")) {
                                 ownweshipspinget = "Freehold";
-                            }
-                            else if(ownweshipspinget.equals("2")){
+                            } else if (ownweshipspinget.equals("2")) {
                                 ownweshipspinget = "Leasehold";
-                            }
-                            else if(ownweshipspinget.equals("3")){
+                            } else if (ownweshipspinget.equals("3")) {
                                 ownweshipspinget = "Co-Operative Society";
-                            }
-                            else if(ownweshipspinget.equals("4")){
+                            } else if (ownweshipspinget.equals("4")) {
                                 ownweshipspinget = "Power Of Attorney";
                             }
 
@@ -3116,98 +2873,91 @@ public class MainActivity extends AppCompatActivity {
                             //typeoffood
                             typeoffood = object.getString("typeoffood");
 
-                            if(typeoffood.equals("1")){
+                            if (typeoffood.equals("1")) {
                                 typeoffood = "Veg";
-                            }else{
+                            } else {
                                 typeoffood = "Ved and Non-Veg";
                             }
-
 
 
                             //pricestep
                             pricestep = object.getString("pricestep");
 
-                            if(pricestep.equals("1")){
+                            if (pricestep.equals("1")) {
                                 pricestep = "Price Negotiable";
-                            }else{
+                            } else {
                                 pricestep = "Electricity And Water Charges Excluded";
                             }
-
-
 
 
                             //facilityinculded
                             facilityincluded = object.getString("facilityincluded");
 
-                            if(facilityincluded.contains("1")){
+                            if (facilityincluded.contains("1")) {
                                 facilityincluded1.add("Food");
                             }
 
-                            if(facilityincluded.contains("2")){
+                            if (facilityincluded.contains("2")) {
                                 facilityincluded1.add("Laundry");
                             }
 
-                            if(facilityincluded.contains("3")){
+                            if (facilityincluded.contains("3")) {
                                 facilityincluded1.add("Fridge");
                             }
 
-                            if(facilityincluded.contains("4")){
+                            if (facilityincluded.contains("4")) {
                                 facilityincluded1.add("Electricity");
                             }
 
-                            if(facilityincluded.contains("5")){
+                            if (facilityincluded.contains("5")) {
                                 facilityincluded1.add("None Of the Above");
                             }
 
-                            if(facilityincluded.contains("6")){
+                            if (facilityincluded.contains("6")) {
                                 facilityincluded1.add("HouseKeeping");
                             }
 
-                            if(facilityincluded.contains("7")){
+                            if (facilityincluded.contains("7")) {
                                 facilityincluded1.add("DTH");
                             }
 
-                            if(facilityincluded.contains("8")){
+                            if (facilityincluded.contains("8")) {
                                 facilityincluded1.add("Water");
                             }
 
-                            if(facilityincluded.contains("9")){
+                            if (facilityincluded.contains("9")) {
                                 facilityincluded1.add("Wifi");
                             }
 
                             facilityincluded = String.valueOf(facilityincluded1);
 
 
-
-
-
                             //weekdays
                             weekdays = object.getString("weekdays");
 
-                            if(weekdays.contains("1")){
+                            if (weekdays.contains("1")) {
                                 weekdays1.add("Breakfast");
                             }
-                            if(weekdays.contains("2")){
+                            if (weekdays.contains("2")) {
                                 weekdays1.add("Lunch");
                             }
-                            if(weekdays.contains("3")){
+                            if (weekdays.contains("3")) {
                                 weekdays1.add("Dinner");
                             }
 
                             weekdays = String.valueOf(weekdays1);
 
 
-
                             //weekends
                             weeends = object.getString("weeends");
 
-                            if(weeends.contains("1")){
+                            if (weeends.contains("1")) {
                                 weekend1.add("Breakfast");
                             }
-                            if(weeends.contains("2")){
+                            if (weeends.contains("2")) {
                                 weekend1.add("Lunch");
                             }
-                            if(weeends.contains("3")){
+                            if (weeends.contains("3")) {
                                 weekend1.add("Dinner");
                             }
 
@@ -3223,137 +2973,95 @@ public class MainActivity extends AppCompatActivity {
                             //facing
                             facingspinget = object.getString("facingspinget");
 
-                            if(facingspinget.equals("1")){
+                            if (facingspinget.equals("1")) {
                                 facingspinget = "East";
-                            }
-                            else if(facingspinget.equals("2")){
+                            } else if (facingspinget.equals("2")) {
                                 facingspinget = "North-East";
-                            }
-                            else if(facingspinget.equals("3")){
+                            } else if (facingspinget.equals("3")) {
                                 facingspinget = "North";
-                            }
-                            else if(facingspinget.equals("4")){
+                            } else if (facingspinget.equals("4")) {
                                 facingspinget = "West";
-                            }
-                            else if(facingspinget.equals("5")){
+                            } else if (facingspinget.equals("5")) {
                                 facingspinget = "South";
-                            }
-                            else if(facingspinget.equals("6")){
+                            } else if (facingspinget.equals("6")) {
                                 facingspinget = "South-East";
-                            }
-                            else if(facingspinget.equals("7")){
+                            } else if (facingspinget.equals("7")) {
                                 facingspinget = "North-West";
-                            }
-                            else if(facingspinget.equals("8")){
+                            } else if (facingspinget.equals("8")) {
                                 facingspinget = "South-West";
                             }
-
-
 
 
                             //unitspinget
                             unitspinget = object.getString("unitspinget");
 
-                            if(unitspinget.equals("1")){
+                            if (unitspinget.equals("1")) {
                                 unitspinget = "Sq.Ft";
-                            }
-                            else if(unitspinget.equals("2")){
+                            } else if (unitspinget.equals("2")) {
                                 unitspinget = "Sq.yards";
-                            }else if(unitspinget.equals("3")){
+                            } else if (unitspinget.equals("3")) {
                                 unitspinget = "Sq.m";
-                            }
-                            else if(unitspinget.equals("4")){
+                            } else if (unitspinget.equals("4")) {
                                 unitspinget = "Acres";
-                            }
-                            else if(unitspinget.equals("5")){
+                            } else if (unitspinget.equals("5")) {
                                 unitspinget = "Marla";
-                            }else if(unitspinget.equals("6")){
+                            } else if (unitspinget.equals("6")) {
                                 unitspinget = "Cents";
-                            }
-                            else if(unitspinget.equals("7")){
+                            } else if (unitspinget.equals("7")) {
                                 unitspinget = "Bigha";
-                            }else if(unitspinget.equals("8")){
+                            } else if (unitspinget.equals("8")) {
                                 unitspinget = "Kottah";
-                            }
-                            else if(unitspinget.equals("9")){
+                            } else if (unitspinget.equals("9")) {
                                 unitspinget = "Grounds";
-                            }
-                            else if(unitspinget.equals("10")){
+                            } else if (unitspinget.equals("10")) {
                                 unitspinget = "Ares";
-                            }
-                            else if(unitspinget.equals("11")){
+                            } else if (unitspinget.equals("11")) {
                                 unitspinget = "Biswa";
-                            }
-                            else if(unitspinget.equals("12")){
+                            } else if (unitspinget.equals("12")) {
                                 unitspinget = "Guntha";
-                            }
-                            else if(unitspinget.equals("13")){
+                            } else if (unitspinget.equals("13")) {
                                 unitspinget = "Aankadam";
-                            }
-
-                            else if(unitspinget.equals("14")){
+                            } else if (unitspinget.equals("14")) {
                                 unitspinget = "Hectares";
-                            }
-
-                            else if(unitspinget.equals("15")){
+                            } else if (unitspinget.equals("15")) {
                                 unitspinget = "Rood";
-                            }
-
-                            else if(unitspinget.equals("16")){
+                            } else if (unitspinget.equals("16")) {
                                 unitspinget = "Chataks";
-                            }
-
-                            else if(unitspinget.equals("17")){
+                            } else if (unitspinget.equals("17")) {
                                 unitspinget = "Perch";
                             }
-
-
-
 
 
                             //typeofflooring
                             typeofflooringspinget = object.getString("typeofflooringspinget");
 
-                            if(typeofflooringspinget.equals("1")){
+                            if (typeofflooringspinget.equals("1")) {
                                 typeofflooringspinget = "Vitrified";
-                            }
-                            else if(typeofflooringspinget.equals("2")){
+                            } else if (typeofflooringspinget.equals("2")) {
                                 typeofflooringspinget = "Marble";
-                            }
-                            else if(typeofflooringspinget.equals("3")){
+                            } else if (typeofflooringspinget.equals("3")) {
                                 typeofflooringspinget = "Concrete";
-                            }
-                            else if(typeofflooringspinget.equals("4")){
+                            } else if (typeofflooringspinget.equals("4")) {
                                 typeofflooringspinget = "Ceramic";
-                            }
-                            else if(typeofflooringspinget.equals("5")){
+                            } else if (typeofflooringspinget.equals("5")) {
                                 typeofflooringspinget = "Polished Concrete";
-                            }
-                            else if(typeofflooringspinget.equals("6")){
+                            } else if (typeofflooringspinget.equals("6")) {
                                 typeofflooringspinget = "Mosaic";
-                            }
-                            else if(typeofflooringspinget.equals("7")){
+                            } else if (typeofflooringspinget.equals("7")) {
                                 typeofflooringspinget = "Wood";
-                            }
-                            else if(typeofflooringspinget.equals("8")){
+                            } else if (typeofflooringspinget.equals("8")) {
                                 typeofflooringspinget = "Granite";
-                            }
-                            else if(typeofflooringspinget.equals("9")){
+                            } else if (typeofflooringspinget.equals("9")) {
                                 typeofflooringspinget = "Spartex";
-                            }
-                            else if(typeofflooringspinget.equals("10")){
+                            } else if (typeofflooringspinget.equals("10")) {
                                 typeofflooringspinget = "Cement";
-                            }
-                            else if(typeofflooringspinget.equals("11")){
+                            } else if (typeofflooringspinget.equals("11")) {
                                 typeofflooringspinget = "Stone";
-                            }
-                            else if(typeofflooringspinget.equals("12")){
+                            } else if (typeofflooringspinget.equals("12")) {
                                 typeofflooringspinget = "Vinyl";
-                            }
-                            else if(typeofflooringspinget.equals("13")){
+                            } else if (typeofflooringspinget.equals("13")) {
                                 typeofflooringspinget = "IPSFinish";
-                            }
-                            else if(typeofflooringspinget.equals("14")){
+                            } else if (typeofflooringspinget.equals("14")) {
                                 typeofflooringspinget = "Others";
                             }
 
@@ -3361,76 +3069,64 @@ public class MainActivity extends AppCompatActivity {
                             //powerbackup
                             powerbackupspinget = object.getString("powerbackupspinget");
 
-                            if(powerbackupspinget.equals("1")){
+                            if (powerbackupspinget.equals("1")) {
                                 powerbackupspinget = "None";
-                            }
-                            else if(powerbackupspinget.equals("2")){
+                            } else if (powerbackupspinget.equals("2")) {
                                 powerbackupspinget = "Partial";
-                            }
-                            else if(powerbackupspinget.equals("3")){
+                            } else if (powerbackupspinget.equals("3")) {
                                 powerbackupspinget = "Full";
                             }
-
-
 
 
                             //lasttime
                             lasttimespinget = object.getString("lasttimespinget");
 
-                            if(lasttimespinget.contains("1")){
+                            if (lasttimespinget.contains("1")) {
                                 lasttimespinget = "7 PM";
                             }
-                            if(lasttimespinget.contains("2")){
+                            if (lasttimespinget.contains("2")) {
                                 lasttimespinget = "8 PM";
                             }
-                            if(lasttimespinget.contains("3")){
+                            if (lasttimespinget.contains("3")) {
                                 lasttimespinget = "9 PM";
                             }
-                            if(lasttimespinget.contains("4")){
+                            if (lasttimespinget.contains("4")) {
                                 lasttimespinget = "10 PM";
                             }
-                            if(lasttimespinget.contains("5")){
+                            if (lasttimespinget.contains("5")) {
                                 lasttimespinget = "11 PM";
                             }
-                            if(lasttimespinget.contains("6")){
+                            if (lasttimespinget.contains("6")) {
                                 lasttimespinget = "12 AM";
                             }
-                            if(lasttimespinget.contains("7")){
+                            if (lasttimespinget.contains("7")) {
                                 lasttimespinget = "1 AM";
                             }
-                            if(lasttimespinget.contains("8")){
+                            if (lasttimespinget.contains("8")) {
                                 lasttimespinget = "2 AM";
                             }
-                            if(lasttimespinget.contains("9")){
+                            if (lasttimespinget.contains("9")) {
                                 lasttimespinget = "3 AM";
                             }
-                            if(lasttimespinget.contains("10")){
+                            if (lasttimespinget.contains("10")) {
                                 lasttimespinget = "24 x 7";
                             }
 
 
-
-
-
-
-
-
-
-
                             //pet
                             pet = object.getString("pet");
-                            if(pet.equals("1")){
+                            if (pet.equals("1")) {
                                 pet = "Yes";
-                            }else {
+                            } else {
                                 pet = "No";
                             }
 
 
                             //visiter
                             visiter = object.getString("visiter");
-                            if(visiter.equals("1")){
+                            if (visiter.equals("1")) {
                                 visiter = "Yes";
-                            }else {
+                            } else {
                                 visiter = "No";
                             }
 
@@ -3438,27 +3134,27 @@ public class MainActivity extends AppCompatActivity {
                             //smoking
                             smoking = object.getString("smoking");
 
-                            if(smoking.equals("1")){
+                            if (smoking.equals("1")) {
                                 smoking = "Yes";
-                            }else {
+                            } else {
                                 smoking = "No";
                             }
 
 
                             //alcohol
                             alcohol = object.getString("alcohol");
-                            if(alcohol.equals("1")){
+                            if (alcohol.equals("1")) {
                                 alcohol = "Yes";
-                            }else {
+                            } else {
                                 alcohol = "No";
                             }
 
 
                             //event
                             event = object.getString("event");
-                            if(event.equals("1")){
+                            if (event.equals("1")) {
                                 event = "Yes";
-                            }else {
+                            } else {
                                 event = "No";
                             }
 
@@ -3467,43 +3163,39 @@ public class MainActivity extends AppCompatActivity {
                             anemitiesitem = object.getString("anemitiesitem");
 
 
-                            if(anemitiesitem.contains("1")){
+                            if (anemitiesitem.contains("1")) {
                                 anemitiesitem1.add("Lift");
                             }
 
-                            if(anemitiesitem.contains("2")){
+                            if (anemitiesitem.contains("2")) {
                                 anemitiesitem1.add("Park");
                             }
 
-                            if(anemitiesitem.contains("3")){
+                            if (anemitiesitem.contains("3")) {
                                 anemitiesitem1.add("Maintenance Staff");
                             }
 
-                            if(anemitiesitem.contains("4")){
+                            if (anemitiesitem.contains("4")) {
                                 anemitiesitem1.add("Visiter Parking");
                             }
 
-                            if(anemitiesitem.contains("5")){
+                            if (anemitiesitem.contains("5")) {
                                 anemitiesitem1.add("FengShui/Vaastu Compliant");
                             }
 
-                            if(anemitiesitem.contains("6")){
+                            if (anemitiesitem.contains("6")) {
                                 anemitiesitem1.add("Intercome Facility");
                             }
 
-                            if(anemitiesitem.contains("7")){
+                            if (anemitiesitem.contains("7")) {
                                 anemitiesitem1.add("Water Storage");
                             }
 
-                            if(anemitiesitem.contains("8")){
+                            if (anemitiesitem.contains("8")) {
                                 anemitiesitem1.add("Security/Fire Alaram");
                             }
 
                             anemitiesitem = String.valueOf(anemitiesitem1);
-
-
-
-
 
 
                             //moreanemities
@@ -3517,127 +3209,123 @@ public class MainActivity extends AppCompatActivity {
 
                             moreanemitiesitem2.addAll(moreanemitiesitem3);
 
-                            System.out.println("morrrrrrr ::: "+ moreanemitiesitem2);
+                            System.out.println("morrrrrrr ::: " + moreanemitiesitem2);
 
 
-                            if(moreanemitiesitem2.contains("1")){
+                            if (moreanemitiesitem2.contains("1")) {
                                 moreanemitiesitem1.add("Swimming Pool");
                             }
 
-                            if(moreanemitiesitem2.contains("2")){
+                            if (moreanemitiesitem2.contains("2")) {
                                 moreanemitiesitem1.add("Centrally Air Conditioned");
                             }
 
-                            if(moreanemitiesitem2.contains("3")){
+                            if (moreanemitiesitem2.contains("3")) {
                                 moreanemitiesitem1.add("Garden");
                             }
 
-                            if(moreanemitiesitem2.contains("4")){
+                            if (moreanemitiesitem2.contains("4")) {
                                 moreanemitiesitem1.add("Wifi");
                             }
 
-                            if(moreanemitiesitem2.contains("5")){
+                            if (moreanemitiesitem2.contains("5")) {
                                 moreanemitiesitem1.add("Piped-Gas");
                             }
 
-                            if(moreanemitiesitem2.contains("6")){
+                            if (moreanemitiesitem2.contains("6")) {
                                 moreanemitiesitem1.add("Water Purifier");
                             }
 
-                            if(moreanemitiesitem2.contains("7")){
+                            if (moreanemitiesitem2.contains("7")) {
                                 moreanemitiesitem1.add("Club House");
                             }
 
-                            if(moreanemitiesitem2.contains("8")){
+                            if (moreanemitiesitem2.contains("8")) {
                                 moreanemitiesitem1.add("Shopping Center");
                             }
 
-                            if(moreanemitiesitem2.contains("9")){
+                            if (moreanemitiesitem2.contains("9")) {
                                 moreanemitiesitem1.add("Water Disposal");
                             }
 
-                            if(moreanemitiesitem2.contains("10")){
+                            if (moreanemitiesitem2.contains("10")) {
                                 moreanemitiesitem1.add("RainWater Harvesting");
                             }
 
-                            if(moreanemitiesitem2.contains("11")){
+                            if (moreanemitiesitem2.contains("11")) {
                                 moreanemitiesitem1.add("Bank Attached Property");
                             }
 
-                            if(moreanemitiesitem2.contains("12")){
+                            if (moreanemitiesitem2.contains("12")) {
                                 moreanemitiesitem1.add("Gym");
                             }
 
                             moreanemitiesitem = String.valueOf(moreanemitiesitem1);
 
-                            System.out.println("morrrr more ::"+ moreanemitiesitem1);
-
+                            System.out.println("morrrr more ::" + moreanemitiesitem1);
 
 
                             //watersource
                             watersourceitem = object.getString("watersourceitem");
 
-                            if(watersourceitem.contains("1")){
+                            if (watersourceitem.contains("1")) {
                                 watersourceitem1.add("Municipal Corporation");
                             }
-                            if(watersourceitem.contains("2")){
+                            if (watersourceitem.contains("2")) {
                                 watersourceitem1.add("Borewell");
                             }
 
                             watersourceitem = String.valueOf(watersourceitem1);
 
 
-
                             //overlooking
                             overlookingitem = object.getString("overlookingitem");
 
-                            if(overlookingitem.contains("1")){
+                            if (overlookingitem.contains("1")) {
                                 overlookingitem1.add("Park/Garden");
                             }
 
-                            if(overlookingitem.contains("2")){
+                            if (overlookingitem.contains("2")) {
                                 overlookingitem1.add("Main Road");
                             }
 
-                            if(overlookingitem.contains("3")){
+                            if (overlookingitem.contains("3")) {
                                 overlookingitem1.add("Club");
                             }
 
-                            if(overlookingitem.contains("4")){
+                            if (overlookingitem.contains("4")) {
                                 overlookingitem1.add("Lake Facing");
                             }
 
-                            if(overlookingitem.contains("5")){
+                            if (overlookingitem.contains("5")) {
                                 overlookingitem1.add("Sea Facing");
                             }
 
-                            if(overlookingitem.contains("6")){
+                            if (overlookingitem.contains("6")) {
                                 overlookingitem1.add("Others");
                             }
 
                             overlookingitem = String.valueOf(overlookingitem1);
 
 
-
                             //somefeatures
                             somefeatureitem = object.getString("somefeatureitem");
-                            if(somefeatureitem.contains("1")){
+                            if (somefeatureitem.contains("1")) {
                                 somefeatureitem1.add("In a Gated Society");
                             }
 
-                            if(somefeatureitem.contains("2")){
+                            if (somefeatureitem.contains("2")) {
                                 somefeatureitem1.add("Corner Property");
                             }
-                            if(somefeatureitem.contains("3")){
+                            if (somefeatureitem.contains("3")) {
                                 somefeatureitem1.add("Pet Friendly");
                             }
 
-                            if(somefeatureitem.contains("4")){
+                            if (somefeatureitem.contains("4")) {
                                 somefeatureitem1.add("Wheelchair Friendly");
                             }
 
                             somefeatureitem = String.valueOf(somefeatureitem1);
-
 
 
                             //byres
@@ -3674,31 +3362,30 @@ public class MainActivity extends AppCompatActivity {
                             //times
                             timeitems = object.getString("timeitems");
 
-                            if(timeitems.contains("1")){
+                            if (timeitems.contains("1")) {
                                 timeitems1.add("8am - 12pm");
                             }
 
-                            if(timeitems.contains("2")){
+                            if (timeitems.contains("2")) {
                                 timeitems1.add("12pm - 3pm");
                             }
-                            if(timeitems.contains("3")){
+                            if (timeitems.contains("3")) {
                                 timeitems1.add("3pm - 6pm");
                             }
 
-                            if(timeitems.contains("4")){
+                            if (timeitems.contains("4")) {
                                 timeitems1.add("6pm - 9pm");
                             }
 
-                            if(timeitems.contains("5")){
+                            if (timeitems.contains("5")) {
                                 timeitems1.add("9pm - 11pm");
                             }
 
-                            if(timeitems.contains("6")){
+                            if (timeitems.contains("6")) {
                                 timeitems1.add("None");
                             }
 
                             timeitems = String.valueOf(timeitems1);
-
 
 
                             widthfacingget = object.getString("widthfacingget");
@@ -3707,9 +3394,9 @@ public class MainActivity extends AppCompatActivity {
 
                             //bowndywall
                             boundrywall = object.getString("boundrywall");
-                            if(boundrywall.equals("1")){
+                            if (boundrywall.equals("1")) {
                                 boundrywall = "Yes";
-                            }else {
+                            } else {
                                 boundrywall = "No";
                             }
 
@@ -3717,82 +3404,70 @@ public class MainActivity extends AppCompatActivity {
                             flattype = object.getString("flattype");
 
 
-                            if(flattype.equals("1")){
+                            if (flattype.equals("1")) {
                                 flattype = "1 BHK";
-                            }
-                            else if(flattype.equals("2")){
+                            } else if (flattype.equals("2")) {
                                 flattype = "2 BHK";
-                            }
-                            else if(flattype.equals("3")){
+                            } else if (flattype.equals("3")) {
                                 flattype = "3 BHK";
-                            }
-                            else if(flattype.equals("4")){
+                            } else if (flattype.equals("4")) {
                                 flattype = "4 BHK";
-                            }
-                            else if(flattype.equals("5")){
+                            } else if (flattype.equals("5")) {
                                 flattype = "5 BHK";
-                            }
-                            else if(flattype.equals("6")){
+                            } else if (flattype.equals("6")) {
                                 flattype = "6 BHK";
-                            }
-                            else if(flattype.equals("7")){
+                            } else if (flattype.equals("7")) {
                                 flattype = "7 BHK";
-                            }
-                            else if(flattype.equals("8")){
+                            } else if (flattype.equals("8")) {
                                 flattype = "8 BHK";
-                            }
-                            else if(flattype.equals("9")){
+                            } else if (flattype.equals("9")) {
                                 flattype = "9 BHK";
-                            }
-                            else if(flattype.equals("10")){
+                            } else if (flattype.equals("10")) {
                                 flattype = "10 BHK";
-                            }
-                            else if(flattype.equals("11")){
+                            } else if (flattype.equals("11")) {
                                 flattype = "11 BHK";
                             }
 
 
-                            user_id= object.getString("user_id");
-                            newprice= object.getString("newprice");
-                            image= Endpoints.base_url+ object.getString("image");
-                            shortlistedvalue= object.getString("shortlistedvalue");
+                            user_id = object.getString("user_id");
+                            newprice = object.getString("newprice");
+                            image = Endpoints.base_url + object.getString("image");
+                            shortlistedvalue = object.getString("shortlistedvalue");
 
                             //rera
-                            getrera= object.getString("rera");
-                            if(getrera.equals("1")){
+                            getrera = object.getString("rera");
+                            if (getrera.equals("1")) {
                                 getrera = "Yes";
-                            }else {
+                            } else {
                                 getrera = "No";
                             }
 
-                            mobile= object.getString("mobile");
-                            reg_date= object.getString("reg_date");
-                            fname= object.getString("fname");
-                            email= object.getString("email");
-                            lname= object.getString("lname");
-                            latlong= object.getString("latlong");
+                            mobile = object.getString("mobile");
+                            reg_date = object.getString("reg_date");
+                            fname = object.getString("fname");
+                            email = object.getString("email");
+                            lname = object.getString("lname");
+                            latlong = object.getString("latlong");
                             paymentStatus = object.getString("paymentStatus");
 
 
-
-
-                            SellDataModel sellDataModel = new SellDataModel(id ,usertype , type , category , categorytype , agrement , pgavaliablefor , pgshareprivate ,
-                                    sharingspinnumber , propertylistfor , willing , pgsuitablefor ,state, city , locality , projectname , address ,
-                                    unit1 ,unit2 ,unit3 ,availabilitydate , otherroom , homethings , builtupa , carpeta , plota , bed ,
-                                    bath , balconie , totalfloorget , reservedpark , availabilityspinget , ageofpropertyspinget ,
-                                    furnishedspinget ,possessionbyspinget ,
-                                    noofroomspinget , qualityratingspinget , floorallowedspinget , roomavailabespinget , priceget , maintenanceget ,
-                                    bookingamountget ,
-                                    durationofrentagget , monthofnoticeget  , securitydepositspinget , maintenancemonthlyspinget ,
-                                    ownweshipspinget ,
-                                    typeoffood , pricestep , facilityincluded , weekdays , weeends , earlylivingchargesget , contractdurationget ,
-                                    annualduespayableget ,
-                                    depositeaget , facingspinget , unitspinget , typeofflooringspinget , powerbackupspinget , lasttimespinget ,
-                                    pet , visiter , smoking ,
-                                    alcohol , event , anemitiesitem , moreanemitiesitem , watersourceitem , overlookingitem ,
-                                    somefeatureitem , byersitem , timeitems ,
-                                    widthfacingget , descriptionget , boundrywall ,flattype, user_id, newprice, image,
-                                    shortlistedvalue, getrera , mobile, reg_date, fname, lname, latlong, email, paymentStatus);
+                            SellDataModel sellDataModel = new SellDataModel(id, usertype, type, category, categorytype, agrement, pgavaliablefor, pgshareprivate,
+                                    sharingspinnumber, propertylistfor, willing, pgsuitablefor, state, city, locality, projectname, address,
+                                    unit1, unit2, unit3, availabilitydate, otherroom, homethings, builtupa, carpeta, plota, bed,
+                                    bath, balconie, totalfloorget, reservedpark, availabilityspinget, ageofpropertyspinget,
+                                    furnishedspinget, possessionbyspinget,
+                                    noofroomspinget, qualityratingspinget, floorallowedspinget, roomavailabespinget, priceget, maintenanceget,
+                                    bookingamountget,
+                                    durationofrentagget, monthofnoticeget, securitydepositspinget, maintenancemonthlyspinget,
+                                    ownweshipspinget,
+                                    typeoffood, pricestep, facilityincluded, weekdays, weeends, earlylivingchargesget, contractdurationget,
+                                    annualduespayableget,
+                                    depositeaget, facingspinget, unitspinget, typeofflooringspinget, powerbackupspinget, lasttimespinget,
+                                    pet, visiter, smoking,
+                                    alcohol, event, anemitiesitem, moreanemitiesitem, watersourceitem, overlookingitem,
+                                    somefeatureitem, byersitem, timeitems,
+                                    widthfacingget, descriptionget, boundrywall, flattype, user_id, newprice, image,
+                                    shortlistedvalue, getrera, mobile, reg_date, fname, lname, latlong, email, paymentStatus);
                             sellDataModels.add(sellDataModel);
                             sellAdapter.notifyDataSetChanged();
                         }
@@ -3801,7 +3476,7 @@ public class MainActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     //progressDialog.dismiss();
                     showmessage("Server Error...");
-                    System.out.println("problem ::"+e);
+                    System.out.println("problem ::" + e);
                     e.printStackTrace();
                 }
 
@@ -3811,7 +3486,7 @@ public class MainActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 showmessage("Server Error...");
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 SmsData smsData = new SmsData();
@@ -3831,7 +3506,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     private void getrentproperty() {
         progressDialog.show();
 
@@ -3840,7 +3514,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 //progressDialog.dismiss();
-                System.out.println("response :: "+ response);
+                System.out.println("response :: " + response);
 
                 try {
                     JSONObject obj = new JSONObject(response);
@@ -3850,9 +3524,9 @@ public class MainActivity extends AppCompatActivity {
                     JSONArray jsonArray = obj.getJSONArray("data");
 
 
-                    if(succes.equals("1")){
+                    if (succes.equals("1")) {
                         rentDataModels.clear();
-                        for(int i=0; i<jsonArray.length();i++){
+                        for (int i = 0; i < jsonArray.length(); i++) {
 
 
                             willing1.clear();
@@ -3873,29 +3547,26 @@ public class MainActivity extends AppCompatActivity {
                             homethings2.clear();
 
 
-
                             JSONObject object = jsonArray.getJSONObject(i);
-                            id =object.getString("id");
+                            id = object.getString("id");
                             //usertype
                             usertype = object.getString("usertype");
 
-                            if(usertype.equals("1")){
+                            if (usertype.equals("1")) {
                                 usertype = "Owner";
-                            }else if (usertype.equals("2")){
+                            } else if (usertype.equals("2")) {
                                 usertype = "Dealer";
-                            }
-                            else if (usertype.equals("3")){
+                            } else if (usertype.equals("3")) {
                                 usertype = "Builder";
                             }
-
 
 
                             // type
                             type = object.getString("type");
 
-                            if(type.equals("1")){
+                            if (type.equals("1")) {
                                 type = "Residential";
-                            }else{
+                            } else {
                                 type = "Commercial";
                             }
 
@@ -3903,146 +3574,108 @@ public class MainActivity extends AppCompatActivity {
                             //category
                             category = object.getString("category");
 
-                            if(category.equals("1")){
+                            if (category.equals("1")) {
                                 category = "Apartment/Flat/Builder Floor";
-                            }
-                            else if(category.equals("2")){
+                            } else if (category.equals("2")) {
                                 category = "Residential Land";
-                            }
-                            else if(category.equals("3")){
+                            } else if (category.equals("3")) {
                                 category = "House/Villa";
-                            }
-                            else if(category.equals("4")){
+                            } else if (category.equals("4")) {
                                 category = "Offices";
-                            }
-                            else if(category.equals("5")){
+                            } else if (category.equals("5")) {
                                 category = "Retail";
-                            }
-                            else if(category.equals("6")){
+                            } else if (category.equals("6")) {
                                 category = "Land";
-                            }
-                            else if(category.equals("7")){
+                            } else if (category.equals("7")) {
                                 category = "Industry";
-                            }
-                            else if(category.equals("8")){
+                            } else if (category.equals("8")) {
                                 category = "Storage";
-                            }
-                            else if(category.equals("9")){
+                            } else if (category.equals("9")) {
                                 category = "Hospitality";
-                            }
-                            else if(category.equals("10")){
+                            } else if (category.equals("10")) {
                                 category = "Others";
                             }
-
 
 
                             //categorytype
                             categorytype = object.getString("categorytype");
 
 
-                            if (categorytype.equals("1")){
+                            if (categorytype.equals("1")) {
                                 categorytype = "Residential Apartment";
-                            }
-
-                            else if (categorytype.equals("2")){
+                            } else if (categorytype.equals("2")) {
                                 categorytype = "Independent/Builder Floor";
-                            }
-                            else if (categorytype.equals("3")){
+                            } else if (categorytype.equals("3")) {
                                 categorytype = "Studio Apartment";
-                            }
-                            else if (categorytype.equals("4")){
+                            } else if (categorytype.equals("4")) {
                                 categorytype = "Serviced Apartments";
-                            }
-                            else if (categorytype.equals("5")){
+                            } else if (categorytype.equals("5")) {
                                 categorytype = "Independent House/Villa";
-                            }
-                            else if (categorytype.equals("6")){
+                            } else if (categorytype.equals("6")) {
                                 categorytype = "Farm House";
-                            }
-                            else if (categorytype.equals("7")){
+                            } else if (categorytype.equals("7")) {
                                 categorytype = "Ready to move office space";
-                            }
-                            else if (categorytype.equals("8")){
+                            } else if (categorytype.equals("8")) {
                                 categorytype = "Bare shell office space";
-                            }
-                            else if (categorytype.equals("9")){
+                            } else if (categorytype.equals("9")) {
                                 categorytype = "Co-working office space";
-                            }
-                            else if (categorytype.equals("10")){
+                            } else if (categorytype.equals("10")) {
                                 categorytype = "Commercial Shops";
-                            }
-                            else if (categorytype.equals("11")){
+                            } else if (categorytype.equals("11")) {
                                 categorytype = "Commercial Showrooms";
-                            }
-                            else if (categorytype.equals("12")){
+                            } else if (categorytype.equals("12")) {
                                 categorytype = "Space in Retail Mall";
-                            }
-                            else if (categorytype.equals("13")){
+                            } else if (categorytype.equals("13")) {
                                 categorytype = "Commercial Land/Inst. Land";
-                            }
-                            else if (categorytype.equals("14")){
+                            } else if (categorytype.equals("14")) {
                                 categorytype = "Agricultural/Farm Land";
-                            }
-                            else if (categorytype.equals("15")){
+                            } else if (categorytype.equals("15")) {
                                 categorytype = "Industrial Lands/Plots";
-                            }
-                            else if (categorytype.equals("16")){
+                            } else if (categorytype.equals("16")) {
                                 categorytype = "Factory";
-                            }
-                            else if (categorytype.equals("17")){
+                            } else if (categorytype.equals("17")) {
                                 categorytype = "Manufacturing";
-                            }
-                            else if (categorytype.equals("18")){
+                            } else if (categorytype.equals("18")) {
                                 categorytype = "Ware House";
-                            }
-                            else if (categorytype.equals("19")){
+                            } else if (categorytype.equals("19")) {
                                 categorytype = "Cold Storage";
-                            }
-                            else if (categorytype.equals("20")){
+                            } else if (categorytype.equals("20")) {
                                 categorytype = "Hotel/Resorts";
-                            }
-                            else if (categorytype.equals("21")){
+                            } else if (categorytype.equals("21")) {
                                 categorytype = "Guest-House/Banquet-Hallsage";
                             }
-
-
 
 
                             //agrement
                             agrement = object.getString("agrement");
 
-                            if(agrement.equals("1")){
+                            if (agrement.equals("1")) {
                                 agrement = "Company Lease Agreement";
-                            }else{
+                            } else {
                                 agrement = "Any";
                             }
-
 
 
                             //pgavailablefor
                             pgavaliablefor = object.getString("pgavaliablefor");
 
-                            if(pgavaliablefor.equals("1")){
+                            if (pgavaliablefor.equals("1")) {
                                 pgavaliablefor = "Girls";
-                            }else if (pgavaliablefor.equals("2")){
-                                pgavaliablefor ="Boys";
-                            }else{
+                            } else if (pgavaliablefor.equals("2")) {
+                                pgavaliablefor = "Boys";
+                            } else {
                                 pgavaliablefor = "Any";
                             }
-
-
 
 
                             //pgshareprivate
                             pgshareprivate = object.getString("pgshareprivate");
 
-                            if (pgshareprivate.equals("1")){
+                            if (pgshareprivate.equals("1")) {
                                 pgshareprivate = "Private";
-                            }else {
+                            } else {
                                 pgshareprivate = "Sharing";
                             }
-
-
 
 
                             //sharingnumber
@@ -4051,24 +3684,24 @@ public class MainActivity extends AppCompatActivity {
                             //propertylistfor
                             propertylistfor = object.getString("propertylistfor");
 
-                            if(propertylistfor.equals("1")){
+                            if (propertylistfor.equals("1")) {
                                 propertylistfor = "Sell";
-                            }else if(propertylistfor.equals("2")){
+                            } else if (propertylistfor.equals("2")) {
                                 propertylistfor = "Rent";
-                            }else{
+                            } else {
                                 propertylistfor = "Paying Guest";
                             }
 
                             // willing
                             willing = object.getString("willing");
 
-                            if(willing.contains("1")){
+                            if (willing.contains("1")) {
                                 willing1.add("Family");
                             }
-                            if (willing.contains("2")){
+                            if (willing.contains("2")) {
                                 willing1.add("Single Men");
                             }
-                            if(willing.contains("3")){
+                            if (willing.contains("3")) {
                                 willing1.add("Single Women");
                             }
 
@@ -4078,10 +3711,10 @@ public class MainActivity extends AppCompatActivity {
                             //pgsuitablefor
                             pgsuitablefor = object.getString("pgsuitablefor");
 
-                            if(pgsuitablefor.contains("1")){
+                            if (pgsuitablefor.contains("1")) {
                                 pgsuitablefor1.add("Students");
                             }
-                            if(pgsuitablefor.contains("2")){
+                            if (pgsuitablefor.contains("2")) {
                                 pgsuitablefor1.add("Working Professionals");
                             }
 
@@ -4097,56 +3730,39 @@ public class MainActivity extends AppCompatActivity {
                             //unit1
                             unit1 = object.getString("unit1");
 
-                            if(unit1.equals("1")){
+                            if (unit1.equals("1")) {
                                 unit1 = "Sq.Ft";
-                            }
-                            else if(unit1.equals("2")){
+                            } else if (unit1.equals("2")) {
                                 unit1 = "Sq.yards";
-                            }else if(unit1.equals("3")){
+                            } else if (unit1.equals("3")) {
                                 unit1 = "Sq.m";
-                            }
-                            else if(unit1.equals("4")){
+                            } else if (unit1.equals("4")) {
                                 unit1 = "Acres";
-                            }
-                            else if(unit1.equals("5")){
+                            } else if (unit1.equals("5")) {
                                 unit1 = "Marla";
-                            }else if(unit1.equals("6")){
+                            } else if (unit1.equals("6")) {
                                 unit1 = "Cents";
-                            }
-                            else if(unit1.equals("7")){
+                            } else if (unit1.equals("7")) {
                                 unit1 = "Bigha";
-                            }else if(unit1.equals("8")){
+                            } else if (unit1.equals("8")) {
                                 unit1 = "Kottah";
-                            }
-                            else if(unit1.equals("9")){
+                            } else if (unit1.equals("9")) {
                                 unit1 = "Grounds";
-                            }
-                            else if(unit1.equals("10")){
+                            } else if (unit1.equals("10")) {
                                 unit1 = "Ares";
-                            }
-                            else if(unit1.equals("11")){
+                            } else if (unit1.equals("11")) {
                                 unit1 = "Biswa";
-                            }
-                            else if(unit1.equals("12")){
+                            } else if (unit1.equals("12")) {
                                 unit1 = "Guntha";
-                            }
-                            else if(unit1.equals("13")){
+                            } else if (unit1.equals("13")) {
                                 unit1 = "Aankadam";
-                            }
-
-                            else if(unit1.equals("14")){
+                            } else if (unit1.equals("14")) {
                                 unit1 = "Hectares";
-                            }
-
-                            else if(unit1.equals("15")){
+                            } else if (unit1.equals("15")) {
                                 unit1 = "Rood";
-                            }
-
-                            else if(unit1.equals("16")){
+                            } else if (unit1.equals("16")) {
                                 unit1 = "Chataks";
-                            }
-
-                            else if(unit1.equals("17")){
+                            } else if (unit1.equals("17")) {
                                 unit1 = "Perch";
                             }
 
@@ -4154,118 +3770,81 @@ public class MainActivity extends AppCompatActivity {
                             //unit2
                             unit2 = object.getString("unit2");
 
-                            if(unit2.equals("1")){
+                            if (unit2.equals("1")) {
                                 unit2 = "Sq.Ft";
-                            }
-                            else if(unit2.equals("2")){
+                            } else if (unit2.equals("2")) {
                                 unit2 = "Sq.yards";
-                            }else if(unit2.equals("3")){
+                            } else if (unit2.equals("3")) {
                                 unit2 = "Sq.m";
-                            }
-                            else if(unit2.equals("4")){
+                            } else if (unit2.equals("4")) {
                                 unit2 = "Acres";
-                            }
-                            else if(unit2.equals("5")){
+                            } else if (unit2.equals("5")) {
                                 unit2 = "Marla";
-                            }else if(unit2.equals("6")){
+                            } else if (unit2.equals("6")) {
                                 unit2 = "Cents";
-                            }
-                            else if(unit2.equals("7")){
+                            } else if (unit2.equals("7")) {
                                 unit2 = "Bigha";
-                            }else if(unit2.equals("8")){
+                            } else if (unit2.equals("8")) {
                                 unit2 = "Kottah";
-                            }
-                            else if(unit2.equals("9")){
+                            } else if (unit2.equals("9")) {
                                 unit2 = "Grounds";
-                            }
-                            else if(unit2.equals("10")){
+                            } else if (unit2.equals("10")) {
                                 unit2 = "Ares";
-                            }
-                            else if(unit2.equals("11")){
+                            } else if (unit2.equals("11")) {
                                 unit2 = "Biswa";
-                            }
-                            else if(unit2.equals("12")){
+                            } else if (unit2.equals("12")) {
                                 unit2 = "Guntha";
-                            }
-                            else if(unit2.equals("13")){
+                            } else if (unit2.equals("13")) {
                                 unit2 = "Aankadam";
-                            }
-
-                            else if(unit2.equals("14")){
+                            } else if (unit2.equals("14")) {
                                 unit2 = "Hectares";
-                            }
-
-                            else if(unit2.equals("15")){
+                            } else if (unit2.equals("15")) {
                                 unit2 = "Rood";
-                            }
-
-                            else if(unit2.equals("16")){
+                            } else if (unit2.equals("16")) {
                                 unit2 = "Chataks";
-                            }
-
-                            else if(unit2.equals("17")){
+                            } else if (unit2.equals("17")) {
                                 unit2 = "Perch";
                             }
-
 
 
                             //unit3
                             unit3 = object.getString("unit3");
 
-                            if(unit3.equals("1")){
+                            if (unit3.equals("1")) {
                                 unit3 = "Sq.Ft";
-                            }
-                            else if(unit3.equals("2")){
+                            } else if (unit3.equals("2")) {
                                 unit3 = "Sq.yards";
-                            }else if(unit3.equals("3")){
+                            } else if (unit3.equals("3")) {
                                 unit1 = "Sq.m";
-                            }
-                            else if(unit3.equals("4")){
+                            } else if (unit3.equals("4")) {
                                 unit3 = "Acres";
-                            }
-                            else if(unit3.equals("5")){
+                            } else if (unit3.equals("5")) {
                                 unit3 = "Marla";
-                            }else if(unit3.equals("6")){
+                            } else if (unit3.equals("6")) {
                                 unit3 = "Cents";
-                            }
-                            else if(unit3.equals("7")){
+                            } else if (unit3.equals("7")) {
                                 unit3 = "Bigha";
-                            }else if(unit3.equals("8")){
+                            } else if (unit3.equals("8")) {
                                 unit3 = "Kottah";
-                            }
-                            else if(unit3.equals("9")){
+                            } else if (unit3.equals("9")) {
                                 unit3 = "Grounds";
-                            }
-                            else if(unit3.equals("10")){
+                            } else if (unit3.equals("10")) {
                                 unit3 = "Ares";
-                            }
-                            else if(unit3.equals("11")){
+                            } else if (unit3.equals("11")) {
                                 unit3 = "Biswa";
-                            }
-                            else if(unit3.equals("12")){
+                            } else if (unit3.equals("12")) {
                                 unit3 = "Guntha";
-                            }
-                            else if(unit3.equals("13")){
+                            } else if (unit3.equals("13")) {
                                 unit3 = "Aankadam";
-                            }
-
-                            else if(unit3.equals("14")){
+                            } else if (unit3.equals("14")) {
                                 unit3 = "Hectares";
-                            }
-
-                            else if(unit3.equals("15")){
+                            } else if (unit3.equals("15")) {
                                 unit3 = "Rood";
-                            }
-
-                            else if(unit3.equals("16")){
+                            } else if (unit3.equals("16")) {
                                 unit3 = "Chataks";
-                            }
-
-                            else if(unit3.equals("17")){
+                            } else if (unit3.equals("17")) {
                                 unit3 = "Perch";
                             }
-
-
 
 
                             availabilitydate = object.getString("availabilitydate");
@@ -4273,24 +3852,22 @@ public class MainActivity extends AppCompatActivity {
                             //otherroom
                             otherroom = object.getString("otherroom");
 
-                            if(otherroom.contains("1")){
+                            if (otherroom.contains("1")) {
                                 otherroom1.add("Pooja Room");
                             }
-                            if(otherroom.contains("2")){
+                            if (otherroom.contains("2")) {
                                 otherroom1.add("Study Room");
                             }
 
-                            if(otherroom.contains("3")){
+                            if (otherroom.contains("3")) {
                                 otherroom1.add("Servant Room");
                             }
 
-                            if(otherroom.contains("4")){
+                            if (otherroom.contains("4")) {
                                 otherroom1.add("Others");
                             }
 
                             otherroom = String.valueOf(otherroom1);
-
-
 
 
                             //homethings
@@ -4306,78 +3883,74 @@ public class MainActivity extends AppCompatActivity {
                             homethings2.addAll(homethings3);
 
 
-                            if(homethings2.contains("1")){
+                            if (homethings2.contains("1")) {
                                 homethings1.add("Wardrobe");
                             }
 
 
-                            if(homethings2.contains("2")){
+                            if (homethings2.contains("2")) {
                                 homethings1.add("Modular Kitchen");
                             }
 
 
-                            if(homethings2.contains("3")){
+                            if (homethings2.contains("3")) {
                                 homethings1.add("Fridge");
                             }
 
 
-                            if(homethings2.contains("4")){
+                            if (homethings2.contains("4")) {
                                 homethings1.add("Ac");
                             }
 
 
-                            if(homethings2.contains("5")){
+                            if (homethings2.contains("5")) {
                                 homethings1.add("Stove");
                             }
 
 
-                            if(homethings2.contains("6")){
+                            if (homethings2.contains("6")) {
                                 homethings1.add("Geyser");
                             }
 
 
-                            if(homethings2.contains("7")){
+                            if (homethings2.contains("7")) {
                                 homethings1.add("Dinning Table");
                             }
 
-                            if(homethings2.contains("8")){
+                            if (homethings2.contains("8")) {
                                 homethings1.add("Sofa");
                             }
 
 
-                            if(homethings2.contains("9")){
+                            if (homethings2.contains("9")) {
                                 homethings1.add("Washing Machine");
                             }
 
 
-                            if(homethings2.contains("10")){
+                            if (homethings2.contains("10")) {
                                 homethings1.add("Water Purifier");
                             }
 
 
-                            if(homethings2.contains("11")){
+                            if (homethings2.contains("11")) {
                                 homethings1.add("Microwave");
                             }
 
 
-                            if(homethings2.contains("12")){
+                            if (homethings2.contains("12")) {
                                 homethings1.add("Curtains");
                             }
 
-                            if(homethings2.contains("13")){
+                            if (homethings2.contains("13")) {
                                 homethings1.add("Chimney");
                             }
 
-                            if(homethings2.contains("14")){
+                            if (homethings2.contains("14")) {
                                 homethings1.add("Exhaust Fan");
                             }
 
 
-
                             homethings = String.valueOf(homethings1);
-
-
-
 
 
                             builtupa = object.getString("builtupa");
@@ -4391,9 +3964,9 @@ public class MainActivity extends AppCompatActivity {
 
                             //reservvedpark
                             reservedpark = object.getString("reservedpark");
-                            if(reservedpark.equals("1")){
+                            if (reservedpark.equals("1")) {
                                 reservedpark = "Yes";
-                            }else{
+                            } else {
                                 reservedpark = "No";
                             }
 
@@ -4401,10 +3974,9 @@ public class MainActivity extends AppCompatActivity {
                             // availability
                             availabilityspinget = object.getString("availabilityspinget");
 
-                            if(availabilityspinget.equals("1")){
+                            if (availabilityspinget.equals("1")) {
                                 availabilityspinget = "Under Construction";
-                            }
-                            else if(availabilityspinget.equals("2")){
+                            } else if (availabilityspinget.equals("2")) {
                                 availabilityspinget = "Ready To Move";
 
                             }
@@ -4412,78 +3984,58 @@ public class MainActivity extends AppCompatActivity {
 
                             //ageofproperty
                             ageofpropertyspinget = object.getString("ageofpropertyspinget");
-                            if(ageofpropertyspinget.equals("1")){
+                            if (ageofpropertyspinget.equals("1")) {
                                 ageofpropertyspinget = "0-1 Year Old Property";
-                            }
-                            else if(ageofpropertyspinget.equals("2")){
+                            } else if (ageofpropertyspinget.equals("2")) {
                                 ageofpropertyspinget = "1-5 Year Old Property";
-                            }
-                            else if(ageofpropertyspinget.equals("3")){
+                            } else if (ageofpropertyspinget.equals("3")) {
                                 ageofpropertyspinget = "5-10 Year Old Property";
-                            }
-                            else if(ageofpropertyspinget.equals("4")){
+                            } else if (ageofpropertyspinget.equals("4")) {
                                 ageofpropertyspinget = "10+ Year Old Property";
-                            }
-                            else if(ageofpropertyspinget.equals("5")){
+                            } else if (ageofpropertyspinget.equals("5")) {
                                 ageofpropertyspinget = "Ready To Move";
                             }
 
 
-
                             //furnished
                             furnishedspinget = object.getString("furnishedspinget");
-                            if(furnishedspinget.equals("1")){
+                            if (furnishedspinget.equals("1")) {
                                 furnishedspinget = "Furnished";
-                            }
-                            else if(furnishedspinget.equals("2")){
+                            } else if (furnishedspinget.equals("2")) {
                                 furnishedspinget = "Semifurnished";
-                            }
-                            else if(furnishedspinget.equals("3")){
+                            } else if (furnishedspinget.equals("3")) {
                                 furnishedspinget = "Unfurnished";
                             }
-
 
 
                             //possessionby
                             possessionbyspinget = object.getString("possessionbyspinget");
 
-                            if(possessionbyspinget.equals("1")){
+                            if (possessionbyspinget.equals("1")) {
                                 possessionbyspinget = "Within 3 Months";
-                            }
-                            else if(possessionbyspinget.equals("2")){
+                            } else if (possessionbyspinget.equals("2")) {
                                 possessionbyspinget = "By 2021";
-                            }
-                            else if(possessionbyspinget.equals("3")){
+                            } else if (possessionbyspinget.equals("3")) {
                                 possessionbyspinget = "By 2022";
-                            }
-                            else if(possessionbyspinget.equals("4")){
+                            } else if (possessionbyspinget.equals("4")) {
                                 possessionbyspinget = "By 2023";
-                            }
-                            else if(possessionbyspinget.equals("5")){
+                            } else if (possessionbyspinget.equals("5")) {
                                 possessionbyspinget = "By 2024";
-                            }
-                            else if(possessionbyspinget.equals("6")){
+                            } else if (possessionbyspinget.equals("6")) {
                                 possessionbyspinget = "By 2025";
-                            }
-                            else if(possessionbyspinget.equals("7")){
+                            } else if (possessionbyspinget.equals("7")) {
                                 possessionbyspinget = "By 2026";
-                            }
-                            else if(possessionbyspinget.equals("8")){
+                            } else if (possessionbyspinget.equals("8")) {
                                 possessionbyspinget = "By 2027";
-                            }
-                            else if(possessionbyspinget.equals("9")){
+                            } else if (possessionbyspinget.equals("9")) {
                                 possessionbyspinget = "By 2028";
-                            }
-                            else if(possessionbyspinget.equals("10")){
+                            } else if (possessionbyspinget.equals("10")) {
                                 possessionbyspinget = "By 2029";
-                            }
-                            else if(possessionbyspinget.equals("11")){
+                            } else if (possessionbyspinget.equals("11")) {
                                 possessionbyspinget = "By 2030";
-                            }
-                            else if(possessionbyspinget.equals("12")){
+                            } else if (possessionbyspinget.equals("12")) {
                                 possessionbyspinget = "By 2031";
                             }
-
 
 
                             noofroomspinget = object.getString("noofroomspinget");
@@ -4492,34 +4044,25 @@ public class MainActivity extends AppCompatActivity {
                             //qualityrating
                             qualityratingspinget = object.getString("qualityratingspinget");
 
-                            if(qualityratingspinget.equals("1")){
+                            if (qualityratingspinget.equals("1")) {
                                 qualityratingspinget = "1 Star";
-                            }
-                            else if(qualityratingspinget.equals("2")){
+                            } else if (qualityratingspinget.equals("2")) {
                                 qualityratingspinget = "2 Star";
-                            }
-                            else if(qualityratingspinget.equals("3")){
+                            } else if (qualityratingspinget.equals("3")) {
                                 qualityratingspinget = "3 Star";
-                            }
-                            else if(qualityratingspinget.equals("4")){
+                            } else if (qualityratingspinget.equals("4")) {
                                 qualityratingspinget = "4 Star";
-                            }
-                            else if(qualityratingspinget.equals("5")){
+                            } else if (qualityratingspinget.equals("5")) {
                                 qualityratingspinget = "5 Star";
-                            }
-                            else if(qualityratingspinget.equals("6")){
+                            } else if (qualityratingspinget.equals("6")) {
                                 qualityratingspinget = "6 Star";
-                            }
-                            else if(qualityratingspinget.equals("7")){
+                            } else if (qualityratingspinget.equals("7")) {
                                 qualityratingspinget = "7 Star";
-                            }
-                            else if(qualityratingspinget.equals("8")){
+                            } else if (qualityratingspinget.equals("8")) {
                                 qualityratingspinget = "8 Star";
-                            }
-                            else if(qualityratingspinget.equals("9")){
+                            } else if (qualityratingspinget.equals("9")) {
                                 qualityratingspinget = "9 Star";
-                            }
-                            else if(qualityratingspinget.equals("10")){
+                            } else if (qualityratingspinget.equals("10")) {
                                 qualityratingspinget = "10 Star";
                             }
 
@@ -4536,46 +4079,37 @@ public class MainActivity extends AppCompatActivity {
                             securitydepositspinget = object.getString("securitydepositspinget");
 
 
-                            if(securitydepositspinget.equals("1")){
+                            if (securitydepositspinget.equals("1")) {
                                 securitydepositspinget = "Fixed";
-                            }
-                            else if(securitydepositspinget.equals("2")){
+                            } else if (securitydepositspinget.equals("2")) {
                                 securitydepositspinget = "Multiple Of Rent";
                             }
-
 
 
                             //maintenancemonthly
                             maintenancemonthlyspinget = object.getString("maintenancemonthlyspinget");
 
-                            if(maintenancemonthlyspinget.equals("1")){
+                            if (maintenancemonthlyspinget.equals("1")) {
                                 maintenancemonthlyspinget = "Monthly";
-                            }
-                            else if(maintenancemonthlyspinget.equals("2")){
+                            } else if (maintenancemonthlyspinget.equals("2")) {
                                 maintenancemonthlyspinget = "Annually";
-                            }
-                            else if(maintenancemonthlyspinget.equals("3")){
+                            } else if (maintenancemonthlyspinget.equals("3")) {
                                 maintenancemonthlyspinget = "One Time";
-                            }
-                            else if(maintenancemonthlyspinget.equals("4")){
+                            } else if (maintenancemonthlyspinget.equals("4")) {
                                 maintenancemonthlyspinget = "Per Unit/Monthly";
                             }
-
 
 
                             //ownership
                             ownweshipspinget = object.getString("ownweshipspinget");
 
-                            if(ownweshipspinget.equals("1")){
+                            if (ownweshipspinget.equals("1")) {
                                 ownweshipspinget = "Freehold";
-                            }
-                            else if(ownweshipspinget.equals("2")){
+                            } else if (ownweshipspinget.equals("2")) {
                                 ownweshipspinget = "Leasehold";
-                            }
-                            else if(ownweshipspinget.equals("3")){
+                            } else if (ownweshipspinget.equals("3")) {
                                 ownweshipspinget = "Co-Operative Society";
-                            }
-                            else if(ownweshipspinget.equals("4")){
+                            } else if (ownweshipspinget.equals("4")) {
                                 ownweshipspinget = "Power Of Attorney";
                             }
 
@@ -4583,98 +4117,91 @@ public class MainActivity extends AppCompatActivity {
                             //typeoffood
                             typeoffood = object.getString("typeoffood");
 
-                            if(typeoffood.equals("1")){
+                            if (typeoffood.equals("1")) {
                                 typeoffood = "Veg";
-                            }else{
+                            } else {
                                 typeoffood = "Ved and Non-Veg";
                             }
-
 
 
                             //pricestep
                             pricestep = object.getString("pricestep");
 
-                            if(pricestep.equals("1")){
+                            if (pricestep.equals("1")) {
                                 pricestep = "Price Negotiable";
-                            }else{
+                            } else {
                                 pricestep = "Electricity And Water Charges Excluded";
                             }
-
-
 
 
                             //facilityinculded
                             facilityincluded = object.getString("facilityincluded");
 
-                            if(facilityincluded.contains("1")){
+                            if (facilityincluded.contains("1")) {
                                 facilityincluded1.add("Food");
                             }
 
-                            if(facilityincluded.contains("2")){
+                            if (facilityincluded.contains("2")) {
                                 facilityincluded1.add("Laundry");
                             }
 
-                            if(facilityincluded.contains("3")){
+                            if (facilityincluded.contains("3")) {
                                 facilityincluded1.add("Fridge");
                             }
 
-                            if(facilityincluded.contains("4")){
+                            if (facilityincluded.contains("4")) {
                                 facilityincluded1.add("Electricity");
                             }
 
-                            if(facilityincluded.contains("5")){
+                            if (facilityincluded.contains("5")) {
                                 facilityincluded1.add("None Of the Above");
                             }
 
-                            if(facilityincluded.contains("6")){
+                            if (facilityincluded.contains("6")) {
                                 facilityincluded1.add("HouseKeeping");
                             }
 
-                            if(facilityincluded.contains("7")){
+                            if (facilityincluded.contains("7")) {
                                 facilityincluded1.add("DTH");
                             }
 
-                            if(facilityincluded.contains("8")){
+                            if (facilityincluded.contains("8")) {
                                 facilityincluded1.add("Water");
                             }
 
-                            if(facilityincluded.contains("9")){
+                            if (facilityincluded.contains("9")) {
                                 facilityincluded1.add("Wifi");
                             }
 
                             facilityincluded = String.valueOf(facilityincluded1);
 
 
-
-
-
                             //weekdays
                             weekdays = object.getString("weekdays");
 
-                            if(weekdays.contains("1")){
+                            if (weekdays.contains("1")) {
                                 weekdays1.add("Breakfast");
                             }
-                            if(weekdays.contains("2")){
+                            if (weekdays.contains("2")) {
                                 weekdays1.add("Lunch");
                             }
-                            if(weekdays.contains("3")){
+                            if (weekdays.contains("3")) {
                                 weekdays1.add("Dinner");
                             }
 
                             weekdays = String.valueOf(weekdays1);
 
 
-
                             //weekends
                             weeends = object.getString("weeends");
 
-                            if(weeends.contains("1")){
+                            if (weeends.contains("1")) {
                                 weekend1.add("Breakfast");
                             }
-                            if(weeends.contains("2")){
+                            if (weeends.contains("2")) {
                                 weekend1.add("Lunch");
                             }
-                            if(weeends.contains("3")){
+                            if (weeends.contains("3")) {
                                 weekend1.add("Dinner");
                             }
 
@@ -4690,137 +4217,95 @@ public class MainActivity extends AppCompatActivity {
                             //facing
                             facingspinget = object.getString("facingspinget");
 
-                            if(facingspinget.equals("1")){
+                            if (facingspinget.equals("1")) {
                                 facingspinget = "East";
-                            }
-                            else if(facingspinget.equals("2")){
+                            } else if (facingspinget.equals("2")) {
                                 facingspinget = "North-East";
-                            }
-                            else if(facingspinget.equals("3")){
+                            } else if (facingspinget.equals("3")) {
                                 facingspinget = "North";
-                            }
-                            else if(facingspinget.equals("4")){
+                            } else if (facingspinget.equals("4")) {
                                 facingspinget = "West";
-                            }
-                            else if(facingspinget.equals("5")){
+                            } else if (facingspinget.equals("5")) {
                                 facingspinget = "South";
-                            }
-                            else if(facingspinget.equals("6")){
+                            } else if (facingspinget.equals("6")) {
                                 facingspinget = "South-East";
-                            }
-                            else if(facingspinget.equals("7")){
+                            } else if (facingspinget.equals("7")) {
                                 facingspinget = "North-West";
-                            }
-                            else if(facingspinget.equals("8")){
+                            } else if (facingspinget.equals("8")) {
                                 facingspinget = "South-West";
                             }
-
-
 
 
                             //unitspinget
                             unitspinget = object.getString("unitspinget");
 
-                            if(unitspinget.equals("1")){
+                            if (unitspinget.equals("1")) {
                                 unitspinget = "Sq.Ft";
-                            }
-                            else if(unitspinget.equals("2")){
+                            } else if (unitspinget.equals("2")) {
                                 unitspinget = "Sq.yards";
-                            }else if(unitspinget.equals("3")){
+                            } else if (unitspinget.equals("3")) {
                                 unitspinget = "Sq.m";
-                            }
-                            else if(unitspinget.equals("4")){
+                            } else if (unitspinget.equals("4")) {
                                 unitspinget = "Acres";
-                            }
-                            else if(unitspinget.equals("5")){
+                            } else if (unitspinget.equals("5")) {
                                 unitspinget = "Marla";
-                            }else if(unitspinget.equals("6")){
+                            } else if (unitspinget.equals("6")) {
                                 unitspinget = "Cents";
-                            }
-                            else if(unitspinget.equals("7")){
+                            } else if (unitspinget.equals("7")) {
                                 unitspinget = "Bigha";
-                            }else if(unitspinget.equals("8")){
+                            } else if (unitspinget.equals("8")) {
                                 unitspinget = "Kottah";
-                            }
-                            else if(unitspinget.equals("9")){
+                            } else if (unitspinget.equals("9")) {
                                 unitspinget = "Grounds";
-                            }
-                            else if(unitspinget.equals("10")){
+                            } else if (unitspinget.equals("10")) {
                                 unitspinget = "Ares";
-                            }
-                            else if(unitspinget.equals("11")){
+                            } else if (unitspinget.equals("11")) {
                                 unitspinget = "Biswa";
-                            }
-                            else if(unitspinget.equals("12")){
+                            } else if (unitspinget.equals("12")) {
                                 unitspinget = "Guntha";
-                            }
-                            else if(unitspinget.equals("13")){
+                            } else if (unitspinget.equals("13")) {
                                 unitspinget = "Aankadam";
-                            }
-
-                            else if(unitspinget.equals("14")){
+                            } else if (unitspinget.equals("14")) {
                                 unitspinget = "Hectares";
-                            }
-
-                            else if(unitspinget.equals("15")){
+                            } else if (unitspinget.equals("15")) {
                                 unitspinget = "Rood";
-                            }
-
-                            else if(unitspinget.equals("16")){
+                            } else if (unitspinget.equals("16")) {
                                 unitspinget = "Chataks";
-                            }
-
-                            else if(unitspinget.equals("17")){
+                            } else if (unitspinget.equals("17")) {
                                 unitspinget = "Perch";
                             }
-
-
-
 
 
                             //typeofflooring
                             typeofflooringspinget = object.getString("typeofflooringspinget");
 
-                            if(typeofflooringspinget.equals("1")){
+                            if (typeofflooringspinget.equals("1")) {
                                 typeofflooringspinget = "Vitrified";
-                            }
-                            else if(typeofflooringspinget.equals("2")){
+                            } else if (typeofflooringspinget.equals("2")) {
                                 typeofflooringspinget = "Marble";
-                            }
-                            else if(typeofflooringspinget.equals("3")){
+                            } else if (typeofflooringspinget.equals("3")) {
                                 typeofflooringspinget = "Concrete";
-                            }
-                            else if(typeofflooringspinget.equals("4")){
+                            } else if (typeofflooringspinget.equals("4")) {
                                 typeofflooringspinget = "Ceramic";
-                            }
-                            else if(typeofflooringspinget.equals("5")){
+                            } else if (typeofflooringspinget.equals("5")) {
                                 typeofflooringspinget = "Polished Concrete";
-                            }
-                            else if(typeofflooringspinget.equals("6")){
+                            } else if (typeofflooringspinget.equals("6")) {
                                 typeofflooringspinget = "Mosaic";
-                            }
-                            else if(typeofflooringspinget.equals("7")){
+                            } else if (typeofflooringspinget.equals("7")) {
                                 typeofflooringspinget = "Wood";
-                            }
-                            else if(typeofflooringspinget.equals("8")){
+                            } else if (typeofflooringspinget.equals("8")) {
                                 typeofflooringspinget = "Granite";
-                            }
-                            else if(typeofflooringspinget.equals("9")){
+                            } else if (typeofflooringspinget.equals("9")) {
                                 typeofflooringspinget = "Spartex";
-                            }
-                            else if(typeofflooringspinget.equals("10")){
+                            } else if (typeofflooringspinget.equals("10")) {
                                 typeofflooringspinget = "Cement";
-                            }
-                            else if(typeofflooringspinget.equals("11")){
+                            } else if (typeofflooringspinget.equals("11")) {
                                 typeofflooringspinget = "Stone";
-                            }
-                            else if(typeofflooringspinget.equals("12")){
+                            } else if (typeofflooringspinget.equals("12")) {
                                 typeofflooringspinget = "Vinyl";
-                            }
-                            else if(typeofflooringspinget.equals("13")){
+                            } else if (typeofflooringspinget.equals("13")) {
                                 typeofflooringspinget = "IPSFinish";
-                            }
-                            else if(typeofflooringspinget.equals("14")){
+                            } else if (typeofflooringspinget.equals("14")) {
                                 typeofflooringspinget = "Others";
                             }
 
@@ -4828,77 +4313,64 @@ public class MainActivity extends AppCompatActivity {
                             //powerbackup
                             powerbackupspinget = object.getString("powerbackupspinget");
 
-                            if(powerbackupspinget.equals("1")){
+                            if (powerbackupspinget.equals("1")) {
                                 powerbackupspinget = "None";
-                            }
-                            else if(powerbackupspinget.equals("2")){
+                            } else if (powerbackupspinget.equals("2")) {
                                 powerbackupspinget = "Partial";
-                            }
-                            else if(powerbackupspinget.equals("3")){
+                            } else if (powerbackupspinget.equals("3")) {
                                 powerbackupspinget = "Full";
                             }
-
-
 
 
                             //lasttime
                             lasttimespinget = object.getString("lasttimespinget");
 
-                            if(lasttimespinget.contains("1")){
+                            if (lasttimespinget.contains("1")) {
                                 lasttimespinget = "7 PM";
                             }
-                            if(lasttimespinget.contains("2")){
+                            if (lasttimespinget.contains("2")) {
                                 lasttimespinget = "8 PM";
                             }
-                            if(lasttimespinget.contains("3")){
+                            if (lasttimespinget.contains("3")) {
                                 lasttimespinget = "9 PM";
                             }
-                            if(lasttimespinget.contains("4")){
+                            if (lasttimespinget.contains("4")) {
                                 lasttimespinget = "10 PM";
                             }
-                            if(lasttimespinget.contains("5")){
+                            if (lasttimespinget.contains("5")) {
                                 lasttimespinget = "11 PM";
                             }
-                            if(lasttimespinget.contains("6")){
+                            if (lasttimespinget.contains("6")) {
                                 lasttimespinget = "12 AM";
                             }
-                            if(lasttimespinget.contains("7")){
+                            if (lasttimespinget.contains("7")) {
                                 lasttimespinget = "1 AM";
                             }
-                            if(lasttimespinget.contains("8")){
+                            if (lasttimespinget.contains("8")) {
                                 lasttimespinget = "2 AM";
                             }
-                            if(lasttimespinget.contains("9")){
+                            if (lasttimespinget.contains("9")) {
                                 lasttimespinget = "3 AM";
                             }
-                            if(lasttimespinget.contains("10")){
+                            if (lasttimespinget.contains("10")) {
                                 lasttimespinget = "24 x 7";
                             }
 
 
-
-
-
-
-
-
-
-
-
                             //pet
                             pet = object.getString("pet");
-                            if(pet.equals("1")){
+                            if (pet.equals("1")) {
                                 pet = "Yes";
-                            }else {
+                            } else {
                                 pet = "No";
                             }
 
 
                             //visiter
                             visiter = object.getString("visiter");
-                            if(visiter.equals("1")){
+                            if (visiter.equals("1")) {
                                 visiter = "Yes";
-                            }else {
+                            } else {
                                 visiter = "No";
                             }
 
@@ -4906,27 +4378,27 @@ public class MainActivity extends AppCompatActivity {
                             //smoking
                             smoking = object.getString("smoking");
 
-                            if(smoking.equals("1")){
+                            if (smoking.equals("1")) {
                                 smoking = "Yes";
-                            }else {
+                            } else {
                                 smoking = "No";
                             }
 
 
                             //alcohol
                             alcohol = object.getString("alcohol");
-                            if(alcohol.equals("1")){
+                            if (alcohol.equals("1")) {
                                 alcohol = "Yes";
-                            }else {
+                            } else {
                                 alcohol = "No";
                             }
 
 
                             //event
                             event = object.getString("event");
-                            if(event.equals("1")){
+                            if (event.equals("1")) {
                                 event = "Yes";
-                            }else {
+                            } else {
                                 event = "No";
                             }
 
@@ -4935,43 +4407,39 @@ public class MainActivity extends AppCompatActivity {
                             anemitiesitem = object.getString("anemitiesitem");
 
 
-                            if(anemitiesitem.contains("1")){
+                            if (anemitiesitem.contains("1")) {
                                 anemitiesitem1.add("Lift");
                             }
 
-                            if(anemitiesitem.contains("2")){
+                            if (anemitiesitem.contains("2")) {
                                 anemitiesitem1.add("Park");
                             }
 
-                            if(anemitiesitem.contains("3")){
+                            if (anemitiesitem.contains("3")) {
                                 anemitiesitem1.add("Maintenance Staff");
                             }
 
-                            if(anemitiesitem.contains("4")){
+                            if (anemitiesitem.contains("4")) {
                                 anemitiesitem1.add("Visiter Parking");
                             }
 
-                            if(anemitiesitem.contains("5")){
+                            if (anemitiesitem.contains("5")) {
                                 anemitiesitem1.add("FengShui/Vaastu Compliant");
                             }
 
-                            if(anemitiesitem.contains("6")){
+                            if (anemitiesitem.contains("6")) {
                                 anemitiesitem1.add("Intercome Facility");
                             }
 
-                            if(anemitiesitem.contains("7")){
+                            if (anemitiesitem.contains("7")) {
                                 anemitiesitem1.add("Water Storage");
                             }
 
-                            if(anemitiesitem.contains("8")){
+                            if (anemitiesitem.contains("8")) {
                                 anemitiesitem1.add("Security/Fire Alaram");
                             }
 
                             anemitiesitem = String.valueOf(anemitiesitem1);
-
-
-
-
 
 
                             //moreanemities
@@ -4985,127 +4453,123 @@ public class MainActivity extends AppCompatActivity {
 
                             moreanemitiesitem2.addAll(moreanemitiesitem3);
 
-                            System.out.println("morrrrrrr ::: "+ moreanemitiesitem2);
+                            System.out.println("morrrrrrr ::: " + moreanemitiesitem2);
 
 
-                            if(moreanemitiesitem2.contains("1")){
+                            if (moreanemitiesitem2.contains("1")) {
                                 moreanemitiesitem1.add("Swimming Pool");
                             }
 
-                            if(moreanemitiesitem2.contains("2")){
+                            if (moreanemitiesitem2.contains("2")) {
                                 moreanemitiesitem1.add("Centrally Air Conditioned");
                             }
 
-                            if(moreanemitiesitem2.contains("3")){
+                            if (moreanemitiesitem2.contains("3")) {
                                 moreanemitiesitem1.add("Garden");
                             }
 
-                            if(moreanemitiesitem2.contains("4")){
+                            if (moreanemitiesitem2.contains("4")) {
                                 moreanemitiesitem1.add("Wifi");
                             }
 
-                            if(moreanemitiesitem2.contains("5")){
+                            if (moreanemitiesitem2.contains("5")) {
                                 moreanemitiesitem1.add("Piped-Gas");
                             }
 
-                            if(moreanemitiesitem2.contains("6")){
+                            if (moreanemitiesitem2.contains("6")) {
                                 moreanemitiesitem1.add("Water Purifier");
                             }
 
-                            if(moreanemitiesitem2.contains("7")){
+                            if (moreanemitiesitem2.contains("7")) {
                                 moreanemitiesitem1.add("Club House");
                             }
 
-                            if(moreanemitiesitem2.contains("8")){
+                            if (moreanemitiesitem2.contains("8")) {
                                 moreanemitiesitem1.add("Shopping Center");
                             }
 
-                            if(moreanemitiesitem2.contains("9")){
+                            if (moreanemitiesitem2.contains("9")) {
                                 moreanemitiesitem1.add("Water Disposal");
                             }
 
-                            if(moreanemitiesitem2.contains("10")){
+                            if (moreanemitiesitem2.contains("10")) {
                                 moreanemitiesitem1.add("RainWater Harvesting");
                             }
 
-                            if(moreanemitiesitem2.contains("11")){
+                            if (moreanemitiesitem2.contains("11")) {
                                 moreanemitiesitem1.add("Bank Attached Property");
                             }
 
-                            if(moreanemitiesitem2.contains("12")){
+                            if (moreanemitiesitem2.contains("12")) {
                                 moreanemitiesitem1.add("Gym");
                             }
 
                             moreanemitiesitem = String.valueOf(moreanemitiesitem1);
 
-                            System.out.println("morrrr more ::"+ moreanemitiesitem1);
-
+                            System.out.println("morrrr more ::" + moreanemitiesitem1);
 
 
                             //watersource
                             watersourceitem = object.getString("watersourceitem");
 
-                            if(watersourceitem.contains("1")){
+                            if (watersourceitem.contains("1")) {
                                 watersourceitem1.add("Municipal Corporation");
                             }
-                            if(watersourceitem.contains("2")){
+                            if (watersourceitem.contains("2")) {
                                 watersourceitem1.add("Borewell");
                             }
 
                             watersourceitem = String.valueOf(watersourceitem1);
 
 
-
                             //overlooking
                             overlookingitem = object.getString("overlookingitem");
 
-                            if(overlookingitem.contains("1")){
+                            if (overlookingitem.contains("1")) {
                                 overlookingitem1.add("Park/Garden");
                             }
 
-                            if(overlookingitem.contains("2")){
+                            if (overlookingitem.contains("2")) {
                                 overlookingitem1.add("Main Road");
                             }
 
-                            if(overlookingitem.contains("3")){
+                            if (overlookingitem.contains("3")) {
                                 overlookingitem1.add("Club");
                             }
 
-                            if(overlookingitem.contains("4")){
+                            if (overlookingitem.contains("4")) {
                                 overlookingitem1.add("Lake Facing");
                             }
 
-                            if(overlookingitem.contains("5")){
+                            if (overlookingitem.contains("5")) {
                                 overlookingitem1.add("Sea Facing");
                             }
 
-                            if(overlookingitem.contains("6")){
+                            if (overlookingitem.contains("6")) {
                                 overlookingitem1.add("Others");
                             }
 
                             overlookingitem = String.valueOf(overlookingitem1);
 
 
-
                             //somefeatures
                             somefeatureitem = object.getString("somefeatureitem");
-                            if(somefeatureitem.contains("1")){
+                            if (somefeatureitem.contains("1")) {
                                 somefeatureitem1.add("In a Gated Society");
                             }
 
-                            if(somefeatureitem.contains("2")){
+                            if (somefeatureitem.contains("2")) {
                                 somefeatureitem1.add("Corner Property");
                             }
-                            if(somefeatureitem.contains("3")){
+                            if (somefeatureitem.contains("3")) {
                                 somefeatureitem1.add("Pet Friendly");
                             }
 
-                            if(somefeatureitem.contains("4")){
+                            if (somefeatureitem.contains("4")) {
                                 somefeatureitem1.add("Wheelchair Friendly");
                             }
 
                             somefeatureitem = String.valueOf(somefeatureitem1);
-
 
 
                             //byres
@@ -5142,31 +4606,30 @@ public class MainActivity extends AppCompatActivity {
                             //times
                             timeitems = object.getString("timeitems");
 
-                            if(timeitems.contains("1")){
+                            if (timeitems.contains("1")) {
                                 timeitems1.add("8am - 12pm");
                             }
 
-                            if(timeitems.contains("2")){
+                            if (timeitems.contains("2")) {
                                 timeitems1.add("12pm - 3pm");
                             }
-                            if(timeitems.contains("3")){
+                            if (timeitems.contains("3")) {
                                 timeitems1.add("3pm - 6pm");
                             }
 
-                            if(timeitems.contains("4")){
+                            if (timeitems.contains("4")) {
                                 timeitems1.add("6pm - 9pm");
                             }
 
-                            if(timeitems.contains("5")){
+                            if (timeitems.contains("5")) {
                                 timeitems1.add("9pm - 11pm");
                             }
 
-                            if(timeitems.contains("6")){
+                            if (timeitems.contains("6")) {
                                 timeitems1.add("None");
                             }
 
                             timeitems = String.valueOf(timeitems1);
-
 
 
                             widthfacingget = object.getString("widthfacingget");
@@ -5175,9 +4638,9 @@ public class MainActivity extends AppCompatActivity {
 
                             //bowndywall
                             boundrywall = object.getString("boundrywall");
-                            if(boundrywall.equals("1")){
+                            if (boundrywall.equals("1")) {
                                 boundrywall = "Yes";
-                            }else {
+                            } else {
                                 boundrywall = "No";
                             }
 
@@ -5185,84 +4648,70 @@ public class MainActivity extends AppCompatActivity {
                             flattype = object.getString("flattype");
 
 
-                            if(flattype.equals("1")){
+                            if (flattype.equals("1")) {
                                 flattype = "1 BHK";
-                            }
-                            else if(flattype.equals("2")){
+                            } else if (flattype.equals("2")) {
                                 flattype = "2 BHK";
-                            }
-                            else if(flattype.equals("3")){
+                            } else if (flattype.equals("3")) {
                                 flattype = "3 BHK";
-                            }
-                            else if(flattype.equals("4")){
+                            } else if (flattype.equals("4")) {
                                 flattype = "4 BHK";
-                            }
-                            else if(flattype.equals("5")){
+                            } else if (flattype.equals("5")) {
                                 flattype = "5 BHK";
-                            }
-                            else if(flattype.equals("6")){
+                            } else if (flattype.equals("6")) {
                                 flattype = "6 BHK";
-                            }
-                            else if(flattype.equals("7")){
+                            } else if (flattype.equals("7")) {
                                 flattype = "7 BHK";
-                            }
-                            else if(flattype.equals("8")){
+                            } else if (flattype.equals("8")) {
                                 flattype = "8 BHK";
-                            }
-                            else if(flattype.equals("9")){
+                            } else if (flattype.equals("9")) {
                                 flattype = "9 BHK";
-                            }
-                            else if(flattype.equals("10")){
+                            } else if (flattype.equals("10")) {
                                 flattype = "10 BHK";
-                            }
-                            else if(flattype.equals("11")){
+                            } else if (flattype.equals("11")) {
                                 flattype = "11 BHK";
                             }
 
 
-                            user_id= object.getString("user_id");
-                            newprice= object.getString("newprice");
-                            image= Endpoints.base_url+ object.getString("image");
-                            shortlistedvalue= object.getString("shortlistedvalue");
+                            user_id = object.getString("user_id");
+                            newprice = object.getString("newprice");
+                            image = Endpoints.base_url + object.getString("image");
+                            shortlistedvalue = object.getString("shortlistedvalue");
 
                             //rera
-                            getrera= object.getString("rera");
-                            if(getrera.equals("1")){
+                            getrera = object.getString("rera");
+                            if (getrera.equals("1")) {
                                 getrera = "Yes";
-                            }else {
+                            } else {
                                 getrera = "No";
                             }
 
-                            mobile= object.getString("mobile");
-                            reg_date= object.getString("reg_date");
-                            fname= object.getString("fname");
-                            lname= object.getString("lname");
-                            email= object.getString("email");
-                            latlong= object.getString("latlong");
+                            mobile = object.getString("mobile");
+                            reg_date = object.getString("reg_date");
+                            fname = object.getString("fname");
+                            lname = object.getString("lname");
+                            email = object.getString("email");
+                            latlong = object.getString("latlong");
                             paymentStatus = object.getString("paymentStatus");
 
 
-
-
-
-
-                            RentDataModel rentDataModel = new RentDataModel(id ,usertype , type , category , categorytype , agrement , pgavaliablefor , pgshareprivate ,
-                                    sharingspinnumber , propertylistfor , willing , pgsuitablefor , state, city , locality , projectname , address ,
-                                    unit1 ,unit2 ,unit3 ,availabilitydate , otherroom , homethings , builtupa , carpeta , plota , bed ,
-                                    bath , balconie , totalfloorget , reservedpark , availabilityspinget , ageofpropertyspinget ,
-                                    furnishedspinget ,possessionbyspinget ,
-                                    noofroomspinget , qualityratingspinget , floorallowedspinget , roomavailabespinget , priceget , maintenanceget ,
-                                    bookingamountget ,
-                                    durationofrentagget , monthofnoticeget  , securitydepositspinget , maintenancemonthlyspinget ,
-                                    ownweshipspinget ,
-                                    typeoffood , pricestep , facilityincluded , weekdays , weeends , earlylivingchargesget , contractdurationget ,
-                                    annualduespayableget ,
-                                    depositeaget , facingspinget , unitspinget , typeofflooringspinget , powerbackupspinget , lasttimespinget ,
-                                    pet , visiter , smoking ,
-                                    alcohol , event , anemitiesitem , moreanemitiesitem , watersourceitem , overlookingitem ,
-                                    somefeatureitem , byersitem , timeitems ,
-                                    widthfacingget , descriptionget ,
-                                    boundrywall ,flattype, user_id, newprice, image, shortlistedvalue, getrera , mobile, reg_date, fname, lname, latlong, email, paymentStatus);
+                            RentDataModel rentDataModel = new RentDataModel(id, usertype, type, category, categorytype, agrement, pgavaliablefor, pgshareprivate,
+                                    sharingspinnumber, propertylistfor, willing, pgsuitablefor, state, city, locality, projectname, address,
+                                    unit1, unit2, unit3, availabilitydate, otherroom, homethings, builtupa, carpeta, plota, bed,
+                                    bath, balconie, totalfloorget, reservedpark, availabilityspinget, ageofpropertyspinget,
+                                    furnishedspinget, possessionbyspinget,
+                                    noofroomspinget, qualityratingspinget, floorallowedspinget, roomavailabespinget, priceget, maintenanceget,
+                                    bookingamountget,
+                                    durationofrentagget, monthofnoticeget, securitydepositspinget, maintenancemonthlyspinget,
+                                    ownweshipspinget,
+                                    typeoffood, pricestep, facilityincluded, weekdays, weeends, earlylivingchargesget, contractdurationget,
+                                    annualduespayableget,
+                                    depositeaget, facingspinget, unitspinget, typeofflooringspinget, powerbackupspinget, lasttimespinget,
+                                    pet, visiter, smoking,
+                                    alcohol, event, anemitiesitem, moreanemitiesitem, watersourceitem, overlookingitem,
+                                    somefeatureitem, byersitem, timeitems,
+                                    widthfacingget, descriptionget,
+                                    boundrywall, flattype, user_id, newprice, image, shortlistedvalue, getrera, mobile, reg_date, fname, lname, latlong, email, paymentStatus);
                             rentDataModels.add(rentDataModel);
                             rentAdapter.notifyDataSetChanged();
                         }
@@ -5271,7 +4720,7 @@ public class MainActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     //progressDialog.dismiss();
                     showmessage("Server Error...");
-                    System.out.println("problem ::"+e);
+                    System.out.println("problem ::" + e);
                     e.printStackTrace();
                 }
 
@@ -5281,7 +4730,7 @@ public class MainActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 showmessage("Server Error...");
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 SmsData smsData = new SmsData();
@@ -5305,7 +4754,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 //progressDialog.dismiss();
-                System.out.println("response :: "+ response);
+                System.out.println("response :: " + response);
 
                 try {
                     JSONObject obj = new JSONObject(response);
@@ -5315,9 +4764,9 @@ public class MainActivity extends AppCompatActivity {
                     JSONArray jsonArray = obj.getJSONArray("data");
 
 
-                    if(succes.equals("1")){
+                    if (succes.equals("1")) {
                         pgDataModels.clear();
-                        for(int i=0; i<jsonArray.length();i++){
+                        for (int i = 0; i < jsonArray.length(); i++) {
 
 
                             willing1.clear();
@@ -5338,29 +4787,26 @@ public class MainActivity extends AppCompatActivity {
                             homethings2.clear();
 
 
-
                             JSONObject object = jsonArray.getJSONObject(i);
-                            id =object.getString("id");
+                            id = object.getString("id");
                             //usertype
                             usertype = object.getString("usertype");
 
-                            if(usertype.equals("1")){
+                            if (usertype.equals("1")) {
                                 usertype = "Owner";
-                            }else if (usertype.equals("2")){
+                            } else if (usertype.equals("2")) {
                                 usertype = "Dealer";
-                            }
-                            else if (usertype.equals("3")){
+                            } else if (usertype.equals("3")) {
                                 usertype = "Builder";
                             }
-
 
 
                             // type
                             type = object.getString("type");
 
-                            if(type.equals("1")){
+                            if (type.equals("1")) {
                                 type = "Residential";
-                            }else{
+                            } else {
                                 type = "Commercial";
                             }
 
@@ -5368,146 +4814,108 @@ public class MainActivity extends AppCompatActivity {
                             //category
                             category = object.getString("category");
 
-                            if(category.equals("1")){
+                            if (category.equals("1")) {
                                 category = "Apartment/Flat/Builder Floor";
-                            }
-                            else if(category.equals("2")){
+                            } else if (category.equals("2")) {
                                 category = "Residential Land";
-                            }
-                            else if(category.equals("3")){
+                            } else if (category.equals("3")) {
                                 category = "House/Villa";
-                            }
-                            else if(category.equals("4")){
+                            } else if (category.equals("4")) {
                                 category = "Offices";
-                            }
-                            else if(category.equals("5")){
+                            } else if (category.equals("5")) {
                                 category = "Retail";
-                            }
-                            else if(category.equals("6")){
+                            } else if (category.equals("6")) {
                                 category = "Land";
-                            }
-                            else if(category.equals("7")){
+                            } else if (category.equals("7")) {
                                 category = "Industry";
-                            }
-                            else if(category.equals("8")){
+                            } else if (category.equals("8")) {
                                 category = "Storage";
-                            }
-                            else if(category.equals("9")){
+                            } else if (category.equals("9")) {
                                 category = "Hospitality";
-                            }
-                            else if(category.equals("10")){
+                            } else if (category.equals("10")) {
                                 category = "Others";
                             }
-
 
 
                             //categorytype
                             categorytype = object.getString("categorytype");
 
 
-                            if (categorytype.equals("1")){
+                            if (categorytype.equals("1")) {
                                 categorytype = "Residential Apartment";
-                            }
-
-                            else if (categorytype.equals("2")){
+                            } else if (categorytype.equals("2")) {
                                 categorytype = "Independent/Builder Floor";
-                            }
-                            else if (categorytype.equals("3")){
+                            } else if (categorytype.equals("3")) {
                                 categorytype = "Studio Apartment";
-                            }
-                            else if (categorytype.equals("4")){
+                            } else if (categorytype.equals("4")) {
                                 categorytype = "Serviced Apartments";
-                            }
-                            else if (categorytype.equals("5")){
+                            } else if (categorytype.equals("5")) {
                                 categorytype = "Independent House/Villa";
-                            }
-                            else if (categorytype.equals("6")){
+                            } else if (categorytype.equals("6")) {
                                 categorytype = "Farm House";
-                            }
-                            else if (categorytype.equals("7")){
+                            } else if (categorytype.equals("7")) {
                                 categorytype = "Ready to move office space";
-                            }
-                            else if (categorytype.equals("8")){
+                            } else if (categorytype.equals("8")) {
                                 categorytype = "Bare shell office space";
-                            }
-                            else if (categorytype.equals("9")){
+                            } else if (categorytype.equals("9")) {
                                 categorytype = "Co-working office space";
-                            }
-                            else if (categorytype.equals("10")){
+                            } else if (categorytype.equals("10")) {
                                 categorytype = "Commercial Shops";
-                            }
-                            else if (categorytype.equals("11")){
+                            } else if (categorytype.equals("11")) {
                                 categorytype = "Commercial Showrooms";
-                            }
-                            else if (categorytype.equals("12")){
+                            } else if (categorytype.equals("12")) {
                                 categorytype = "Space in Retail Mall";
-                            }
-                            else if (categorytype.equals("13")){
+                            } else if (categorytype.equals("13")) {
                                 categorytype = "Commercial Land/Inst. Land";
-                            }
-                            else if (categorytype.equals("14")){
+                            } else if (categorytype.equals("14")) {
                                 categorytype = "Agricultural/Farm Land";
-                            }
-                            else if (categorytype.equals("15")){
+                            } else if (categorytype.equals("15")) {
                                 categorytype = "Industrial Lands/Plots";
-                            }
-                            else if (categorytype.equals("16")){
+                            } else if (categorytype.equals("16")) {
                                 categorytype = "Factory";
-                            }
-                            else if (categorytype.equals("17")){
+                            } else if (categorytype.equals("17")) {
                                 categorytype = "Manufacturing";
-                            }
-                            else if (categorytype.equals("18")){
+                            } else if (categorytype.equals("18")) {
                                 categorytype = "Ware House";
-                            }
-                            else if (categorytype.equals("19")){
+                            } else if (categorytype.equals("19")) {
                                 categorytype = "Cold Storage";
-                            }
-                            else if (categorytype.equals("20")){
+                            } else if (categorytype.equals("20")) {
                                 categorytype = "Hotel/Resorts";
-                            }
-                            else if (categorytype.equals("21")){
+                            } else if (categorytype.equals("21")) {
                                 categorytype = "Guest-House/Banquet-Hallsage";
                             }
-
-
 
 
                             //agrement
                             agrement = object.getString("agrement");
 
-                            if(agrement.equals("1")){
+                            if (agrement.equals("1")) {
                                 agrement = "Company Lease Agreement";
-                            }else{
+                            } else {
                                 agrement = "Any";
                             }
-
 
 
                             //pgavailablefor
                             pgavaliablefor = object.getString("pgavaliablefor");
 
-                            if(pgavaliablefor.equals("1")){
+                            if (pgavaliablefor.equals("1")) {
                                 pgavaliablefor = "Girls";
-                            }else if (pgavaliablefor.equals("2")){
-                                pgavaliablefor ="Boys";
-                            }else{
+                            } else if (pgavaliablefor.equals("2")) {
+                                pgavaliablefor = "Boys";
+                            } else {
                                 pgavaliablefor = "Any";
                             }
-
-
 
 
                             //pgshareprivate
                             pgshareprivate = object.getString("pgshareprivate");
 
-                            if (pgshareprivate.equals("1")){
+                            if (pgshareprivate.equals("1")) {
                                 pgshareprivate = "Private";
-                            }else {
+                            } else {
                                 pgshareprivate = "Sharing";
                             }
-
-
 
 
                             //sharingnumber
@@ -5516,24 +4924,24 @@ public class MainActivity extends AppCompatActivity {
                             //propertylistfor
                             propertylistfor = object.getString("propertylistfor");
 
-                            if(propertylistfor.equals("1")){
+                            if (propertylistfor.equals("1")) {
                                 propertylistfor = "Sell";
-                            }else if(propertylistfor.equals("2")){
+                            } else if (propertylistfor.equals("2")) {
                                 propertylistfor = "Rent";
-                            }else{
+                            } else {
                                 propertylistfor = "Paying Guest";
                             }
 
                             // willing
                             willing = object.getString("willing");
 
-                            if(willing.contains("1")){
+                            if (willing.contains("1")) {
                                 willing1.add("Family");
                             }
-                            if (willing.contains("2")){
+                            if (willing.contains("2")) {
                                 willing1.add("Single Men");
                             }
-                            if(willing.contains("3")){
+                            if (willing.contains("3")) {
                                 willing1.add("Single Women");
                             }
 
@@ -5543,10 +4951,10 @@ public class MainActivity extends AppCompatActivity {
                             //pgsuitablefor
                             pgsuitablefor = object.getString("pgsuitablefor");
 
-                            if(pgsuitablefor.contains("1")){
+                            if (pgsuitablefor.contains("1")) {
                                 pgsuitablefor1.add("Students");
                             }
-                            if(pgsuitablefor.contains("2")){
+                            if (pgsuitablefor.contains("2")) {
                                 pgsuitablefor1.add("Working Professionals");
                             }
 
@@ -5562,56 +4970,39 @@ public class MainActivity extends AppCompatActivity {
                             //unit1
                             unit1 = object.getString("unit1");
 
-                            if(unit1.equals("1")){
+                            if (unit1.equals("1")) {
                                 unit1 = "Sq.Ft";
-                            }
-                            else if(unit1.equals("2")){
+                            } else if (unit1.equals("2")) {
                                 unit1 = "Sq.yards";
-                            }else if(unit1.equals("3")){
+                            } else if (unit1.equals("3")) {
                                 unit1 = "Sq.m";
-                            }
-                            else if(unit1.equals("4")){
+                            } else if (unit1.equals("4")) {
                                 unit1 = "Acres";
-                            }
-                            else if(unit1.equals("5")){
+                            } else if (unit1.equals("5")) {
                                 unit1 = "Marla";
-                            }else if(unit1.equals("6")){
+                            } else if (unit1.equals("6")) {
                                 unit1 = "Cents";
-                            }
-                            else if(unit1.equals("7")){
+                            } else if (unit1.equals("7")) {
                                 unit1 = "Bigha";
-                            }else if(unit1.equals("8")){
+                            } else if (unit1.equals("8")) {
                                 unit1 = "Kottah";
-                            }
-                            else if(unit1.equals("9")){
+                            } else if (unit1.equals("9")) {
                                 unit1 = "Grounds";
-                            }
-                            else if(unit1.equals("10")){
+                            } else if (unit1.equals("10")) {
                                 unit1 = "Ares";
-                            }
-                            else if(unit1.equals("11")){
+                            } else if (unit1.equals("11")) {
                                 unit1 = "Biswa";
-                            }
-                            else if(unit1.equals("12")){
+                            } else if (unit1.equals("12")) {
                                 unit1 = "Guntha";
-                            }
-                            else if(unit1.equals("13")){
+                            } else if (unit1.equals("13")) {
                                 unit1 = "Aankadam";
-                            }
-
-                            else if(unit1.equals("14")){
+                            } else if (unit1.equals("14")) {
                                 unit1 = "Hectares";
-                            }
-
-                            else if(unit1.equals("15")){
+                            } else if (unit1.equals("15")) {
                                 unit1 = "Rood";
-                            }
-
-                            else if(unit1.equals("16")){
+                            } else if (unit1.equals("16")) {
                                 unit1 = "Chataks";
-                            }
-
-                            else if(unit1.equals("17")){
+                            } else if (unit1.equals("17")) {
                                 unit1 = "Perch";
                             }
 
@@ -5619,118 +5010,81 @@ public class MainActivity extends AppCompatActivity {
                             //unit2
                             unit2 = object.getString("unit2");
 
-                            if(unit2.equals("1")){
+                            if (unit2.equals("1")) {
                                 unit2 = "Sq.Ft";
-                            }
-                            else if(unit2.equals("2")){
+                            } else if (unit2.equals("2")) {
                                 unit2 = "Sq.yards";
-                            }else if(unit2.equals("3")){
+                            } else if (unit2.equals("3")) {
                                 unit2 = "Sq.m";
-                            }
-                            else if(unit2.equals("4")){
+                            } else if (unit2.equals("4")) {
                                 unit2 = "Acres";
-                            }
-                            else if(unit2.equals("5")){
+                            } else if (unit2.equals("5")) {
                                 unit2 = "Marla";
-                            }else if(unit2.equals("6")){
+                            } else if (unit2.equals("6")) {
                                 unit2 = "Cents";
-                            }
-                            else if(unit2.equals("7")){
+                            } else if (unit2.equals("7")) {
                                 unit2 = "Bigha";
-                            }else if(unit2.equals("8")){
+                            } else if (unit2.equals("8")) {
                                 unit2 = "Kottah";
-                            }
-                            else if(unit2.equals("9")){
+                            } else if (unit2.equals("9")) {
                                 unit2 = "Grounds";
-                            }
-                            else if(unit2.equals("10")){
+                            } else if (unit2.equals("10")) {
                                 unit2 = "Ares";
-                            }
-                            else if(unit2.equals("11")){
+                            } else if (unit2.equals("11")) {
                                 unit2 = "Biswa";
-                            }
-                            else if(unit2.equals("12")){
+                            } else if (unit2.equals("12")) {
                                 unit2 = "Guntha";
-                            }
-                            else if(unit2.equals("13")){
+                            } else if (unit2.equals("13")) {
                                 unit2 = "Aankadam";
-                            }
-
-                            else if(unit2.equals("14")){
+                            } else if (unit2.equals("14")) {
                                 unit2 = "Hectares";
-                            }
-
-                            else if(unit2.equals("15")){
+                            } else if (unit2.equals("15")) {
                                 unit2 = "Rood";
-                            }
-
-                            else if(unit2.equals("16")){
+                            } else if (unit2.equals("16")) {
                                 unit2 = "Chataks";
-                            }
-
-                            else if(unit2.equals("17")){
+                            } else if (unit2.equals("17")) {
                                 unit2 = "Perch";
                             }
-
 
 
                             //unit3
                             unit3 = object.getString("unit3");
 
-                            if(unit3.equals("1")){
+                            if (unit3.equals("1")) {
                                 unit3 = "Sq.Ft";
-                            }
-                            else if(unit3.equals("2")){
+                            } else if (unit3.equals("2")) {
                                 unit3 = "Sq.yards";
-                            }else if(unit3.equals("3")){
+                            } else if (unit3.equals("3")) {
                                 unit1 = "Sq.m";
-                            }
-                            else if(unit3.equals("4")){
+                            } else if (unit3.equals("4")) {
                                 unit3 = "Acres";
-                            }
-                            else if(unit3.equals("5")){
+                            } else if (unit3.equals("5")) {
                                 unit3 = "Marla";
-                            }else if(unit3.equals("6")){
+                            } else if (unit3.equals("6")) {
                                 unit3 = "Cents";
-                            }
-                            else if(unit3.equals("7")){
+                            } else if (unit3.equals("7")) {
                                 unit3 = "Bigha";
-                            }else if(unit3.equals("8")){
+                            } else if (unit3.equals("8")) {
                                 unit3 = "Kottah";
-                            }
-                            else if(unit3.equals("9")){
+                            } else if (unit3.equals("9")) {
                                 unit3 = "Grounds";
-                            }
-                            else if(unit3.equals("10")){
+                            } else if (unit3.equals("10")) {
                                 unit3 = "Ares";
-                            }
-                            else if(unit3.equals("11")){
+                            } else if (unit3.equals("11")) {
                                 unit3 = "Biswa";
-                            }
-                            else if(unit3.equals("12")){
+                            } else if (unit3.equals("12")) {
                                 unit3 = "Guntha";
-                            }
-                            else if(unit3.equals("13")){
+                            } else if (unit3.equals("13")) {
                                 unit3 = "Aankadam";
-                            }
-
-                            else if(unit3.equals("14")){
+                            } else if (unit3.equals("14")) {
                                 unit3 = "Hectares";
-                            }
-
-                            else if(unit3.equals("15")){
+                            } else if (unit3.equals("15")) {
                                 unit3 = "Rood";
-                            }
-
-                            else if(unit3.equals("16")){
+                            } else if (unit3.equals("16")) {
                                 unit3 = "Chataks";
-                            }
-
-                            else if(unit3.equals("17")){
+                            } else if (unit3.equals("17")) {
                                 unit3 = "Perch";
                             }
-
-
 
 
                             availabilitydate = object.getString("availabilitydate");
@@ -5738,24 +5092,22 @@ public class MainActivity extends AppCompatActivity {
                             //otherroom
                             otherroom = object.getString("otherroom");
 
-                            if(otherroom.contains("1")){
+                            if (otherroom.contains("1")) {
                                 otherroom1.add("Pooja Room");
                             }
-                            if(otherroom.contains("2")){
+                            if (otherroom.contains("2")) {
                                 otherroom1.add("Study Room");
                             }
 
-                            if(otherroom.contains("3")){
+                            if (otherroom.contains("3")) {
                                 otherroom1.add("Servant Room");
                             }
 
-                            if(otherroom.contains("4")){
+                            if (otherroom.contains("4")) {
                                 otherroom1.add("Others");
                             }
 
                             otherroom = String.valueOf(otherroom1);
-
-
 
 
                             //homethings
@@ -5771,78 +5123,74 @@ public class MainActivity extends AppCompatActivity {
                             homethings2.addAll(homethings3);
 
 
-                            if(homethings2.contains("1")){
+                            if (homethings2.contains("1")) {
                                 homethings1.add("Wardrobe");
                             }
 
 
-                            if(homethings2.contains("2")){
+                            if (homethings2.contains("2")) {
                                 homethings1.add("Modular Kitchen");
                             }
 
 
-                            if(homethings2.contains("3")){
+                            if (homethings2.contains("3")) {
                                 homethings1.add("Fridge");
                             }
 
 
-                            if(homethings2.contains("4")){
+                            if (homethings2.contains("4")) {
                                 homethings1.add("Ac");
                             }
 
 
-                            if(homethings2.contains("5")){
+                            if (homethings2.contains("5")) {
                                 homethings1.add("Stove");
                             }
 
 
-                            if(homethings2.contains("6")){
+                            if (homethings2.contains("6")) {
                                 homethings1.add("Geyser");
                             }
 
 
-                            if(homethings2.contains("7")){
+                            if (homethings2.contains("7")) {
                                 homethings1.add("Dinning Table");
                             }
 
-                            if(homethings2.contains("8")){
+                            if (homethings2.contains("8")) {
                                 homethings1.add("Sofa");
                             }
 
 
-                            if(homethings2.contains("9")){
+                            if (homethings2.contains("9")) {
                                 homethings1.add("Washing Machine");
                             }
 
 
-                            if(homethings2.contains("10")){
+                            if (homethings2.contains("10")) {
                                 homethings1.add("Water Purifier");
                             }
 
 
-                            if(homethings2.contains("11")){
+                            if (homethings2.contains("11")) {
                                 homethings1.add("Microwave");
                             }
 
 
-                            if(homethings2.contains("12")){
+                            if (homethings2.contains("12")) {
                                 homethings1.add("Curtains");
                             }
 
-                            if(homethings2.contains("13")){
+                            if (homethings2.contains("13")) {
                                 homethings1.add("Chimney");
                             }
 
-                            if(homethings2.contains("14")){
+                            if (homethings2.contains("14")) {
                                 homethings1.add("Exhaust Fan");
                             }
 
 
-
                             homethings = String.valueOf(homethings1);
-
-
-
 
 
                             builtupa = object.getString("builtupa");
@@ -5856,9 +5204,9 @@ public class MainActivity extends AppCompatActivity {
 
                             //reservvedpark
                             reservedpark = object.getString("reservedpark");
-                            if(reservedpark.equals("1")){
+                            if (reservedpark.equals("1")) {
                                 reservedpark = "Yes";
-                            }else{
+                            } else {
                                 reservedpark = "No";
                             }
 
@@ -5866,10 +5214,9 @@ public class MainActivity extends AppCompatActivity {
                             // availability
                             availabilityspinget = object.getString("availabilityspinget");
 
-                            if(availabilityspinget.equals("1")){
+                            if (availabilityspinget.equals("1")) {
                                 availabilityspinget = "Under Construction";
-                            }
-                            else if(availabilityspinget.equals("2")){
+                            } else if (availabilityspinget.equals("2")) {
                                 availabilityspinget = "Ready To Move";
 
                             }
@@ -5877,78 +5224,58 @@ public class MainActivity extends AppCompatActivity {
 
                             //ageofproperty
                             ageofpropertyspinget = object.getString("ageofpropertyspinget");
-                            if(ageofpropertyspinget.equals("1")){
+                            if (ageofpropertyspinget.equals("1")) {
                                 ageofpropertyspinget = "0-1 Year Old Property";
-                            }
-                            else if(ageofpropertyspinget.equals("2")){
+                            } else if (ageofpropertyspinget.equals("2")) {
                                 ageofpropertyspinget = "1-5 Year Old Property";
-                            }
-                            else if(ageofpropertyspinget.equals("3")){
+                            } else if (ageofpropertyspinget.equals("3")) {
                                 ageofpropertyspinget = "5-10 Year Old Property";
-                            }
-                            else if(ageofpropertyspinget.equals("4")){
+                            } else if (ageofpropertyspinget.equals("4")) {
                                 ageofpropertyspinget = "10+ Year Old Property";
-                            }
-                            else if(ageofpropertyspinget.equals("5")){
+                            } else if (ageofpropertyspinget.equals("5")) {
                                 ageofpropertyspinget = "Ready To Move";
                             }
 
 
-
                             //furnished
                             furnishedspinget = object.getString("furnishedspinget");
-                            if(furnishedspinget.equals("1")){
+                            if (furnishedspinget.equals("1")) {
                                 furnishedspinget = "Furnished";
-                            }
-                            else if(furnishedspinget.equals("2")){
+                            } else if (furnishedspinget.equals("2")) {
                                 furnishedspinget = "Semifurnished";
-                            }
-                            else if(furnishedspinget.equals("3")){
+                            } else if (furnishedspinget.equals("3")) {
                                 furnishedspinget = "Unfurnished";
                             }
-
 
 
                             //possessionby
                             possessionbyspinget = object.getString("possessionbyspinget");
 
-                            if(possessionbyspinget.equals("1")){
+                            if (possessionbyspinget.equals("1")) {
                                 possessionbyspinget = "Within 3 Months";
-                            }
-                            else if(possessionbyspinget.equals("2")){
+                            } else if (possessionbyspinget.equals("2")) {
                                 possessionbyspinget = "By 2021";
-                            }
-                            else if(possessionbyspinget.equals("3")){
+                            } else if (possessionbyspinget.equals("3")) {
                                 possessionbyspinget = "By 2022";
-                            }
-                            else if(possessionbyspinget.equals("4")){
+                            } else if (possessionbyspinget.equals("4")) {
                                 possessionbyspinget = "By 2023";
-                            }
-                            else if(possessionbyspinget.equals("5")){
+                            } else if (possessionbyspinget.equals("5")) {
                                 possessionbyspinget = "By 2024";
-                            }
-                            else if(possessionbyspinget.equals("6")){
+                            } else if (possessionbyspinget.equals("6")) {
                                 possessionbyspinget = "By 2025";
-                            }
-                            else if(possessionbyspinget.equals("7")){
+                            } else if (possessionbyspinget.equals("7")) {
                                 possessionbyspinget = "By 2026";
-                            }
-                            else if(possessionbyspinget.equals("8")){
+                            } else if (possessionbyspinget.equals("8")) {
                                 possessionbyspinget = "By 2027";
-                            }
-                            else if(possessionbyspinget.equals("9")){
+                            } else if (possessionbyspinget.equals("9")) {
                                 possessionbyspinget = "By 2028";
-                            }
-                            else if(possessionbyspinget.equals("10")){
+                            } else if (possessionbyspinget.equals("10")) {
                                 possessionbyspinget = "By 2029";
-                            }
-                            else if(possessionbyspinget.equals("11")){
+                            } else if (possessionbyspinget.equals("11")) {
                                 possessionbyspinget = "By 2030";
-                            }
-                            else if(possessionbyspinget.equals("12")){
+                            } else if (possessionbyspinget.equals("12")) {
                                 possessionbyspinget = "By 2031";
                             }
-
 
 
                             noofroomspinget = object.getString("noofroomspinget");
@@ -5957,34 +5284,25 @@ public class MainActivity extends AppCompatActivity {
                             //qualityrating
                             qualityratingspinget = object.getString("qualityratingspinget");
 
-                            if(qualityratingspinget.equals("1")){
+                            if (qualityratingspinget.equals("1")) {
                                 qualityratingspinget = "1 Star";
-                            }
-                            else if(qualityratingspinget.equals("2")){
+                            } else if (qualityratingspinget.equals("2")) {
                                 qualityratingspinget = "2 Star";
-                            }
-                            else if(qualityratingspinget.equals("3")){
+                            } else if (qualityratingspinget.equals("3")) {
                                 qualityratingspinget = "3 Star";
-                            }
-                            else if(qualityratingspinget.equals("4")){
+                            } else if (qualityratingspinget.equals("4")) {
                                 qualityratingspinget = "4 Star";
-                            }
-                            else if(qualityratingspinget.equals("5")){
+                            } else if (qualityratingspinget.equals("5")) {
                                 qualityratingspinget = "5 Star";
-                            }
-                            else if(qualityratingspinget.equals("6")){
+                            } else if (qualityratingspinget.equals("6")) {
                                 qualityratingspinget = "6 Star";
-                            }
-                            else if(qualityratingspinget.equals("7")){
+                            } else if (qualityratingspinget.equals("7")) {
                                 qualityratingspinget = "7 Star";
-                            }
-                            else if(qualityratingspinget.equals("8")){
+                            } else if (qualityratingspinget.equals("8")) {
                                 qualityratingspinget = "8 Star";
-                            }
-                            else if(qualityratingspinget.equals("9")){
+                            } else if (qualityratingspinget.equals("9")) {
                                 qualityratingspinget = "9 Star";
-                            }
-                            else if(qualityratingspinget.equals("10")){
+                            } else if (qualityratingspinget.equals("10")) {
                                 qualityratingspinget = "10 Star";
                             }
 
@@ -6001,46 +5319,37 @@ public class MainActivity extends AppCompatActivity {
                             securitydepositspinget = object.getString("securitydepositspinget");
 
 
-                            if(securitydepositspinget.equals("1")){
+                            if (securitydepositspinget.equals("1")) {
                                 securitydepositspinget = "Fixed";
-                            }
-                            else if(securitydepositspinget.equals("2")){
+                            } else if (securitydepositspinget.equals("2")) {
                                 securitydepositspinget = "Multiple Of Rent";
                             }
-
 
 
                             //maintenancemonthly
                             maintenancemonthlyspinget = object.getString("maintenancemonthlyspinget");
 
-                            if(maintenancemonthlyspinget.equals("1")){
+                            if (maintenancemonthlyspinget.equals("1")) {
                                 maintenancemonthlyspinget = "Monthly";
-                            }
-                            else if(maintenancemonthlyspinget.equals("2")){
+                            } else if (maintenancemonthlyspinget.equals("2")) {
                                 maintenancemonthlyspinget = "Annually";
-                            }
-                            else if(maintenancemonthlyspinget.equals("3")){
+                            } else if (maintenancemonthlyspinget.equals("3")) {
                                 maintenancemonthlyspinget = "One Time";
-                            }
-                            else if(maintenancemonthlyspinget.equals("4")){
+                            } else if (maintenancemonthlyspinget.equals("4")) {
                                 maintenancemonthlyspinget = "Per Unit/Monthly";
                             }
-
 
 
                             //ownership
                             ownweshipspinget = object.getString("ownweshipspinget");
 
-                            if(ownweshipspinget.equals("1")){
+                            if (ownweshipspinget.equals("1")) {
                                 ownweshipspinget = "Freehold";
-                            }
-                            else if(ownweshipspinget.equals("2")){
+                            } else if (ownweshipspinget.equals("2")) {
                                 ownweshipspinget = "Leasehold";
-                            }
-                            else if(ownweshipspinget.equals("3")){
+                            } else if (ownweshipspinget.equals("3")) {
                                 ownweshipspinget = "Co-Operative Society";
-                            }
-                            else if(ownweshipspinget.equals("4")){
+                            } else if (ownweshipspinget.equals("4")) {
                                 ownweshipspinget = "Power Of Attorney";
                             }
 
@@ -6048,98 +5357,91 @@ public class MainActivity extends AppCompatActivity {
                             //typeoffood
                             typeoffood = object.getString("typeoffood");
 
-                            if(typeoffood.equals("1")){
+                            if (typeoffood.equals("1")) {
                                 typeoffood = "Veg";
-                            }else{
+                            } else {
                                 typeoffood = "Ved and Non-Veg";
                             }
-
 
 
                             //pricestep
                             pricestep = object.getString("pricestep");
 
-                            if(pricestep.equals("1")){
+                            if (pricestep.equals("1")) {
                                 pricestep = "Price Negotiable";
-                            }else{
+                            } else {
                                 pricestep = "Electricity And Water Charges Excluded";
                             }
-
-
 
 
                             //facilityinculded
                             facilityincluded = object.getString("facilityincluded");
 
-                            if(facilityincluded.contains("1")){
+                            if (facilityincluded.contains("1")) {
                                 facilityincluded1.add("Food");
                             }
 
-                            if(facilityincluded.contains("2")){
+                            if (facilityincluded.contains("2")) {
                                 facilityincluded1.add("Laundry");
                             }
 
-                            if(facilityincluded.contains("3")){
+                            if (facilityincluded.contains("3")) {
                                 facilityincluded1.add("Fridge");
                             }
 
-                            if(facilityincluded.contains("4")){
+                            if (facilityincluded.contains("4")) {
                                 facilityincluded1.add("Electricity");
                             }
 
-                            if(facilityincluded.contains("5")){
+                            if (facilityincluded.contains("5")) {
                                 facilityincluded1.add("None Of the Above");
                             }
 
-                            if(facilityincluded.contains("6")){
+                            if (facilityincluded.contains("6")) {
                                 facilityincluded1.add("HouseKeeping");
                             }
 
-                            if(facilityincluded.contains("7")){
+                            if (facilityincluded.contains("7")) {
                                 facilityincluded1.add("DTH");
                             }
 
-                            if(facilityincluded.contains("8")){
+                            if (facilityincluded.contains("8")) {
                                 facilityincluded1.add("Water");
                             }
 
-                            if(facilityincluded.contains("9")){
+                            if (facilityincluded.contains("9")) {
                                 facilityincluded1.add("Wifi");
                             }
 
                             facilityincluded = String.valueOf(facilityincluded1);
 
 
-
-
-
                             //weekdays
                             weekdays = object.getString("weekdays");
 
-                            if(weekdays.contains("1")){
+                            if (weekdays.contains("1")) {
                                 weekdays1.add("Breakfast");
                             }
-                            if(weekdays.contains("2")){
+                            if (weekdays.contains("2")) {
                                 weekdays1.add("Lunch");
                             }
-                            if(weekdays.contains("3")){
+                            if (weekdays.contains("3")) {
                                 weekdays1.add("Dinner");
                             }
 
                             weekdays = String.valueOf(weekdays1);
 
 
-
                             //weekends
                             weeends = object.getString("weeends");
 
-                            if(weeends.contains("1")){
+                            if (weeends.contains("1")) {
                                 weekend1.add("Breakfast");
                             }
-                            if(weeends.contains("2")){
+                            if (weeends.contains("2")) {
                                 weekend1.add("Lunch");
                             }
-                            if(weeends.contains("3")){
+                            if (weeends.contains("3")) {
                                 weekend1.add("Dinner");
                             }
 
@@ -6155,137 +5457,95 @@ public class MainActivity extends AppCompatActivity {
                             //facing
                             facingspinget = object.getString("facingspinget");
 
-                            if(facingspinget.equals("1")){
+                            if (facingspinget.equals("1")) {
                                 facingspinget = "East";
-                            }
-                            else if(facingspinget.equals("2")){
+                            } else if (facingspinget.equals("2")) {
                                 facingspinget = "North-East";
-                            }
-                            else if(facingspinget.equals("3")){
+                            } else if (facingspinget.equals("3")) {
                                 facingspinget = "North";
-                            }
-                            else if(facingspinget.equals("4")){
+                            } else if (facingspinget.equals("4")) {
                                 facingspinget = "West";
-                            }
-                            else if(facingspinget.equals("5")){
+                            } else if (facingspinget.equals("5")) {
                                 facingspinget = "South";
-                            }
-                            else if(facingspinget.equals("6")){
+                            } else if (facingspinget.equals("6")) {
                                 facingspinget = "South-East";
-                            }
-                            else if(facingspinget.equals("7")){
+                            } else if (facingspinget.equals("7")) {
                                 facingspinget = "North-West";
-                            }
-                            else if(facingspinget.equals("8")){
+                            } else if (facingspinget.equals("8")) {
                                 facingspinget = "South-West";
                             }
-
-
 
 
                             //unitspinget
                             unitspinget = object.getString("unitspinget");
 
-                            if(unitspinget.equals("1")){
+                            if (unitspinget.equals("1")) {
                                 unitspinget = "Sq.Ft";
-                            }
-                            else if(unitspinget.equals("2")){
+                            } else if (unitspinget.equals("2")) {
                                 unitspinget = "Sq.yards";
-                            }else if(unitspinget.equals("3")){
+                            } else if (unitspinget.equals("3")) {
                                 unitspinget = "Sq.m";
-                            }
-                            else if(unitspinget.equals("4")){
+                            } else if (unitspinget.equals("4")) {
                                 unitspinget = "Acres";
-                            }
-                            else if(unitspinget.equals("5")){
+                            } else if (unitspinget.equals("5")) {
                                 unitspinget = "Marla";
-                            }else if(unitspinget.equals("6")){
+                            } else if (unitspinget.equals("6")) {
                                 unitspinget = "Cents";
-                            }
-                            else if(unitspinget.equals("7")){
+                            } else if (unitspinget.equals("7")) {
                                 unitspinget = "Bigha";
-                            }else if(unitspinget.equals("8")){
+                            } else if (unitspinget.equals("8")) {
                                 unitspinget = "Kottah";
-                            }
-                            else if(unitspinget.equals("9")){
+                            } else if (unitspinget.equals("9")) {
                                 unitspinget = "Grounds";
-                            }
-                            else if(unitspinget.equals("10")){
+                            } else if (unitspinget.equals("10")) {
                                 unitspinget = "Ares";
-                            }
-                            else if(unitspinget.equals("11")){
+                            } else if (unitspinget.equals("11")) {
                                 unitspinget = "Biswa";
-                            }
-                            else if(unitspinget.equals("12")){
+                            } else if (unitspinget.equals("12")) {
                                 unitspinget = "Guntha";
-                            }
-                            else if(unitspinget.equals("13")){
+                            } else if (unitspinget.equals("13")) {
                                 unitspinget = "Aankadam";
-                            }
-
-                            else if(unitspinget.equals("14")){
+                            } else if (unitspinget.equals("14")) {
                                 unitspinget = "Hectares";
-                            }
-
-                            else if(unitspinget.equals("15")){
+                            } else if (unitspinget.equals("15")) {
                                 unitspinget = "Rood";
-                            }
-
-                            else if(unitspinget.equals("16")){
+                            } else if (unitspinget.equals("16")) {
                                 unitspinget = "Chataks";
-                            }
-
-                            else if(unitspinget.equals("17")){
+                            } else if (unitspinget.equals("17")) {
                                 unitspinget = "Perch";
                             }
-
-
-
 
 
                             //typeofflooring
                             typeofflooringspinget = object.getString("typeofflooringspinget");
 
-                            if(typeofflooringspinget.equals("1")){
+                            if (typeofflooringspinget.equals("1")) {
                                 typeofflooringspinget = "Vitrified";
-                            }
-                            else if(typeofflooringspinget.equals("2")){
+                            } else if (typeofflooringspinget.equals("2")) {
                                 typeofflooringspinget = "Marble";
-                            }
-                            else if(typeofflooringspinget.equals("3")){
+                            } else if (typeofflooringspinget.equals("3")) {
                                 typeofflooringspinget = "Concrete";
-                            }
-                            else if(typeofflooringspinget.equals("4")){
+                            } else if (typeofflooringspinget.equals("4")) {
                                 typeofflooringspinget = "Ceramic";
-                            }
-                            else if(typeofflooringspinget.equals("5")){
+                            } else if (typeofflooringspinget.equals("5")) {
                                 typeofflooringspinget = "Polished Concrete";
-                            }
-                            else if(typeofflooringspinget.equals("6")){
+                            } else if (typeofflooringspinget.equals("6")) {
                                 typeofflooringspinget = "Mosaic";
-                            }
-                            else if(typeofflooringspinget.equals("7")){
+                            } else if (typeofflooringspinget.equals("7")) {
                                 typeofflooringspinget = "Wood";
-                            }
-                            else if(typeofflooringspinget.equals("8")){
+                            } else if (typeofflooringspinget.equals("8")) {
                                 typeofflooringspinget = "Granite";
-                            }
-                            else if(typeofflooringspinget.equals("9")){
+                            } else if (typeofflooringspinget.equals("9")) {
                                 typeofflooringspinget = "Spartex";
-                            }
-                            else if(typeofflooringspinget.equals("10")){
+                            } else if (typeofflooringspinget.equals("10")) {
                                 typeofflooringspinget = "Cement";
-                            }
-                            else if(typeofflooringspinget.equals("11")){
+                            } else if (typeofflooringspinget.equals("11")) {
                                 typeofflooringspinget = "Stone";
-                            }
-                            else if(typeofflooringspinget.equals("12")){
+                            } else if (typeofflooringspinget.equals("12")) {
                                 typeofflooringspinget = "Vinyl";
-                            }
-                            else if(typeofflooringspinget.equals("13")){
+                            } else if (typeofflooringspinget.equals("13")) {
                                 typeofflooringspinget = "IPSFinish";
-                            }
-                            else if(typeofflooringspinget.equals("14")){
+                            } else if (typeofflooringspinget.equals("14")) {
                                 typeofflooringspinget = "Others";
                             }
 
@@ -6293,77 +5553,64 @@ public class MainActivity extends AppCompatActivity {
                             //powerbackup
                             powerbackupspinget = object.getString("powerbackupspinget");
 
-                            if(powerbackupspinget.equals("1")){
+                            if (powerbackupspinget.equals("1")) {
                                 powerbackupspinget = "None";
-                            }
-                            else if(powerbackupspinget.equals("2")){
+                            } else if (powerbackupspinget.equals("2")) {
                                 powerbackupspinget = "Partial";
-                            }
-                            else if(powerbackupspinget.equals("3")){
+                            } else if (powerbackupspinget.equals("3")) {
                                 powerbackupspinget = "Full";
                             }
-
-
 
 
                             //lasttime
                             lasttimespinget = object.getString("lasttimespinget");
 
-                            if(lasttimespinget.contains("1")){
+                            if (lasttimespinget.contains("1")) {
                                 lasttimespinget = "7 PM";
                             }
-                            if(lasttimespinget.contains("2")){
+                            if (lasttimespinget.contains("2")) {
                                 lasttimespinget = "8 PM";
                             }
-                            if(lasttimespinget.contains("3")){
+                            if (lasttimespinget.contains("3")) {
                                 lasttimespinget = "9 PM";
                             }
-                            if(lasttimespinget.contains("4")){
+                            if (lasttimespinget.contains("4")) {
                                 lasttimespinget = "10 PM";
                             }
-                            if(lasttimespinget.contains("5")){
+                            if (lasttimespinget.contains("5")) {
                                 lasttimespinget = "11 PM";
                             }
-                            if(lasttimespinget.contains("6")){
+                            if (lasttimespinget.contains("6")) {
                                 lasttimespinget = "12 AM";
                             }
-                            if(lasttimespinget.contains("7")){
+                            if (lasttimespinget.contains("7")) {
                                 lasttimespinget = "1 AM";
                             }
-                            if(lasttimespinget.contains("8")){
+                            if (lasttimespinget.contains("8")) {
                                 lasttimespinget = "2 AM";
                             }
-                            if(lasttimespinget.contains("9")){
+                            if (lasttimespinget.contains("9")) {
                                 lasttimespinget = "3 AM";
                             }
-                            if(lasttimespinget.contains("10")){
+                            if (lasttimespinget.contains("10")) {
                                 lasttimespinget = "24 x 7";
                             }
 
 
-
-
-
-
-
-
-
-
-
                             //pet
                             pet = object.getString("pet");
-                            if(pet.equals("1")){
+                            if (pet.equals("1")) {
                                 pet = "Yes";
-                            }else {
+                            } else {
                                 pet = "No";
                             }
 
 
                             //visiter
                             visiter = object.getString("visiter");
-                            if(visiter.equals("1")){
+                            if (visiter.equals("1")) {
                                 visiter = "Yes";
-                            }else {
+                            } else {
                                 visiter = "No";
                             }
 
@@ -6371,27 +5618,27 @@ public class MainActivity extends AppCompatActivity {
                             //smoking
                             smoking = object.getString("smoking");
 
-                            if(smoking.equals("1")){
+                            if (smoking.equals("1")) {
                                 smoking = "Yes";
-                            }else {
+                            } else {
                                 smoking = "No";
                             }
 
 
                             //alcohol
                             alcohol = object.getString("alcohol");
-                            if(alcohol.equals("1")){
+                            if (alcohol.equals("1")) {
                                 alcohol = "Yes";
-                            }else {
+                            } else {
                                 alcohol = "No";
                             }
 
 
                             //event
                             event = object.getString("event");
-                            if(event.equals("1")){
+                            if (event.equals("1")) {
                                 event = "Yes";
-                            }else {
+                            } else {
                                 event = "No";
                             }
 
@@ -6400,43 +5647,39 @@ public class MainActivity extends AppCompatActivity {
                             anemitiesitem = object.getString("anemitiesitem");
 
 
-                            if(anemitiesitem.contains("1")){
+                            if (anemitiesitem.contains("1")) {
                                 anemitiesitem1.add("Lift");
                             }
 
-                            if(anemitiesitem.contains("2")){
+                            if (anemitiesitem.contains("2")) {
                                 anemitiesitem1.add("Park");
                             }
 
-                            if(anemitiesitem.contains("3")){
+                            if (anemitiesitem.contains("3")) {
                                 anemitiesitem1.add("Maintenance Staff");
                             }
 
-                            if(anemitiesitem.contains("4")){
+                            if (anemitiesitem.contains("4")) {
                                 anemitiesitem1.add("Visiter Parking");
                             }
 
-                            if(anemitiesitem.contains("5")){
+                            if (anemitiesitem.contains("5")) {
                                 anemitiesitem1.add("FengShui/Vaastu Compliant");
                             }
 
-                            if(anemitiesitem.contains("6")){
+                            if (anemitiesitem.contains("6")) {
                                 anemitiesitem1.add("Intercome Facility");
                             }
 
-                            if(anemitiesitem.contains("7")){
+                            if (anemitiesitem.contains("7")) {
                                 anemitiesitem1.add("Water Storage");
                             }
 
-                            if(anemitiesitem.contains("8")){
+                            if (anemitiesitem.contains("8")) {
                                 anemitiesitem1.add("Security/Fire Alaram");
                             }
 
                             anemitiesitem = String.valueOf(anemitiesitem1);
-
-
-
-
 
 
                             //moreanemities
@@ -6450,127 +5693,123 @@ public class MainActivity extends AppCompatActivity {
 
                             moreanemitiesitem2.addAll(moreanemitiesitem3);
 
-                            System.out.println("morrrrrrr ::: "+ moreanemitiesitem2);
+                            System.out.println("morrrrrrr ::: " + moreanemitiesitem2);
 
 
-                            if(moreanemitiesitem2.contains("1")){
+                            if (moreanemitiesitem2.contains("1")) {
                                 moreanemitiesitem1.add("Swimming Pool");
                             }
 
-                            if(moreanemitiesitem2.contains("2")){
+                            if (moreanemitiesitem2.contains("2")) {
                                 moreanemitiesitem1.add("Centrally Air Conditioned");
                             }
 
-                            if(moreanemitiesitem2.contains("3")){
+                            if (moreanemitiesitem2.contains("3")) {
                                 moreanemitiesitem1.add("Garden");
                             }
 
-                            if(moreanemitiesitem2.contains("4")){
+                            if (moreanemitiesitem2.contains("4")) {
                                 moreanemitiesitem1.add("Wifi");
                             }
 
-                            if(moreanemitiesitem2.contains("5")){
+                            if (moreanemitiesitem2.contains("5")) {
                                 moreanemitiesitem1.add("Piped-Gas");
                             }
 
-                            if(moreanemitiesitem2.contains("6")){
+                            if (moreanemitiesitem2.contains("6")) {
                                 moreanemitiesitem1.add("Water Purifier");
                             }
 
-                            if(moreanemitiesitem2.contains("7")){
+                            if (moreanemitiesitem2.contains("7")) {
                                 moreanemitiesitem1.add("Club House");
                             }
 
-                            if(moreanemitiesitem2.contains("8")){
+                            if (moreanemitiesitem2.contains("8")) {
                                 moreanemitiesitem1.add("Shopping Center");
                             }
 
-                            if(moreanemitiesitem2.contains("9")){
+                            if (moreanemitiesitem2.contains("9")) {
                                 moreanemitiesitem1.add("Water Disposal");
                             }
 
-                            if(moreanemitiesitem2.contains("10")){
+                            if (moreanemitiesitem2.contains("10")) {
                                 moreanemitiesitem1.add("RainWater Harvesting");
                             }
 
-                            if(moreanemitiesitem2.contains("11")){
+                            if (moreanemitiesitem2.contains("11")) {
                                 moreanemitiesitem1.add("Bank Attached Property");
                             }
 
-                            if(moreanemitiesitem2.contains("12")){
+                            if (moreanemitiesitem2.contains("12")) {
                                 moreanemitiesitem1.add("Gym");
                             }
 
                             moreanemitiesitem = String.valueOf(moreanemitiesitem1);
 
-                            System.out.println("morrrr more ::"+ moreanemitiesitem1);
-
+                            System.out.println("morrrr more ::" + moreanemitiesitem1);
 
 
                             //watersource
                             watersourceitem = object.getString("watersourceitem");
 
-                            if(watersourceitem.contains("1")){
+                            if (watersourceitem.contains("1")) {
                                 watersourceitem1.add("Municipal Corporation");
                             }
-                            if(watersourceitem.contains("2")){
+                            if (watersourceitem.contains("2")) {
                                 watersourceitem1.add("Borewell");
                             }
 
                             watersourceitem = String.valueOf(watersourceitem1);
 
 
-
                             //overlooking
                             overlookingitem = object.getString("overlookingitem");
 
-                            if(overlookingitem.contains("1")){
+                            if (overlookingitem.contains("1")) {
                                 overlookingitem1.add("Park/Garden");
                             }
 
-                            if(overlookingitem.contains("2")){
+                            if (overlookingitem.contains("2")) {
                                 overlookingitem1.add("Main Road");
                             }
 
-                            if(overlookingitem.contains("3")){
+                            if (overlookingitem.contains("3")) {
                                 overlookingitem1.add("Club");
                             }
 
-                            if(overlookingitem.contains("4")){
+                            if (overlookingitem.contains("4")) {
                                 overlookingitem1.add("Lake Facing");
                             }
 
-                            if(overlookingitem.contains("5")){
+                            if (overlookingitem.contains("5")) {
                                 overlookingitem1.add("Sea Facing");
                             }
 
-                            if(overlookingitem.contains("6")){
+                            if (overlookingitem.contains("6")) {
                                 overlookingitem1.add("Others");
                             }
 
                             overlookingitem = String.valueOf(overlookingitem1);
 
 
-
                             //somefeatures
                             somefeatureitem = object.getString("somefeatureitem");
-                            if(somefeatureitem.contains("1")){
+                            if (somefeatureitem.contains("1")) {
                                 somefeatureitem1.add("In a Gated Society");
                             }
 
-                            if(somefeatureitem.contains("2")){
+                            if (somefeatureitem.contains("2")) {
                                 somefeatureitem1.add("Corner Property");
                             }
-                            if(somefeatureitem.contains("3")){
+                            if (somefeatureitem.contains("3")) {
                                 somefeatureitem1.add("Pet Friendly");
                             }
 
-                            if(somefeatureitem.contains("4")){
+                            if (somefeatureitem.contains("4")) {
                                 somefeatureitem1.add("Wheelchair Friendly");
                             }
 
                             somefeatureitem = String.valueOf(somefeatureitem1);
-
 
 
                             //byres
@@ -6607,31 +5846,30 @@ public class MainActivity extends AppCompatActivity {
                             //times
                             timeitems = object.getString("timeitems");
 
-                            if(timeitems.contains("1")){
+                            if (timeitems.contains("1")) {
                                 timeitems1.add("8am - 12pm");
                             }
 
-                            if(timeitems.contains("2")){
+                            if (timeitems.contains("2")) {
                                 timeitems1.add("12pm - 3pm");
                             }
-                            if(timeitems.contains("3")){
+                            if (timeitems.contains("3")) {
                                 timeitems1.add("3pm - 6pm");
                             }
 
-                            if(timeitems.contains("4")){
+                            if (timeitems.contains("4")) {
                                 timeitems1.add("6pm - 9pm");
                             }
 
-                            if(timeitems.contains("5")){
+                            if (timeitems.contains("5")) {
                                 timeitems1.add("9pm - 11pm");
                             }
 
-                            if(timeitems.contains("6")){
+                            if (timeitems.contains("6")) {
                                 timeitems1.add("None");
                             }
 
                             timeitems = String.valueOf(timeitems1);
-
 
 
                             widthfacingget = object.getString("widthfacingget");
@@ -6640,9 +5878,9 @@ public class MainActivity extends AppCompatActivity {
 
                             //bowndywall
                             boundrywall = object.getString("boundrywall");
-                            if(boundrywall.equals("1")){
+                            if (boundrywall.equals("1")) {
                                 boundrywall = "Yes";
-                            }else {
+                            } else {
                                 boundrywall = "No";
                             }
 
@@ -6650,82 +5888,70 @@ public class MainActivity extends AppCompatActivity {
                             flattype = object.getString("flattype");
 
 
-                            if(flattype.equals("1")){
+                            if (flattype.equals("1")) {
                                 flattype = "1 BHK";
-                            }
-                            else if(flattype.equals("2")){
+                            } else if (flattype.equals("2")) {
                                 flattype = "2 BHK";
-                            }
-                            else if(flattype.equals("3")){
+                            } else if (flattype.equals("3")) {
                                 flattype = "3 BHK";
-                            }
-                            else if(flattype.equals("4")){
+                            } else if (flattype.equals("4")) {
                                 flattype = "4 BHK";
-                            }
-                            else if(flattype.equals("5")){
+                            } else if (flattype.equals("5")) {
                                 flattype = "5 BHK";
-                            }
-                            else if(flattype.equals("6")){
+                            } else if (flattype.equals("6")) {
                                 flattype = "6 BHK";
-                            }
-                            else if(flattype.equals("7")){
+                            } else if (flattype.equals("7")) {
                                 flattype = "7 BHK";
-                            }
-                            else if(flattype.equals("8")){
+                            } else if (flattype.equals("8")) {
                                 flattype = "8 BHK";
-                            }
-                            else if(flattype.equals("9")){
+                            } else if (flattype.equals("9")) {
                                 flattype = "9 BHK";
-                            }
-                            else if(flattype.equals("10")){
+                            } else if (flattype.equals("10")) {
                                 flattype = "10 BHK";
-                            }
-                            else if(flattype.equals("11")){
+                            } else if (flattype.equals("11")) {
                                 flattype = "11 BHK";
                             }
 
 
-                            user_id= object.getString("user_id");
-                            newprice= object.getString("newprice");
-                            image= Endpoints.base_url+ object.getString("image");
-                            shortlistedvalue= object.getString("shortlistedvalue");
+                            user_id = object.getString("user_id");
+                            newprice = object.getString("newprice");
+                            image = Endpoints.base_url + object.getString("image");
+                            shortlistedvalue = object.getString("shortlistedvalue");
 
                             //rera
-                            getrera= object.getString("rera");
-                            if(getrera.equals("1")){
+                            getrera = object.getString("rera");
+                            if (getrera.equals("1")) {
                                 getrera = "Yes";
-                            }else {
+                            } else {
                                 getrera = "No";
                             }
 
-                            mobile= object.getString("mobile");
-                            reg_date= object.getString("reg_date");
-                            fname= object.getString("fname");
-                            lname= object.getString("lname");
-                            email= object.getString("email");
-                            latlong= object.getString("latlong");
+                            mobile = object.getString("mobile");
+                            reg_date = object.getString("reg_date");
+                            fname = object.getString("fname");
+                            lname = object.getString("lname");
+                            email = object.getString("email");
+                            latlong = object.getString("latlong");
                             paymentStatus = object.getString("paymentStatus");
 
 
-
-
-                            PgDataModel pgDataModel = new PgDataModel(id ,usertype , type , category , categorytype , agrement , pgavaliablefor , pgshareprivate ,
-                                    sharingspinnumber , propertylistfor , willing , pgsuitablefor , state, city , locality , projectname , address ,
-                                    unit1 ,unit2 ,unit3 ,availabilitydate , otherroom , homethings , builtupa , carpeta , plota , bed ,
-                                    bath , balconie , totalfloorget , reservedpark , availabilityspinget , ageofpropertyspinget ,
-                                    furnishedspinget ,possessionbyspinget ,
-                                    noofroomspinget , qualityratingspinget , floorallowedspinget , roomavailabespinget , priceget , maintenanceget ,
-                                    bookingamountget ,
-                                    durationofrentagget , monthofnoticeget  , securitydepositspinget , maintenancemonthlyspinget ,
-                                    ownweshipspinget ,
-                                    typeoffood , pricestep , facilityincluded , weekdays , weeends , earlylivingchargesget , contractdurationget ,
-                                    annualduespayableget ,
-                                    depositeaget , facingspinget , unitspinget , typeofflooringspinget , powerbackupspinget , lasttimespinget ,
-                                    pet , visiter , smoking ,
-                                    alcohol , event , anemitiesitem , moreanemitiesitem , watersourceitem , overlookingitem ,
-                                    somefeatureitem , byersitem , timeitems ,
-                                    widthfacingget , descriptionget , boundrywall ,flattype, user_id, newprice,
-                                    image, shortlistedvalue, getrera, mobile , reg_date, fname, lname, latlong, email, paymentStatus);
+                            PgDataModel pgDataModel = new PgDataModel(id, usertype, type, category, categorytype, agrement, pgavaliablefor, pgshareprivate,
+                                    sharingspinnumber, propertylistfor, willing, pgsuitablefor, state, city, locality, projectname, address,
+                                    unit1, unit2, unit3, availabilitydate, otherroom, homethings, builtupa, carpeta, plota, bed,
+                                    bath, balconie, totalfloorget, reservedpark, availabilityspinget, ageofpropertyspinget,
+                                    furnishedspinget, possessionbyspinget,
+                                    noofroomspinget, qualityratingspinget, floorallowedspinget, roomavailabespinget, priceget, maintenanceget,
+                                    bookingamountget,
+                                    durationofrentagget, monthofnoticeget, securitydepositspinget, maintenancemonthlyspinget,
+                                    ownweshipspinget,
+                                    typeoffood, pricestep, facilityincluded, weekdays, weeends, earlylivingchargesget, contractdurationget,
+                                    annualduespayableget,
+                                    depositeaget, facingspinget, unitspinget, typeofflooringspinget, powerbackupspinget, lasttimespinget,
+                                    pet, visiter, smoking,
+                                    alcohol, event, anemitiesitem, moreanemitiesitem, watersourceitem, overlookingitem,
+                                    somefeatureitem, byersitem, timeitems,
+                                    widthfacingget, descriptionget, boundrywall, flattype, user_id, newprice,
+                                    image, shortlistedvalue, getrera, mobile, reg_date, fname, lname, latlong, email, paymentStatus);
                             pgDataModels.add(pgDataModel);
                             pgAdapter.notifyDataSetChanged();
                         }
@@ -6734,7 +5960,7 @@ public class MainActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     //progressDialog.dismiss();
                     showmessage("Server Error...");
-                    System.out.println("problem ::"+e);
+                    System.out.println("problem ::" + e);
                     e.printStackTrace();
                 }
 
@@ -6744,7 +5970,7 @@ public class MainActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 showmessage("Server Error...");
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 SmsData smsData = new SmsData();
@@ -6778,8 +6004,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-    public void getnotification(){
+    public void getnotification() {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(getApplicationContext(), "notify_001");
 
@@ -6798,8 +6023,7 @@ public class MainActivity extends AppCompatActivity {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
 // === Removed some obsoletes
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-        {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             String channelId = "Your_channel_id";
             NotificationChannel channel = new NotificationChannel(
                     channelId,
@@ -6809,31 +6033,30 @@ public class MainActivity extends AppCompatActivity {
             mBuilder.setChannelId(channelId);
         }
 
-        mNotificationManager.notify(0, mBuilder.build());
 
     }
 
     private void startAlarm() {
         Calendar calendar = Calendar.getInstance();
         if (calendar.getTime().compareTo(new Date()) < 0) calendar.add(Calendar.DAY_OF_MONTH, 1);
-            calendar.set(Calendar.HOUR_OF_DAY,14);
-            calendar.set(Calendar.MINUTE,2);
+        calendar.set(Calendar.HOUR_OF_DAY, 14);
+        calendar.set(Calendar.MINUTE, 2);
 
-            Intent intent = new Intent(getApplicationContext(),AlarmNotificationReceiver.class);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
-            AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),alarmManager.INTERVAL_DAY,pendingIntent);
+        Intent intent = new Intent(getApplicationContext(), AlarmNotificationReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmManager.INTERVAL_DAY, pendingIntent);
     }
 
 
-    public void showcounter(){
+    public void showcounter() {
 
         final String userid1, date, date2;
         userid1 = VolleySingleton.getInstance(getApplicationContext()).id();
 
-        if(VolleySingleton.getInstance(getApplicationContext()).getcounterdate() != null){
+        if (VolleySingleton.getInstance(getApplicationContext()).getcounterdate() != null) {
             date2 = VolleySingleton.getInstance(getApplicationContext()).getcounterdate();
-        }else{
+        } else {
             date2 = "no";
         }
 
@@ -6846,24 +6069,24 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(String response) {
-                System.out.println("response :: " +response);
+                System.out.println("response :: " + response);
                 //progressDialog.dismiss();
                 try {
                     JSONObject obj = new JSONObject(response);
 
-                        System.out.println(" dataataataa :; "+ obj.getString("number"));
+                    System.out.println(" dataataataa :; " + obj.getString("number"));
 
-                        String counter = obj.getString("number");
-                        number = Integer.parseInt(counter);
+                    String counter = obj.getString("number");
+                    number = Integer.parseInt(counter);
 
-                    if(!VolleySingleton.getInstance(getApplicationContext()).userCategory().equals("4")) {
+                    if (!VolleySingleton.getInstance(getApplicationContext()).userCategory().equals("4")) {
                         LayoutInflater li = LayoutInflater.from(MainActivity.this);
-                        tv_counter = (TextView)li.inflate(R.layout.counter_layout, null);
+                        tv_counter = (TextView) li.inflate(R.layout.counter_layout, null);
                         nav.getMenu().findItem(R.id.lead).setActionView(tv_counter);
 
-                        if(Integer.parseInt(counter)   > 0){
+                        if (Integer.parseInt(counter) > 0) {
                             tv_counter.setText(counter);
-                        }else {
+                        } else {
                             tv_counter.setText("");
                         }
 
@@ -6880,10 +6103,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 //progressDialog.dismiss();
-                Toast.makeText(MainActivity.this,"Something Went Wrong",Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Something Went Wrong", Toast.LENGTH_SHORT).show();
 //                Log.d("VOLLEY",error.getMessage());
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 SmsData smsData = new SmsData();
@@ -6893,7 +6116,7 @@ public class MainActivity extends AppCompatActivity {
                 params.put("date", date);
                 params.put("date2", date2);
 
-                System.out.println("getparamamaamam ::; "  + params);
+                System.out.println("getparamamaamam ::; " + params);
                 return params;
             }
         };
@@ -6905,7 +6128,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void showmsgcounter(){
+    public void showmsgcounter() {
 
         final String userid1, date, date2;
         userid1 = VolleySingleton.getInstance(getApplicationContext()).id();
@@ -6917,20 +6140,18 @@ public class MainActivity extends AppCompatActivity {
         date = dateForMsgCounterNotification.getdateforcounter();
 
 
-        if(VolleySingleton.getInstance(getApplicationContext()).getmsgcounterdate() != null){
+        if (VolleySingleton.getInstance(getApplicationContext()).getmsgcounterdate() != null) {
             date2 = VolleySingleton.getInstance(getApplicationContext()).getmsgcounterdate();
-        }else{
+        } else {
             date2 = date;
         }
-
-
 
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, Endpoints.getquestionsnotification, new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
-                System.out.println("getparaaaaams response  :: " +response);
+                System.out.println("getparaaaaams response  :: " + response);
                 //progressDialog.dismiss();
                 try {
                     JSONObject obj = new JSONObject(response);
@@ -6945,10 +6166,6 @@ public class MainActivity extends AppCompatActivity {
                     VolleySingleton.getInstance(getApplicationContext()).setmsglist(obj.getString("notification"));
 
 
-
-
-
-
 //                    counter = counter.toString().replace("[", "").replace("]", "");
 //                    String resultflatamore = counter.replaceAll("^[\"']+|[\"']+$", "");
 
@@ -6960,7 +6177,7 @@ public class MainActivity extends AppCompatActivity {
 //                        System.out.println(" dataataataa :;  "+ counter + "    "+ getmsgcounter.size() );
 //                    }
 
-                    if(!VolleySingleton.getInstance(getApplicationContext()).userCategory().equals("4")) {
+                    if (!VolleySingleton.getInstance(getApplicationContext()).userCategory().equals("4")) {
                         LayoutInflater li = LayoutInflater.from(MainActivity.this);
                         tv_counter = (TextView) li.inflate(R.layout.counter_layout, null);
                         nav.getMenu().findItem(R.id.myproperty).setActionView(tv_counter);
@@ -6975,7 +6192,6 @@ public class MainActivity extends AppCompatActivity {
                     }
 
 
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -6986,10 +6202,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 //progressDialog.dismiss();
-                Toast.makeText(MainActivity.this,"Something Went Wrong",Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Something Went Wrong", Toast.LENGTH_SHORT).show();
 //                Log.d("VOLLEY",error.getMessage());
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 SmsData smsData = new SmsData();
@@ -7011,34 +6227,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
-
     public class MyTimertask extends TimerTask {
 
-        ViewPagerAdapter mAdapter = new ViewPagerAdapter(sliderImg,MainActivity.this);
+        ViewPagerAdapter mAdapter = new ViewPagerAdapter(sliderImg, MainActivity.this);
 
         @Override
         public void run() {
             MainActivity.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    viewPager.post(new Runnable(){
+                    viewPager.post(new Runnable() {
 
 
                         @Override
                         public void run() {
-                            ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(sliderImg,MainActivity.this);
-                            AdsViewPager adsViewPager = new AdsViewPager(adsDataModels,MainActivity.this);
+                            ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(sliderImg, MainActivity.this);
+                            AdsViewPager adsViewPager = new AdsViewPager(adsDataModels, MainActivity.this);
                             ConnectivityManager manager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
                             NetworkInfo activenetwork = manager.getActiveNetworkInfo();
-                            System.out.println("whatssss :: "+ activenetwork);
+                            System.out.println("whatssss :: " + activenetwork);
 
 
-                            if (activenetwork == null)
-                            {
+                            if (activenetwork == null) {
 
-                                AlphaAnimation blinkanimation= new AlphaAnimation(1, 0); // Change alpha from fully visible to invisible
+                                AlphaAnimation blinkanimation = new AlphaAnimation(1, 0); // Change alpha from fully visible to invisible
                                 blinkanimation.setDuration(300); // duration - half a second
                                 blinkanimation.setInterpolator(new LinearInterpolator()); // do not alter animation rate
                                 blinkanimation.setRepeatCount(3); // Repeat animation infinitely
@@ -7047,32 +6259,26 @@ public class MainActivity extends AppCompatActivity {
                                 nointernet.setAnimation(blinkanimation);
                                 settingsDialog.show();
 //                                Toast.makeText(MainActivity.this, "Please Start Internet", Toast.LENGTH_SHORT).show();
-                            }
-                            else
-                            {
-                                if(activenetwork.isConnected())
-                                {
+                            } else {
+                                if (activenetwork.isConnected()) {
                                     settingsDialog.dismiss();
 
-                                    if(viewPagerAdapter.getCount() == 0){
+                                    if (viewPagerAdapter.getCount() == 0) {
                                         progressDialog.show();
-                                    }else {
-                                        viewPager.setCurrentItem((viewPager.getCurrentItem()+1)%viewPagerAdapter.getCount());
+                                    } else {
+                                        viewPager.setCurrentItem((viewPager.getCurrentItem() + 1) % viewPagerAdapter.getCount());
                                     }
 
-                                    if(adsViewPager.getCount() == 0){
+                                    if (adsViewPager.getCount() == 0) {
                                         progressDialog.show();
-                                    }else {
-                                        advertisement.setCurrentItem((advertisement.getCurrentItem()+1)%adsViewPager.getCount());
+                                    } else {
+                                        advertisement.setCurrentItem((advertisement.getCurrentItem() + 1) % adsViewPager.getCount());
                                     }
 
 
+                                } else {
 
-                                }
-                                else
-                                {
-
-                                    AlphaAnimation blinkanimation= new AlphaAnimation(1, 0); // Change alpha from fully visible to invisible
+                                    AlphaAnimation blinkanimation = new AlphaAnimation(1, 0); // Change alpha from fully visible to invisible
                                     blinkanimation.setDuration(300); // duration - half a second
                                     blinkanimation.setInterpolator(new LinearInterpolator()); // do not alter animation rate
                                     blinkanimation.setRepeatCount(3); // Repeat animation infinitely
@@ -7090,10 +6296,6 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     }
-
-
-
-
 
 
 }

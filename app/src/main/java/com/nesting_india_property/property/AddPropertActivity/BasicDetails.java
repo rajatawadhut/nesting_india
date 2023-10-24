@@ -4,6 +4,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -46,43 +47,36 @@ import java.util.Map;
 public class BasicDetails extends AppCompatActivity {
 
     RadioGroup radioGroup;
-    ImageView rowner , rdealer, rbuilder;
+    ImageView rowner, rdealer, rbuilder;
     String usertype = "", type = "", category = "",
-            categorytype = "", agrement = "",pgavailablefor = "",  pgshareprivate ="",  sharingspinnumber = "", subscription = "";
+            categorytype = "", agrement = "", pgavailablefor = "", pgshareprivate = "", sharingspinnumber = "", subscription = "";
     Spinner listpropertyspinner, categorytypespin, sharingnopspin;
     String propertylistfor, getsubcription = "";
     Button residentialtype, commercialtype;
-    LinearLayout pgchange9,sharingnopg9,willing9 ,apartment9, residentialland9, housevilla9, office9, retail9, land9,
-            industry9, storage9, hospitality9, other9, categorytypespin9;
+    LinearLayout pgchange9, sharingnopg9, willing9, apartment9, residentialland9, housevilla9, office9, retail9, land9,
+            industry9, storage9, hospitality9, other9, categorytypespin9, ll_dealer, ll_owner, ll_builder;
     ImageView apartment, residentialland, housevilla, office, retail, land, industry, storage, hospitality, other;
     CheckBox checkfamily, checkmen, checkwomen, studentpg, workingpropg;
     RadioButton agremmentradio, anyradio, girlpgradio, boypgradio, anypgradio, shareradiopg, privateradiopg;
-    TextView ownert , dealert, buildert, apartmentt, residentiallandtl, housevillat, officet, retailt,
+    TextView ownert, dealert, buildert, apartmentt, residentiallandtl, housevillat, officet, retailt,
             landt, industryt, storaget, hospitalityt, othert;
-
 
 
     ArrayList<String> getsubcription1 = new ArrayList<>();
 
 
-
-
-
     ArrayList<String> willing = new ArrayList<>();
-    ArrayList<String> pgsutailbefor  = new ArrayList<>();
+    ArrayList<String> pgsutailbefor = new ArrayList<>();
     Button btnnext;
     private ProgressDialog progressDialog;
 
 
-
-
-
+    @SuppressLint("MissingInflatedId")
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_basic_details);
-
 
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -102,14 +96,9 @@ public class BasicDetails extends AppCompatActivity {
         progressDialog.setCancelable(false);
 
 
-        if(VolleySingleton.getInstance(getApplicationContext()).isLogin()){
+        if (VolleySingleton.getInstance(getApplicationContext()).isLogin()) {
             getsubscription();
         }
-
-
-
-
-
 
 
         //type of user
@@ -134,6 +123,10 @@ public class BasicDetails extends AppCompatActivity {
         storage = findViewById(R.id.storage);
         hospitality = findViewById(R.id.hospitality);
         other = findViewById(R.id.other);
+
+        ll_owner = findViewById(R.id.ll_owner);
+        ll_dealer = findViewById(R.id.ll_dealer);
+        ll_builder = findViewById(R.id.ll_builder);
 
 
         apartment9 = findViewById(R.id.appartment9);
@@ -167,8 +160,6 @@ public class BasicDetails extends AppCompatActivity {
         othert = findViewById(R.id.othert);
 
 
-
-
         // color of category
         apartment.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_IN);
         residentialland.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_IN);
@@ -180,7 +171,6 @@ public class BasicDetails extends AppCompatActivity {
         storage.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_IN);
         hospitality.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_IN);
         other.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_IN);
-
 
 
         //hide category
@@ -196,11 +186,8 @@ public class BasicDetails extends AppCompatActivity {
         other9.setVisibility(View.VISIBLE);
 
 
-
         //next btn
         btnnext = findViewById(R.id.btnnext);
-
-
 
 
         //spiner listing for
@@ -208,16 +195,16 @@ public class BasicDetails extends AppCompatActivity {
 
 
         //spinner categorytype
-         categorytypespin = findViewById(R.id.categorytypespin);
-         categorytypespin9 = findViewById(R.id.categorytypespin9);
+        categorytypespin = findViewById(R.id.categorytypespin);
+        categorytypespin9 = findViewById(R.id.categorytypespin9);
 
 
-         //willing
+        //willing
         willing9 = findViewById(R.id.willing9);
         checkfamily = findViewById(R.id.checkfamily);
         checkmen = findViewById(R.id.checkmen);
         checkwomen = findViewById(R.id.checkwomen);
-        agremmentradio =findViewById(R.id.agremmentradio);
+        agremmentradio = findViewById(R.id.agremmentradio);
         anyradio = findViewById(R.id.anyradio);
 
         //pgchange
@@ -231,9 +218,6 @@ public class BasicDetails extends AppCompatActivity {
         girlpgradio = findViewById(R.id.girlpgradio);
         boypgradio = findViewById(R.id.boypgradio);
         anypgradio = findViewById(R.id.anypgradio);
-
-
-
 
 
 //
@@ -257,6 +241,22 @@ public class BasicDetails extends AppCompatActivity {
 //            }
 //        });
 
+        if (ListingData.getInstance(getApplicationContext()).usertype() != null) {
+            if (ListingData.getInstance(getApplicationContext()).usertype().equals("Owner")) {
+                usertype = "Owner";
+                rowner.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
+                ownert.setTextColor(getResources().getColor(R.color.selected));
+            } else if (ListingData.getInstance(getApplicationContext()).usertype().equals("Dealer")) {
+                usertype = "Dealer";
+                rdealer.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
+                dealert.setTextColor(getResources().getColor(R.color.selected));
+            } else {
+                usertype = "Builder";
+                rbuilder.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
+                buildert.setTextColor(getResources().getColor(R.color.selected));
+
+            }
+        }
 
 
 
@@ -272,9 +272,10 @@ public class BasicDetails extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 propertylistfor = listpropertyspinner.getSelectedItem().toString();
 
-        // Owner , Dealer, Builde
+                // Owner , Dealer, Builde
 
-                if(propertylistfor.equals("Sell")){
+                if (propertylistfor.equals("Sell")) {
+
                     residentialtype.setTextColor(Color.WHITE);
                     commercialtype.setTextColor(Color.WHITE);
                     type = "";
@@ -308,10 +309,9 @@ public class BasicDetails extends AppCompatActivity {
                     othert.setTextColor(getResources().getColor(R.color.black));
 
 
-
                 }
 
-                if (propertylistfor.equals("Rent")){
+                if (propertylistfor.equals("Rent")) {
                     residentialtype.setTextColor(Color.WHITE);
                     type = "";
                     category = "";
@@ -346,7 +346,7 @@ public class BasicDetails extends AppCompatActivity {
 
 
                 }
-                if (propertylistfor.equals("Paying Guest")){
+                if (propertylistfor.equals("Paying Guest")) {
                     category = "";
                     residentialtype.setTextColor(Color.GREEN);
                     type = "Residential";
@@ -388,36 +388,11 @@ public class BasicDetails extends AppCompatActivity {
                 rbuilder.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_IN);
 
 
-                if(ListingData.getInstance(getApplicationContext()).usertype() != null) {
-            if (ListingData.getInstance(getApplicationContext()).usertype().equals("Owner")) {
-                usertype = "Owner";
-                rowner.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
-                ownert.setTextColor(getResources().getColor(R.color.selected));
-            } else if (ListingData.getInstance(getApplicationContext()).usertype().equals("Dealer")) {
-                usertype = "Dealer";
-                rdealer.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
-                dealert.setTextColor(getResources().getColor(R.color.selected));
-            } else {
-                usertype = "Builder";
-                rbuilder.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
-                buildert.setTextColor(getResources().getColor(R.color.selected));
-
-            }
-        }
 
 
-
-
-
-
-
-
-
-
-
-        // type Residential commersial
-                if(ListingData.getInstance(getApplicationContext()).usertype() != null) {
-                    if(ListingData.getInstance(getApplicationContext()).type().equals("Residential")){
+                // type Residential commersial
+                if (ListingData.getInstance(getApplicationContext()).usertype() != null) {
+                    if (ListingData.getInstance(getApplicationContext()).type().equals("Residential")) {
                         type = "Residential";
                         residentialtype.setTextColor(Color.GREEN);
                         commercialtype.setTextColor(Color.WHITE);
@@ -446,7 +421,7 @@ public class BasicDetails extends AppCompatActivity {
                         othert.setTextColor(getResources().getColor(R.color.black));
 
 
-                        if(propertylistfor.equals("Sell")){
+                        if (propertylistfor.equals("Sell")) {
                             apartment9.setVisibility(View.VISIBLE);
                             residentialland9.setVisibility(View.VISIBLE);
                             housevilla9.setVisibility(View.VISIBLE);
@@ -459,7 +434,7 @@ public class BasicDetails extends AppCompatActivity {
                             other9.setVisibility(View.VISIBLE);
                         }
 
-                        if(propertylistfor.equals("Rent")){
+                        if (propertylistfor.equals("Rent")) {
                             apartment9.setVisibility(View.VISIBLE);
                             residentialland9.setVisibility(View.GONE);
                             housevilla9.setVisibility(View.VISIBLE);
@@ -472,7 +447,7 @@ public class BasicDetails extends AppCompatActivity {
                             other9.setVisibility(View.VISIBLE);
                         }
 
-                        if(propertylistfor.equals("Paying Guest")){
+                        if (propertylistfor.equals("Paying Guest")) {
                             apartment9.setVisibility(View.VISIBLE);
                             residentialland9.setVisibility(View.GONE);
                             housevilla9.setVisibility(View.VISIBLE);
@@ -484,7 +459,7 @@ public class BasicDetails extends AppCompatActivity {
                             hospitality9.setVisibility(View.GONE);
                             other9.setVisibility(View.GONE);
                         }
-                    }else{
+                    } else {
 
 //                        Toast.makeText(BasicDetails.this, ListingData.getInstance(getApplicationContext()).type(), Toast.LENGTH_SHORT).show();
 
@@ -516,7 +491,6 @@ public class BasicDetails extends AppCompatActivity {
                         othert.setTextColor(getResources().getColor(R.color.black));
 
 
-
                         apartment9.setVisibility(View.GONE);
                         residentialland9.setVisibility(View.GONE);
                         housevilla9.setVisibility(View.GONE);
@@ -532,161 +506,161 @@ public class BasicDetails extends AppCompatActivity {
                 }
 
 
-        // Category
+                // Category
                 categorytypespin9.setVisibility(View.GONE);
 
 
-    if(ListingData.getInstance(getApplicationContext()).category() != null) {
+                if (ListingData.getInstance(getApplicationContext()).category() != null) {
 
-        if (ListingData.getInstance(getApplicationContext()).category().equals("Apartment/Flat/Builder Floor")) {
-            category = "Apartment/Flat/Builder Floor";
-            categorytypespin9.setVisibility(View.VISIBLE);
-            apartment.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
-            apartmentt.setTextColor(getResources().getColor(R.color.selected));
+                    if (ListingData.getInstance(getApplicationContext()).category().equals("Apartment/Flat/Builder Floor")) {
+                        category = "Apartment/Flat/Builder Floor";
+                        categorytypespin9.setVisibility(View.VISIBLE);
+                        apartment.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
+                        apartmentt.setTextColor(getResources().getColor(R.color.selected));
 
-            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(BasicDetails.this, R.array.categorytypeapartment, android.R.layout.simple_spinner_item);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            categorytypespin.setAdapter(adapter);
+                        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(BasicDetails.this, R.array.categorytypeapartment, android.R.layout.simple_spinner_item);
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        categorytypespin.setAdapter(adapter);
 
-            int position00 = adapter.getPosition(ListingData.getInstance(getApplicationContext()).categorytype());
-            categorytypespin.setSelection(position00);
-        }
+                        int position00 = adapter.getPosition(ListingData.getInstance(getApplicationContext()).categorytype());
+                        categorytypespin.setSelection(position00);
+                    }
 
-        if (ListingData.getInstance(getApplicationContext()).category().equals("Residential Land")) {
-            category = "Residential Land";
-            residentialland.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
-            residentiallandtl.setTextColor(getResources().getColor(R.color.selected));
-            categorytypespin9.setVisibility(View.GONE);
-        }
+                    if (ListingData.getInstance(getApplicationContext()).category().equals("Residential Land")) {
+                        category = "Residential Land";
+                        residentialland.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
+                        residentiallandtl.setTextColor(getResources().getColor(R.color.selected));
+                        categorytypespin9.setVisibility(View.GONE);
+                    }
 
-        if (ListingData.getInstance(getApplicationContext()).category().equals("House/Villa")) {
-            category = "House/Villa";
-            categorytypespin9.setVisibility(View.VISIBLE);
-            housevilla.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
-            housevillat.setTextColor(getResources().getColor(R.color.selected));
+                    if (ListingData.getInstance(getApplicationContext()).category().equals("House/Villa")) {
+                        category = "House/Villa";
+                        categorytypespin9.setVisibility(View.VISIBLE);
+                        housevilla.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
+                        housevillat.setTextColor(getResources().getColor(R.color.selected));
 
-            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(BasicDetails.this, R.array.housevilla, android.R.layout.simple_spinner_item);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            categorytypespin.setAdapter(adapter);
+                        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(BasicDetails.this, R.array.housevilla, android.R.layout.simple_spinner_item);
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        categorytypespin.setAdapter(adapter);
 
-            int position22 = adapter.getPosition(ListingData.getInstance(getApplicationContext()).categorytype());
-            categorytypespin.setSelection(position22);
+                        int position22 = adapter.getPosition(ListingData.getInstance(getApplicationContext()).categorytype());
+                        categorytypespin.setSelection(position22);
 
-        }
+                    }
 
-        if (ListingData.getInstance(getApplicationContext()).category().equals("Offices")) {
-            category = "Offices";
-            categorytypespin9.setVisibility(View.VISIBLE);
-            office.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
-            officet.setTextColor(getResources().getColor(R.color.selected));
-
-
-            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(BasicDetails.this, R.array.office, android.R.layout.simple_spinner_item);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            categorytypespin.setAdapter(adapter);
-
-            int position5 = adapter.getPosition(ListingData.getInstance(getApplicationContext()).categorytype());
-            categorytypespin.setSelection(position5);
-
-        }
-
-        if (ListingData.getInstance(getApplicationContext()).category().equals("Retail")) {
-            category = "Retail";
-            categorytypespin9.setVisibility(View.VISIBLE);
-            retail.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
-            retailt.setTextColor(getResources().getColor(R.color.selected));
-
-            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(BasicDetails.this, R.array.retail, android.R.layout.simple_spinner_item);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            categorytypespin.setAdapter(adapter);
-
-            int position6 = adapter.getPosition(ListingData.getInstance(getApplicationContext()).categorytype());
-            categorytypespin.setSelection(position6);
-
-        }
-
-        if (ListingData.getInstance(getApplicationContext()).category().equals("Land")) {
-            category = "Land";
-            categorytypespin9.setVisibility(View.VISIBLE);
-            land.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
-            landt.setTextColor(getResources().getColor(R.color.selected));
-
-            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(BasicDetails.this, R.array.land, android.R.layout.simple_spinner_item);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            categorytypespin.setAdapter(adapter);
-
-            int position7 = adapter.getPosition(ListingData.getInstance(getApplicationContext()).categorytype());
-            categorytypespin.setSelection(position7);
-
-        }
-
-        if (ListingData.getInstance(getApplicationContext()).category().equals("Industry")) {
-            category = "Industry";
-            categorytypespin9.setVisibility(View.VISIBLE);
-            industry.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
-            industryt.setTextColor(getResources().getColor(R.color.selected));
-
-            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(BasicDetails.this, R.array.industry, android.R.layout.simple_spinner_item);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            categorytypespin.setAdapter(adapter);
-
-            int position8 = adapter.getPosition(ListingData.getInstance(getApplicationContext()).categorytype());
-            categorytypespin.setSelection(position8);
-
-        }
-
-        if (ListingData.getInstance(getApplicationContext()).category().equals("Storage")) {
-            category = "Storage";
-            categorytypespin9.setVisibility(View.VISIBLE);
-            storage.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
-            storaget.setTextColor(getResources().getColor(R.color.selected));
-
-            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(BasicDetails.this, R.array.storage, android.R.layout.simple_spinner_item);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            categorytypespin.setAdapter(adapter);
-
-            int position9 = adapter.getPosition(ListingData.getInstance(getApplicationContext()).categorytype());
-            categorytypespin.setSelection(position9);
-
-        }
-
-        if (ListingData.getInstance(getApplicationContext()).category().equals("Hospitality")) {
-            category = "Hospitality";
-            categorytypespin9.setVisibility(View.VISIBLE);
-            hospitality.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
-            hospitalityt.setTextColor(getResources().getColor(R.color.selected));
-
-            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(BasicDetails.this, R.array.hospital, android.R.layout.simple_spinner_item);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            categorytypespin.setAdapter(adapter);
-
-            int position0 = adapter.getPosition(ListingData.getInstance(getApplicationContext()).categorytype());
-            categorytypespin.setSelection(position0);
-
-        }
-
-        if(ListingData.getInstance(getApplicationContext()).categorytype() != null ) {
+                    if (ListingData.getInstance(getApplicationContext()).category().equals("Offices")) {
+                        category = "Offices";
+                        categorytypespin9.setVisibility(View.VISIBLE);
+                        office.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
+                        officet.setTextColor(getResources().getColor(R.color.selected));
 
 
-            if((ListingData.getInstance(getApplicationContext()).category().equals("Residential Land"))) {
-                categorytypespin9.setVisibility(View.GONE);
-            }else {
-                categorytypespin9.setVisibility(View.VISIBLE);
+                        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(BasicDetails.this, R.array.office, android.R.layout.simple_spinner_item);
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        categorytypespin.setAdapter(adapter);
 
-            }
-        }
+                        int position5 = adapter.getPosition(ListingData.getInstance(getApplicationContext()).categorytype());
+                        categorytypespin.setSelection(position5);
 
-        if (ListingData.getInstance(getApplicationContext()).category().equals("Others")) {
-            category = "Others";
-            categorytypespin9.setVisibility(View.GONE);
-            other.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
-            othert.setTextColor(getResources().getColor(R.color.selected));
+                    }
 
-        }
+                    if (ListingData.getInstance(getApplicationContext()).category().equals("Retail")) {
+                        category = "Retail";
+                        categorytypespin9.setVisibility(View.VISIBLE);
+                        retail.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
+                        retailt.setTextColor(getResources().getColor(R.color.selected));
 
-    }
+                        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(BasicDetails.this, R.array.retail, android.R.layout.simple_spinner_item);
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        categorytypespin.setAdapter(adapter);
 
-                if(ListingData.getInstance(getApplicationContext()).type() != null) {
+                        int position6 = adapter.getPosition(ListingData.getInstance(getApplicationContext()).categorytype());
+                        categorytypespin.setSelection(position6);
+
+                    }
+
+                    if (ListingData.getInstance(getApplicationContext()).category().equals("Land")) {
+                        category = "Land";
+                        categorytypespin9.setVisibility(View.VISIBLE);
+                        land.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
+                        landt.setTextColor(getResources().getColor(R.color.selected));
+
+                        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(BasicDetails.this, R.array.land, android.R.layout.simple_spinner_item);
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        categorytypespin.setAdapter(adapter);
+
+                        int position7 = adapter.getPosition(ListingData.getInstance(getApplicationContext()).categorytype());
+                        categorytypespin.setSelection(position7);
+
+                    }
+
+                    if (ListingData.getInstance(getApplicationContext()).category().equals("Industry")) {
+                        category = "Industry";
+                        categorytypespin9.setVisibility(View.VISIBLE);
+                        industry.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
+                        industryt.setTextColor(getResources().getColor(R.color.selected));
+
+                        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(BasicDetails.this, R.array.industry, android.R.layout.simple_spinner_item);
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        categorytypespin.setAdapter(adapter);
+
+                        int position8 = adapter.getPosition(ListingData.getInstance(getApplicationContext()).categorytype());
+                        categorytypespin.setSelection(position8);
+
+                    }
+
+                    if (ListingData.getInstance(getApplicationContext()).category().equals("Storage")) {
+                        category = "Storage";
+                        categorytypespin9.setVisibility(View.VISIBLE);
+                        storage.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
+                        storaget.setTextColor(getResources().getColor(R.color.selected));
+
+                        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(BasicDetails.this, R.array.storage, android.R.layout.simple_spinner_item);
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        categorytypespin.setAdapter(adapter);
+
+                        int position9 = adapter.getPosition(ListingData.getInstance(getApplicationContext()).categorytype());
+                        categorytypespin.setSelection(position9);
+
+                    }
+
+                    if (ListingData.getInstance(getApplicationContext()).category().equals("Hospitality")) {
+                        category = "Hospitality";
+                        categorytypespin9.setVisibility(View.VISIBLE);
+                        hospitality.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
+                        hospitalityt.setTextColor(getResources().getColor(R.color.selected));
+
+                        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(BasicDetails.this, R.array.hospital, android.R.layout.simple_spinner_item);
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        categorytypespin.setAdapter(adapter);
+
+                        int position0 = adapter.getPosition(ListingData.getInstance(getApplicationContext()).categorytype());
+                        categorytypespin.setSelection(position0);
+
+                    }
+
+                    if (ListingData.getInstance(getApplicationContext()).categorytype() != null) {
+
+
+                        if ((ListingData.getInstance(getApplicationContext()).category().equals("Residential Land"))) {
+                            categorytypespin9.setVisibility(View.GONE);
+                        } else {
+                            categorytypespin9.setVisibility(View.VISIBLE);
+
+                        }
+                    }
+
+                    if (ListingData.getInstance(getApplicationContext()).category().equals("Others")) {
+                        category = "Others";
+                        categorytypespin9.setVisibility(View.GONE);
+                        other.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
+                        othert.setTextColor(getResources().getColor(R.color.selected));
+
+                    }
+
+                }
+
+                if (ListingData.getInstance(getApplicationContext()).type() != null) {
 
                     if (ListingData.getInstance(getApplicationContext()).type().equals("Residential") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Rent")) {
                         willing9.setVisibility(View.VISIBLE);
@@ -695,49 +669,49 @@ public class BasicDetails extends AppCompatActivity {
                     }
 
                 }
-        if(ListingData.getInstance(getApplicationContext()).willing() != null) {
+                if (ListingData.getInstance(getApplicationContext()).willing() != null) {
 
-            if (ListingData.getInstance(getApplicationContext()).willing().contains("Family")) {
-                willing.add("Family");
-                checkfamily.setChecked(true);
-            } else {
-                willing.remove("Family");
-                checkfamily.setChecked(false);
-            }
+                    if (ListingData.getInstance(getApplicationContext()).willing().contains("Family")) {
+                        willing.add("Family");
+                        checkfamily.setChecked(true);
+                    } else {
+                        willing.remove("Family");
+                        checkfamily.setChecked(false);
+                    }
 
-            if (ListingData.getInstance(getApplicationContext()).willing().contains("Single Men")) {
-                willing.add("Single Men");
-                checkmen.setChecked(true);
-            } else {
-                willing.remove("Single Men");
-                checkmen.setChecked(false);
-            }
+                    if (ListingData.getInstance(getApplicationContext()).willing().contains("Single Men")) {
+                        willing.add("Single Men");
+                        checkmen.setChecked(true);
+                    } else {
+                        willing.remove("Single Men");
+                        checkmen.setChecked(false);
+                    }
 
-            if (ListingData.getInstance(getApplicationContext()).willing().contains("Single Women")) {
-                willing.add("Single Women");
-                checkwomen.setChecked(true);
-            } else {
-                willing.remove("Single Women");
-                checkwomen.setChecked(false);
-            }
+                    if (ListingData.getInstance(getApplicationContext()).willing().contains("Single Women")) {
+                        willing.add("Single Women");
+                        checkwomen.setChecked(true);
+                    } else {
+                        willing.remove("Single Women");
+                        checkwomen.setChecked(false);
+                    }
 
-            if (ListingData.getInstance(getApplicationContext()).pgsuitablefor().contains("Students")) {
-                pgsutailbefor.add("Students");
-                studentpg.setChecked(true);
-            } else {
-                pgsutailbefor.remove("Students");
-                studentpg.setChecked(false);
-            }
-            if (ListingData.getInstance(getApplicationContext()).pgsuitablefor().contains("Working Professionals")) {
-                pgsutailbefor.add("Working Professionals");
-                workingpropg.setChecked(true);
-            } else {
-                pgsutailbefor.remove("Working Professionals");
-                workingpropg.setChecked(false);
-            }
+                    if (ListingData.getInstance(getApplicationContext()).pgsuitablefor().contains("Students")) {
+                        pgsutailbefor.add("Students");
+                        studentpg.setChecked(true);
+                    } else {
+                        pgsutailbefor.remove("Students");
+                        studentpg.setChecked(false);
+                    }
+                    if (ListingData.getInstance(getApplicationContext()).pgsuitablefor().contains("Working Professionals")) {
+                        pgsutailbefor.add("Working Professionals");
+                        workingpropg.setChecked(true);
+                    } else {
+                        pgsutailbefor.remove("Working Professionals");
+                        workingpropg.setChecked(false);
+                    }
 
 
-        }
+                }
 //                if(ListingData.getInstance(getApplicationContext()).categorytype() != null ) {
 //
 //
@@ -750,20 +724,19 @@ public class BasicDetails extends AppCompatActivity {
 //                }
 
 
+                if (ListingData.getInstance(getApplicationContext()).agrement() != null) {
 
-                    if(ListingData.getInstance(getApplicationContext()).agrement() != null) {
 
+                    if (ListingData.getInstance(getApplicationContext()).agrement().equals("Company Lease Agreement")) {
+                        agrement = "Company Lease Agreement";
+                        agremmentradio.setChecked(true);
+                    } else {
+                        agrement = "Any";
+                        anypgradio.setChecked(true);
+                    }
+                }
 
-          if (ListingData.getInstance(getApplicationContext()).agrement().equals("Company Lease Agreement")) {
-              agrement = "Company Lease Agreement";
-              agremmentradio.setChecked(true);
-          } else {
-              agrement = "Any";
-              anypgradio.setChecked(true);
-          }
-      }
-
-                if(ListingData.getInstance(getApplicationContext()).pavailabefor() != null) {
+                if (ListingData.getInstance(getApplicationContext()).pavailabefor() != null) {
 
                     if (ListingData.getInstance(getApplicationContext()).pavailabefor().equals("Girls")) {
                         pgavailablefor = "Girls";
@@ -777,7 +750,7 @@ public class BasicDetails extends AppCompatActivity {
                     }
                 }
 
-                if(ListingData.getInstance(getApplicationContext()).pgshareprivate() != null) {
+                if (ListingData.getInstance(getApplicationContext()).pgshareprivate() != null) {
 
                     if (ListingData.getInstance(getApplicationContext()).pgshareprivate().equals("Private")) {
                         pgshareprivate = "Private";
@@ -792,30 +765,13 @@ public class BasicDetails extends AppCompatActivity {
                 }
 
 
-
-
-
-
-
-        // categorytype
-
-
-
-
-
-
-
-
-
-
-
+                // categorytype
 
 
 //        residentialland9.setVisibility(View.GONE);
 
 
-
-        //color for user
+                //color for user
 
 //
 //        //color for type
@@ -823,9 +779,10 @@ public class BasicDetails extends AppCompatActivity {
 //        commercialtype.setTextColor(Color.black);
 
 
-
-        //user clicklistner color change
-                if(VolleySingleton.getInstance(getApplicationContext()).userCategory().equals("1")){
+                //user clicklistner color change
+                if (VolleySingleton.getInstance(getApplicationContext()).userCategory().equals("1")) {
+                    ll_dealer.setVisibility(View.GONE);
+                    ll_builder.setVisibility(View.GONE);
                     rowner.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
                     rdealer.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_IN);
                     rbuilder.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_IN);
@@ -834,15 +791,19 @@ public class BasicDetails extends AppCompatActivity {
                     buildert.setTextColor(getResources().getColor(R.color.black));
                     usertype = "Owner";
                 } else if (VolleySingleton.getInstance(getApplicationContext()).userCategory().equals("2")) {
+                    ll_owner.setVisibility(View.GONE);
+                    ll_builder.setVisibility(View.GONE);
                     rowner.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_IN);
-                    rdealer.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_IN);
-                    rbuilder.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
+                    rdealer.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
+                    rbuilder.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_IN);
                     ownert.setTextColor(getResources().getColor(R.color.black));
-                    dealert.setTextColor(getResources().getColor(R.color.black));
-                    buildert.setTextColor(getResources().getColor(R.color.selected));
+                    dealert.setTextColor(getResources().getColor(R.color.selected));
+                    buildert.setTextColor(getResources().getColor(R.color.black));
                     usertype = "Dealer";
 
-                }else if(VolleySingleton.getInstance(getApplicationContext()).userCategory().equals("3")){
+                } else if (VolleySingleton.getInstance(getApplicationContext()).userCategory().equals("3")) {
+                    ll_owner.setVisibility(View.GONE);
+                    ll_dealer.setVisibility(View.GONE);
                     rowner.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_IN);
                     rdealer.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_IN);
                     rbuilder.setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_IN);
@@ -897,26 +858,22 @@ public class BasicDetails extends AppCompatActivity {
         });*/
 
 
-        //listing for
-
+                //listing for
 
 
 //                Toast.makeText(BasicDetails.this, imageselected+"  "+  propertylistfor, Toast.LENGTH_SHORT).show();
 
 
-
-
-
                 if (type.equals("Residential") && propertylistfor.equals("Rent")) {
                     willing9.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     willing9.setVisibility(View.GONE);
                 }
             }
+
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-
 
 
         // type click listener
@@ -953,7 +910,7 @@ public class BasicDetails extends AppCompatActivity {
                 othert.setTextColor(getResources().getColor(R.color.black));
 
 
-                if(propertylistfor.equals("Sell")){
+                if (propertylistfor.equals("Sell")) {
                     apartment9.setVisibility(View.VISIBLE);
                     residentialland9.setVisibility(View.VISIBLE);
                     housevilla9.setVisibility(View.VISIBLE);
@@ -966,7 +923,7 @@ public class BasicDetails extends AppCompatActivity {
                     other9.setVisibility(View.VISIBLE);
                 }
 
-                if(propertylistfor.equals("Rent")){
+                if (propertylistfor.equals("Rent")) {
                     apartment9.setVisibility(View.VISIBLE);
                     residentialland9.setVisibility(View.GONE);
                     housevilla9.setVisibility(View.VISIBLE);
@@ -979,7 +936,7 @@ public class BasicDetails extends AppCompatActivity {
                     other9.setVisibility(View.VISIBLE);
                 }
 
-                if(propertylistfor.equals("Paying Guest")){
+                if (propertylistfor.equals("Paying Guest")) {
                     apartment9.setVisibility(View.VISIBLE);
                     residentialland9.setVisibility(View.GONE);
                     housevilla9.setVisibility(View.VISIBLE);
@@ -1008,9 +965,6 @@ public class BasicDetails extends AppCompatActivity {
 //                ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(BasicDetails.this, R.array.propertylistfor, android.R.layout.simple_spinner_item);
 //                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 //                listpropertyspinner.setAdapter(adapter);
-
-
-
 
 
             }
@@ -1049,7 +1003,6 @@ public class BasicDetails extends AppCompatActivity {
                 othert.setTextColor(getResources().getColor(R.color.black));
 
 
-
                 apartment9.setVisibility(View.GONE);
                 residentialland9.setVisibility(View.GONE);
                 housevilla9.setVisibility(View.GONE);
@@ -1070,10 +1023,6 @@ public class BasicDetails extends AppCompatActivity {
         });
 
 
-
-
-
-
         apartment9.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1089,7 +1038,7 @@ public class BasicDetails extends AppCompatActivity {
 
                 if (type.equals("Residential") && propertylistfor.equals("Rent")) {
                     willing9.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     willing9.setVisibility(View.GONE);
                 }
 
@@ -1164,10 +1113,9 @@ public class BasicDetails extends AppCompatActivity {
 
                 if (type.equals("Residential") && propertylistfor.equals("Rent")) {
                     willing9.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     willing9.setVisibility(View.GONE);
                 }
-
 
 
                 ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(BasicDetails.this, R.array.housevilla, android.R.layout.simple_spinner_item);
@@ -1412,7 +1360,6 @@ public class BasicDetails extends AppCompatActivity {
                 willing9.setVisibility(View.GONE);
 
 
-
                 ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(BasicDetails.this, R.array.hospital, android.R.layout.simple_spinner_item);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 categorytypespin.setAdapter(adapter);
@@ -1453,7 +1400,7 @@ public class BasicDetails extends AppCompatActivity {
 
                 if (type.equals("Residential") && propertylistfor.equals("Rent")) {
                     willing9.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     willing9.setVisibility(View.GONE);
                 }
 
@@ -1486,9 +1433,6 @@ public class BasicDetails extends AppCompatActivity {
         });
 
 
-
-
-
         // categorytype
         categorytypespin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -1496,25 +1440,19 @@ public class BasicDetails extends AppCompatActivity {
 
                 if (type.equals("Residential") && propertylistfor.equals("Rent")) {
                     willing9.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     willing9.setVisibility(View.GONE);
                 }
-
-
-
-
 
 
 //                if (!propertylistfor.equals("Select City")){
 //                    getlocality(cityvalue);
 //                }
             }
+
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-
-
-
 
 
         anyradio.setChecked(true);
@@ -1534,8 +1472,6 @@ public class BasicDetails extends AppCompatActivity {
                 agrement = "Any";
             }
         });
-
-
 
 
         girlpgradio.setOnClickListener(new View.OnClickListener() {
@@ -1558,7 +1494,6 @@ public class BasicDetails extends AppCompatActivity {
                 pgavailablefor = "Any";
             }
         });
-
 
 
         shareradiopg.setOnClickListener(new View.OnClickListener() {
@@ -1587,19 +1522,17 @@ public class BasicDetails extends AppCompatActivity {
                 sharingspinnumber = sharingnopspin.getSelectedItem().toString();
 
 
-
-
 //                if (!propertylistfor.equals("Select City")){
 //                    getlocality(cityvalue);
 //                }
             }
+
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
 
 //        int position = adapter.getPosition("Rent");
 //        listpropertyspinner.setSelection(position);
-
 
 
         btnnext.setOnClickListener(new View.OnClickListener() {
@@ -1611,105 +1544,83 @@ public class BasicDetails extends AppCompatActivity {
 
 //                String usertype = "", type = "", category = "", categorytype = "", agrement = "",pgavailablefor = "",  pgshareprivate ="",  sharingspinnumber = "";
 
-                if(usertype.isEmpty()){
+                if (usertype.isEmpty()) {
                     showmessage("Please Select User Type");
-                }
-                else if(type.isEmpty()){
+                } else if (type.isEmpty()) {
                     showmessage("Please Select Property Type");
-                }
-                else if(category.isEmpty()){
+                } else if (category.isEmpty()) {
                     showmessage("Please Select Category of Property");
-                }
-                else if(category.equals("Others") && propertylistfor.equals("Sell")){
+                } else if (category.equals("Others") && propertylistfor.equals("Sell")) {
 
-                        if(getsubcription1.get(0).equals("0") && getsubcription1.get(1).equals("0")){
-                            startActivity(new Intent(BasicDetails.this, Buyourservices.class));
-                            finish();
-                        }else{
-                            if(sharingspinnumber.equals("Select")){
-                                sharingspinnumber = "";
-                            }
-                            if(ListingData.getInstance(getApplicationContext()).getinstance().equals("Add")){
-                                ListingData.getInstance(getApplicationContext()).setsubscription(getsubcription1.get(0));
-                            }else{
-                                ListingData.getInstance(getApplicationContext()).setsubscription("");
-                            }
-
-                            ListingData.getInstance(getApplicationContext()).basicdetails(usertype,type,category,categorytype,agrement,pgavailablefor,
-                                    pgshareprivate,sharingspinnumber,propertylistfor, String.valueOf(willing), String.valueOf(pgsutailbefor));
-                            startActivity(new Intent(BasicDetails.this, Location.class));
-                        }
-
-
-
-                }
-                else if(category.equals("Residential Land") && propertylistfor.equals("Sell")){
-
-                    if(getsubcription1.get(0).equals("0") && getsubcription1.get(1).equals("0")){
-                        startActivity(new Intent(BasicDetails.this, Buyourservices.class));
-                        finish();
-                    }else{
-                        if(sharingspinnumber.equals("Select")){
-                            sharingspinnumber = "";
-                        }
-                        if(ListingData.getInstance(getApplicationContext()).getinstance().equals("Add")){
-                            ListingData.getInstance(getApplicationContext()).setsubscription(getsubcription1.get(0));
-                        }else{
-                            ListingData.getInstance(getApplicationContext()).setsubscription("");
-                        }
-                        ListingData.getInstance(getApplicationContext()).basicdetails(usertype,type,category,categorytype,agrement,pgavailablefor,
-                                pgshareprivate,sharingspinnumber,propertylistfor, String.valueOf(willing), String.valueOf(pgsutailbefor));
-                        startActivity(new Intent(BasicDetails.this, Location.class));
-                    }
-
-
-                }
-
-                else if(propertylistfor.equals("Sell") && categorytype.equals("Select")){
-                    showmessage("Please Select The Category Type");
-                }
-
-                else if(propertylistfor.equals("Rent") && categorytype.equals("Select") && !category.equals("Others")){
-                    showmessage("Please Select The Category Type");
-                }
-                else if(propertylistfor.equals("Rent") && type.equals("Residential") && willing.isEmpty()){
-                    showmessage("Please Select The Willing To Rent Out");
-                }
-
-                else if(propertylistfor.equals("Paying Guest") && categorytype.equals("Select") && !category.equals("Others")){
-                    showmessage("Please Select The Category Type");
-                }
-                else if(propertylistfor.equals("Paying Guest") && pgavailablefor.isEmpty()){
-                    showmessage("Please Select The Pg Available For");
-                }
-
-                else if(propertylistfor.equals("Paying Guest") && pgsutailbefor.isEmpty()){
-                    showmessage("Please Select The Pg Suitable For");
-                }
-
-                else if(propertylistfor.equals("Paying Guest") && pgshareprivate.isEmpty()){
-                    showmessage("Please Select The Pg Private Or Share");
-                }
-
-                else if(propertylistfor.equals("Paying Guest") && pgshareprivate.equals("Sharing") && sharingspinnumber.equals("Select")){
-                    showmessage("Please Select The Room Sharing Person Number");
-                }
-                else if(category.equals("Others") && propertylistfor.equals("Rent") && willing.isEmpty() && type.equals("Residential")){
-                    showmessage("Please Select the Willing To Rent Out");
-                }
-
-                else {
-
-                    if(getsubcription1.get(0).equals("0") && getsubcription1.get(1).equals("0")){
+                    if (getsubcription1.get(0).equals("0") && getsubcription1.get(1).equals("0")) {
                         startActivity(new Intent(BasicDetails.this, Buyourservices.class));
                         finish();
                     } else {
                         if (sharingspinnumber.equals("Select")) {
                             sharingspinnumber = "";
                         }
-                        if(ListingData.getInstance(getApplicationContext()).getinstance().equals("Add")){
+                        if (ListingData.getInstance(getApplicationContext()).getinstance().equals("Add")) {
                             ListingData.getInstance(getApplicationContext()).setsubscription(getsubcription1.get(0));
-                        }else{
+                        } else {
+                            ListingData.getInstance(getApplicationContext()).setsubscription("");
+                        }
+
+                        ListingData.getInstance(getApplicationContext()).basicdetails(usertype, type, category, categorytype, agrement, pgavailablefor,
+                                pgshareprivate, sharingspinnumber, propertylistfor, String.valueOf(willing), String.valueOf(pgsutailbefor));
+                        startActivity(new Intent(BasicDetails.this, Location.class));
+                    }
+
+
+                } else if (category.equals("Residential Land") && propertylistfor.equals("Sell")) {
+
+                    if (getsubcription1.get(0).equals("0") && getsubcription1.get(1).equals("0")) {
+                        startActivity(new Intent(BasicDetails.this, Buyourservices.class));
+                        finish();
+                    } else {
+                        if (sharingspinnumber.equals("Select")) {
+                            sharingspinnumber = "";
+                        }
+                        if (ListingData.getInstance(getApplicationContext()).getinstance().equals("Add")) {
+                            ListingData.getInstance(getApplicationContext()).setsubscription(getsubcription1.get(0));
+                        } else {
+                            ListingData.getInstance(getApplicationContext()).setsubscription("");
+                        }
+                        ListingData.getInstance(getApplicationContext()).basicdetails(usertype, type, category, categorytype, agrement, pgavailablefor,
+                                pgshareprivate, sharingspinnumber, propertylistfor, String.valueOf(willing), String.valueOf(pgsutailbefor));
+                        startActivity(new Intent(BasicDetails.this, Location.class));
+                    }
+
+
+                } else if (propertylistfor.equals("Sell") && categorytype.equals("Select")) {
+                    showmessage("Please Select The Category Type");
+                } else if (propertylistfor.equals("Rent") && categorytype.equals("Select") && !category.equals("Others")) {
+                    showmessage("Please Select The Category Type");
+                } else if (propertylistfor.equals("Rent") && type.equals("Residential") && willing.isEmpty()) {
+                    showmessage("Please Select The Willing To Rent Out");
+                } else if (propertylistfor.equals("Paying Guest") && categorytype.equals("Select") && !category.equals("Others")) {
+                    showmessage("Please Select The Category Type");
+                } else if (propertylistfor.equals("Paying Guest") && pgavailablefor.isEmpty()) {
+                    showmessage("Please Select The Pg Available For");
+                } else if (propertylistfor.equals("Paying Guest") && pgsutailbefor.isEmpty()) {
+                    showmessage("Please Select The Pg Suitable For");
+                } else if (propertylistfor.equals("Paying Guest") && pgshareprivate.isEmpty()) {
+                    showmessage("Please Select The Pg Private Or Share");
+                } else if (propertylistfor.equals("Paying Guest") && pgshareprivate.equals("Sharing") && sharingspinnumber.equals("Select")) {
+                    showmessage("Please Select The Room Sharing Person Number");
+                } else if (category.equals("Others") && propertylistfor.equals("Rent") && willing.isEmpty() && type.equals("Residential")) {
+                    showmessage("Please Select the Willing To Rent Out");
+                } else {
+
+                    if (getsubcription1.get(0).equals("0") && getsubcription1.get(1).equals("0")) {
+                        startActivity(new Intent(BasicDetails.this, Buyourservices.class));
+                        finish();
+                    } else {
+                        if (sharingspinnumber.equals("Select")) {
+                            sharingspinnumber = "";
+                        }
+                        if (ListingData.getInstance(getApplicationContext()).getinstance().equals("Add")) {
+                            ListingData.getInstance(getApplicationContext()).setsubscription(getsubcription1.get(0));
+                        } else {
                             ListingData.getInstance(getApplicationContext()).setsubscription("");
                         }
                         ListingData.getInstance(getApplicationContext()).basicdetails(usertype, type, category, categorytype, agrement, pgavailablefor,
@@ -1719,7 +1630,7 @@ public class BasicDetails extends AppCompatActivity {
                 }
 
 
-                }
+            }
         });
     }
 
@@ -1731,13 +1642,13 @@ public class BasicDetails extends AppCompatActivity {
 
             @Override
             public void onResponse(String response) {
-                System.out.println("response :: " +response);
+                System.out.println("response :: " + response);
                 progressDialog.dismiss();
                 try {
                     JSONObject obj = new JSONObject(response);
-                    if(obj.getBoolean("error")){
+                    if (obj.getBoolean("error")) {
                         showmessage(obj.getString("message"));
-                    }else{
+                    } else {
                         String result = obj.getString("subscriptionplan");
                         String result2 = obj.getString("paymentstatus");
                         getsubcription1.add(result);
@@ -1755,9 +1666,9 @@ public class BasicDetails extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 progressDialog.dismiss();
-                Toast.makeText(BasicDetails.this,"Something Went Wrong",Toast.LENGTH_SHORT).show();
+                Toast.makeText(BasicDetails.this, "Something Went Wrong", Toast.LENGTH_SHORT).show();
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 SmsData smsData = new SmsData();
@@ -1801,25 +1712,25 @@ public class BasicDetails extends AppCompatActivity {
                 break;
 
             case R.id.checkfamily:
-                if(checked){
+                if (checked) {
                     willing.add("Family");
-                }else{
+                } else {
                     willing.remove("Family");
                 }
                 break;
 
             case R.id.checkmen:
-                if(checked){
+                if (checked) {
                     willing.add("Single Men");
-                }else{
+                } else {
                     willing.remove("Single Men");
                 }
                 break;
 
             case R.id.checkwomen:
-                if(checked){
+                if (checked) {
                     willing.add("Single Women");
-                }else{
+                } else {
                     willing.remove("Single Women");
                 }
                 break;

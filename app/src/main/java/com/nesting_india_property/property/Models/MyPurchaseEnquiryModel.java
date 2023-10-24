@@ -16,8 +16,9 @@ public class MyPurchaseEnquiryModel {
     String date;
     String time;
     String status;
+    String propertylistfor;
 
-    public MyPurchaseEnquiryModel(String id, String userid, String minprice, String maxprice, String type, String category, String state, String city, String locality, String name, String email, String date, String time, String status) {
+    public MyPurchaseEnquiryModel(String id, String userid, String minprice, String maxprice, String type, String category, String state, String city, String locality, String name, String email, String date, String time, String status, String propertylistfor) {
         this.id = id;
         this.userid = userid;
         this.minprice = minprice;
@@ -32,6 +33,11 @@ public class MyPurchaseEnquiryModel {
         this.date = date;
         this.time = time;
         this.status = status;
+        this.propertylistfor = propertylistfor;
+    }
+
+    public String getPropertylistfor() {
+        return propertylistfor;
     }
 
     public String getId() {

@@ -6,6 +6,13 @@
         <item>Paying Guest</item>
     </string-array>
 
+    <string-array name="propertyfor">
+        <item>Select Looking Property</item>
+        <item>Sell</item>
+        <item>Rent</item>
+        <item>Paying Guest</item>
+    </string-array>
+
     <string-array name="subscription">
         <item>Select</item>
         <item>Post Free Property FreePlan 01</item>
@@ -20,6 +27,7 @@
         <item>Dealer</item>
         <item>Builder</item>
     </string-array>
+
 
     <string-array name="usercategory">
         <item>Select User Category</item>
