@@ -57,6 +57,7 @@ public class Endpoints {
     public  static final String getsubscription = base_url+"getsubscription.php";
     public  static final String getSubscriptionPlans = base_url+"getSubscriptionPlans.php";
     public  static final String getMyPurchaseEnquiry = base_url+"getMyPurchaseEnquiry.php";
+    public  static final String getMySubscription = base_url+"getMySubscription.php";
 
     public  static final String sendsubscription = base_url+"sendsubscription.php";
 

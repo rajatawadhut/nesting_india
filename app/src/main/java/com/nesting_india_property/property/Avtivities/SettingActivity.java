@@ -452,6 +452,13 @@ public class SettingActivity extends AppCompatActivity {
                         drawer.closeDrawer(GravityCompat.START);
                         break;
 
+                    case R.id.mysubscription:
+                        Intent subscription = new Intent(SettingActivity.this, MySubscriptionActivity.class);
+                        subscription.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        startActivity(subscription);
+                        drawer.closeDrawer(GravityCompat.START);
+                        break;
+
                     case R.id.partner:
                         Intent cha = new Intent(SettingActivity.this, ChannelAdvisePartnerActivity.class);
                         cha.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -609,7 +616,7 @@ public class SettingActivity extends AppCompatActivity {
             if(VolleySingleton.getInstance(getApplicationContext()).userCategory().equals("4")) {
                 nav.getMenu().getItem(9).setChecked(true);
             }else {
-                nav.getMenu().getItem(13).setChecked(true);
+                nav.getMenu().getItem(14).setChecked(true);
             }
         }else{
             nav.getMenu().getItem(7).setChecked(true);

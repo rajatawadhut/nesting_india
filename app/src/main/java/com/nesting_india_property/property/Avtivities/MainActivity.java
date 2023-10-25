@@ -216,11 +216,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-        if (VolleySingleton.getInstance(getApplicationContext()).userCategory() == null || VolleySingleton.getInstance(getApplicationContext()).userCategory().isEmpty() || VolleySingleton.getInstance(getApplicationContext()).userCategory().equals("null")) {
-            updateUserCategory();
+        if (VolleySingleton.getInstance(getApplicationContext()).isLogin()) {
+            if (VolleySingleton.getInstance(getApplicationContext()).userCategory() == null || VolleySingleton.getInstance(getApplicationContext()).userCategory().isEmpty() || VolleySingleton.getInstance(getApplicationContext()).userCategory().equals("null")) {
+                updateUserCategory();
+            }
         }
-
 
         drawer = findViewById(R.id.drawer_layout);
         nav = findViewById(R.id.nav_view);
@@ -737,6 +737,12 @@ public class MainActivity extends AppCompatActivity {
                         drawer.closeDrawer(GravityCompat.START);
                         break;
 
+                    case R.id.mysubscription:
+                        Intent subscription = new Intent(MainActivity.this, MySubscriptionActivity.class);
+                        subscription.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        startActivity(subscription);
+                        drawer.closeDrawer(GravityCompat.START);
+                        break;
 
                     case R.id.partner:
                         Intent cha = new Intent(MainActivity.this, ChannelAdvisePartnerActivity.class);

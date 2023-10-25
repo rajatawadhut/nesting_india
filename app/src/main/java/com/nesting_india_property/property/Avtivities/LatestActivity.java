@@ -395,6 +395,13 @@ public class LatestActivity extends AppCompatActivity {
                         drawer.closeDrawer(GravityCompat.START);
                         break;
 
+                    case R.id.mysubscription:
+                        Intent subscription = new Intent(LatestActivity.this, MySubscriptionActivity.class);
+                        subscription.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        startActivity(subscription);
+                        drawer.closeDrawer(GravityCompat.START);
+                        break;
+
 
                     case R.id.partner:
                         Intent cha = new Intent(LatestActivity.this, ChannelAdvisePartnerActivity.class);

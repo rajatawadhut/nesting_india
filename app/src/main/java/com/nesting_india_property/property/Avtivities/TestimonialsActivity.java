@@ -406,7 +406,12 @@ public class TestimonialsActivity extends AppCompatActivity {
                     startActivity(intpur);
                     drawer.closeDrawer(GravityCompat.START);
                     break;
-
+                case R.id.mysubscription:
+                    Intent subscription = new Intent(TestimonialsActivity.this, MySubscriptionActivity.class);
+                    subscription.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(subscription);
+                    drawer.closeDrawer(GravityCompat.START);
+                    break;
                 case R.id.partner:
                     Intent cha = new Intent(TestimonialsActivity.this, ChannelAdvisePartnerActivity.class);
                     cha.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);

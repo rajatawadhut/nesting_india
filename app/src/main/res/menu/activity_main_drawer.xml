@@ -46,6 +46,12 @@
             android:title="Buy Our Services" />
 
 
+        <item
+            android:id="@+id/mysubscription"
+            android:icon="@drawable/mysubscription"
+            android:title="My Subscription" />
+
+
 
 
         <item

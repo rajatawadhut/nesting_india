@@ -108,6 +108,9 @@
             android:name="com.nesting_india_property.property.Avtivities.ShowMyPurchaseEnquiryActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" />
         <activity
+            android:name="com.nesting_india_property.property.Avtivities.MySubscriptionActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" />
+        <activity
             android:name="com.nesting_india_property.property.Avtivities.ChannelAdvisePartnerActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" />
         <activity
