@@ -616,10 +616,10 @@ public class SettingActivity extends AppCompatActivity {
             if(VolleySingleton.getInstance(getApplicationContext()).userCategory().equals("4")) {
                 nav.getMenu().getItem(9).setChecked(true);
             }else {
-                nav.getMenu().getItem(14).setChecked(true);
+                nav.getMenu().getItem(15).setChecked(true);
             }
         }else{
-            nav.getMenu().getItem(7).setChecked(true);
+            nav.getMenu().getItem(6).setChecked(true);
         }
         footers.setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
         searchfooter1.setTextColor(Color.GREEN);

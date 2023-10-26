@@ -453,6 +453,13 @@ public class ShortlistedActivity extends AppCompatActivity {
                         drawer.closeDrawer(GravityCompat.START);
                         break;
 
+                    case R.id.mysubscription:
+                        Intent subscription = new Intent(ShortlistedActivity.this, MySubscriptionActivity.class);
+                        subscription.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        startActivity(subscription);
+                        drawer.closeDrawer(GravityCompat.START);
+                        break;
+
                     case R.id.partner:
                         Intent cha = new Intent(ShortlistedActivity.this, ChannelAdvisePartnerActivity.class);
                         cha.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);

@@ -24,10 +24,10 @@
             android:icon="@drawable/myproperty"
             android:title="Add Property" />
 
-        <item
+<!--        <item
             android:id="@+id/service"
             android:icon="@drawable/buy"
-            android:title="Buy Our Services" />
+            android:title="Buy Our Services" />-->
 
         <item
             android:id="@+id/navabout"

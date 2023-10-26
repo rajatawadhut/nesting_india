@@ -61,6 +61,12 @@ public class MySubcriptionAdapter extends RecyclerView.Adapter<MySubcriptionAdap
             holder.tv_payment_status.setTextColor(ContextCompat.getColor(context, R.color.green1));
             holder.ll_layout.setBackgroundColor(ContextCompat.getColor(context, R.color.green1));
         }
+
+        if(position == 0){
+            holder.ll_credit.setVisibility(View.VISIBLE);
+        }else {
+            holder.ll_credit.setVisibility(View.GONE);
+        }
     }
 
 
@@ -71,7 +77,7 @@ public class MySubcriptionAdapter extends RecyclerView.Adapter<MySubcriptionAdap
 
     class ShowData extends RecyclerView.ViewHolder {
         TextView tv_title, tv_description, tv_credit,tv_price, tv_payment_date, tv_expiry_date, tv_payment_status;
-        LinearLayout ll_layout;
+        LinearLayout ll_layout, ll_credit;
         public ShowData(@NonNull View itemView) {
             super(itemView);
             tv_title = itemView.findViewById(R.id.tv_title);
@@ -82,6 +88,7 @@ public class MySubcriptionAdapter extends RecyclerView.Adapter<MySubcriptionAdap
             tv_expiry_date = itemView.findViewById(R.id.tv_expiry_date);
             tv_payment_status = itemView.findViewById(R.id.tv_payment_status);
             ll_layout = itemView.findViewById(R.id.ll_layout);
+            ll_credit = itemView.findViewById(R.id.ll_credit);
         }
     }
 

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,6 +42,7 @@ public class MySubscriptionActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
 
     private RecyclerView recyclerView;
+    private LinearLayout nodata;
 
     List<MySubscriptionModel> mySubscriptionList;
 
@@ -66,6 +68,7 @@ public class MySubscriptionActivity extends AppCompatActivity {
         progressDialog.setCancelable(false);
 
         recyclerView = findViewById(R.id.recyclerView);
+        nodata = findViewById(R.id.nodata);
 
         mySubscriptionList = new ArrayList<>();
         showMyPurchaseEnquiry();
@@ -87,6 +90,7 @@ public class MySubscriptionActivity extends AppCompatActivity {
                     JSONArray jsonArray = obj.getJSONArray("data");
 
                     if (jsonArray.getJSONObject(0).getString("error").equals("false")) {
+                        nodata.setVisibility(View.GONE);
 
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject object = jsonArray.getJSONObject(i);
@@ -128,7 +132,7 @@ public class MySubscriptionActivity extends AppCompatActivity {
 
                         }
                     }else{
-
+                        nodata.setVisibility(View.VISIBLE);
                     }
 
                 } catch (JSONException e) {
