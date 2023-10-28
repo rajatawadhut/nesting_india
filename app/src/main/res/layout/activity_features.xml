@@ -979,7 +979,10 @@
                         android:layout_height="wrap_content"/>
 
 
-
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_weight="1"
                         android:layout_marginTop="10dp"
@@ -995,6 +998,21 @@
                             android:textColor="@android:color/black"
                             android:hint="Description"/>
                     </com.google.android.material.textfield.TextInputLayout>
+
+
+
+
+                    <Button
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/home_btn_bg"
+                        android:text="E.g."
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:id="@+id/btnEg"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    </LinearLayout>
 
                 </LinearLayout>
 

@@ -1,4 +1,5 @@
 package com.nesting_india_property.property.AddPropertActivity;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -23,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.nesting_india_property.property.R;
 import com.nesting_india_property.property.Utils.ListingData;
 import com.karumi.dexter.Dexter;
@@ -42,17 +44,19 @@ import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 public class Features extends AppCompatActivity {
 
     LinearLayout anemities9, moreanemities9, watersource9, overlooking9, facing9,
-            typeofflooring9, powerbackup9, byers9, description9, timesuitable9 , rule1, rule2, somefeatures9, facingwidth9, boundrywall9, moreanemitiesitem91;
+            typeofflooring9, powerbackup9, byers9, description9, timesuitable9, rule1, rule2, somefeatures9, facingwidth9, boundrywall9, moreanemitiesitem91;
     TextView somefeaturestext, overlookingtext, moreanemities;
     Spinner facingspin, unitspin, typeofflooringspin, powerbackupspin, lasttimespin;
     String facingspinget = "", unitspinget = "", typeofflooringspinget = "", powerbackupspinget = "", lasttimespinget = "";
     EditText widthfacing, description;
-    Button btnback, btnnext, pickimage;
-    RadioButton pety, petn, visitery, visitern, smokingy, smokingn, alcoholy, alcoholn, eventy,eventn, boundryyes, boundryno;
+    Button btnback, btnnext, pickimage, btnEg;
+    RadioButton pety, petn, visitery, visitern, smokingy, smokingn, alcoholy, alcoholn, eventy, eventn, boundryyes, boundryno;
     String widthfacingget, descriptionget;
     ImageView img;
 
-    String encodedImage="";
+    TextView tv_des1, tv_des2, tv_des3, tv_des4, tv_des5;
+    BottomSheetDialog bottomSheet;
+    String encodedImage = "";
     String imagepresent;
     Bitmap bitmap;
     int a = 0;
@@ -68,16 +72,16 @@ public class Features extends AppCompatActivity {
     ArrayList<String> timeitems = new ArrayList<>();
 
 
-    String anemitiesitemget,moreanemitiesitemget, watersourceitemget, overlookingitemget, somefeatureitemget, byersitemget, timeitemsget;
+    String anemitiesitemget, moreanemitiesitemget, watersourceitemget, overlookingitemget, somefeatureitemget, byersitemget, timeitemsget;
 
-    String pet = "", visiter = "", smoking = "", alcohol = "",event = "", boundrywall= "";
+    String pet = "", visiter = "", smoking = "", alcohol = "", event = "", boundrywall = "";
 
 
-    CheckBox lift, park, maintenancestaff, visiterparking, fengshui, intercomefacility, waterstorage, alaram, swimmingpool, ac, garden,wifi,pipedgas,waterpurifier,
-    clubhouse, shoppingcenter,waterdissposal, rainwaterharvesting, bankedattachedproperty,gym, municiplecorporation,borewell,parkgarden,
-    mainroad,club, lakefacing, seafacing, others,gatedsociety, cornerproperty, petfriendly, wheelchairfriendly, water24,
-    visiterparkingavailable, closetoschool,closetobank,naturallight,closetohospital,closetomarket,airyrooms,
-    eight12, twele3, three6, six9,nine11, none;
+    CheckBox lift, park, maintenancestaff, visiterparking, fengshui, intercomefacility, waterstorage, alaram, swimmingpool, ac, garden, wifi, pipedgas, waterpurifier,
+            clubhouse, shoppingcenter, waterdissposal, rainwaterharvesting, bankedattachedproperty, gym, municiplecorporation, borewell, parkgarden,
+            mainroad, club, lakefacing, seafacing, others, gatedsociety, cornerproperty, petfriendly, wheelchairfriendly, water24,
+            visiterparkingavailable, closetoschool, closetobank, naturallight, closetohospital, closetomarket, airyrooms,
+            eight12, twele3, three6, six9, nine11, none;
 
 
     @Override
@@ -139,10 +143,63 @@ public class Features extends AppCompatActivity {
 
         btnnext = findViewById(R.id.btnnext);
         btnback = findViewById(R.id.btnback);
+        btnEg = findViewById(R.id.btnEg);
 
         img = findViewById(R.id.img);
 
 
+
+        btnEg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheet = new BottomSheetDialog(Features.this, R.style.BottomSheetDialogTheme);
+                bottomSheet.setContentView(R.layout.fragment_bottomsheet);
+                tv_des1 = bottomSheet.findViewById(R.id.tv_des1);
+                tv_des2 = bottomSheet.findViewById(R.id.tv_des2);
+                tv_des3 = bottomSheet.findViewById(R.id.tv_des3);
+                tv_des4 = bottomSheet.findViewById(R.id.tv_des4);
+                tv_des5 = bottomSheet.findViewById(R.id.tv_des5);
+
+                tv_des1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        description.setText(tv_des1.getText().toString());
+                        bottomSheet.dismiss();
+                    }
+
+                });
+                tv_des2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        description.setText(tv_des2.getText().toString());
+                        bottomSheet.dismiss();
+                    }
+                });
+                tv_des3.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        description.setText(tv_des3.getText().toString());
+                        bottomSheet.dismiss();
+                    }
+                });
+                tv_des4.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        description.setText(tv_des4.getText().toString());
+                        bottomSheet.dismiss();
+                    }
+                });
+                tv_des5.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        description.setText(tv_des5.getText().toString());
+                        bottomSheet.dismiss();
+                    }
+                });
+
+                bottomSheet.show();
+            }
+        });
         //arrows
 
         uparrow = findViewById(R.id.uparrow);
@@ -168,9 +225,6 @@ public class Features extends AppCompatActivity {
         boundryno = findViewById(R.id.boundryno);
 
 
-
-
-
         anemities9.setVisibility(View.GONE);
         moreanemities9.setVisibility(View.GONE);
         watersource9.setVisibility(View.GONE);
@@ -189,9 +243,6 @@ public class Features extends AppCompatActivity {
         moreanemitiesitem91.setVisibility(View.GONE);
 
 
-
-
-
         lift = findViewById(R.id.lift);
         park = findViewById(R.id.park);
         maintenancestaff = findViewById(R.id.maintenancestaff);
@@ -208,7 +259,6 @@ public class Features extends AppCompatActivity {
         waterpurifier = findViewById(R.id.waterpurifier);
 
 
-
         clubhouse = findViewById(R.id.clubhouse);
         shoppingcenter = findViewById(R.id.shoppingcenter);
         waterdissposal = findViewById(R.id.waterdisposal);
@@ -218,7 +268,6 @@ public class Features extends AppCompatActivity {
         municiplecorporation = findViewById(R.id.muncipalcorporation);
         borewell = findViewById(R.id.borewell);
         parkgarden = findViewById(R.id.parkgarden);
-
 
 
         mainroad = findViewById(R.id.mainrood);
@@ -231,8 +280,6 @@ public class Features extends AppCompatActivity {
         petfriendly = findViewById(R.id.petfriendly);
         wheelchairfriendly = findViewById(R.id.wheelchairfriendly);
         water24 = findViewById(R.id.water24);
-
-
 
 
         visiterparkingavailable = findViewById(R.id.visiterparkingavailable);
@@ -251,7 +298,7 @@ public class Features extends AppCompatActivity {
 
         //Sell
 
-        if(ListingData.getInstance(getApplicationContext()).category().equals("Apartment/Flat/Builder Floor") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Sell")){
+        if (ListingData.getInstance(getApplicationContext()).category().equals("Apartment/Flat/Builder Floor") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Sell")) {
             anemities9.setVisibility(View.VISIBLE);
             moreanemities9.setVisibility(View.VISIBLE);
             watersource9.setVisibility(View.VISIBLE);
@@ -268,7 +315,7 @@ public class Features extends AppCompatActivity {
             rule2.setVisibility(View.GONE);
 
         }
-        if(ListingData.getInstance(getApplicationContext()).category().equals("Residential Land") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Sell")){
+        if (ListingData.getInstance(getApplicationContext()).category().equals("Residential Land") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Sell")) {
             anemities9.setVisibility(View.VISIBLE);
             moreanemities9.setVisibility(View.GONE);
             boundrywall9.setVisibility(View.VISIBLE);
@@ -287,7 +334,7 @@ public class Features extends AppCompatActivity {
 
         }
 
-        if(ListingData.getInstance(getApplicationContext()).category().equals("House/Villa") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Sell")){
+        if (ListingData.getInstance(getApplicationContext()).category().equals("House/Villa") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Sell")) {
             anemities9.setVisibility(View.VISIBLE);
             moreanemities9.setVisibility(View.VISIBLE);
             boundrywall9.setVisibility(View.GONE);
@@ -306,7 +353,7 @@ public class Features extends AppCompatActivity {
 
         }
 
-        if(ListingData.getInstance(getApplicationContext()).category().equals("Others") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Sell") && ListingData.getInstance(getApplicationContext()).type().equals("Residential")){
+        if (ListingData.getInstance(getApplicationContext()).category().equals("Others") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Sell") && ListingData.getInstance(getApplicationContext()).type().equals("Residential")) {
             anemities9.setVisibility(View.VISIBLE);
             moreanemities9.setVisibility(View.VISIBLE);
             boundrywall9.setVisibility(View.GONE);
@@ -327,7 +374,7 @@ public class Features extends AppCompatActivity {
 
         //Rent
 
-        if((ListingData.getInstance(getApplicationContext()).category().equals("Apartment/Flat/Builder Floor") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Rent")) || (ListingData.getInstance(getApplicationContext()).category().equals("House/Villa") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Rent")) || (ListingData.getInstance(getApplicationContext()).category().equals("Others") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Rent") && ListingData.getInstance(getApplicationContext()).type().equals("Residential"))){
+        if ((ListingData.getInstance(getApplicationContext()).category().equals("Apartment/Flat/Builder Floor") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Rent")) || (ListingData.getInstance(getApplicationContext()).category().equals("House/Villa") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Rent")) || (ListingData.getInstance(getApplicationContext()).category().equals("Others") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Rent") && ListingData.getInstance(getApplicationContext()).type().equals("Residential"))) {
             anemities9.setVisibility(View.VISIBLE);
             moreanemities9.setVisibility(View.VISIBLE);
             watersource9.setVisibility(View.GONE);
@@ -349,8 +396,8 @@ public class Features extends AppCompatActivity {
         //Paying Guest
 
 
-        if((ListingData.getInstance(getApplicationContext()).category().equals("Apartment/Flat/Builder Floor") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Paying Guest")) || ListingData.getInstance(getApplicationContext()).category().equals("House/Villa") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Paying Guest")){
-             anemities9.setVisibility(View.VISIBLE);
+        if ((ListingData.getInstance(getApplicationContext()).category().equals("Apartment/Flat/Builder Floor") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Paying Guest")) || ListingData.getInstance(getApplicationContext()).category().equals("House/Villa") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Paying Guest")) {
+            anemities9.setVisibility(View.VISIBLE);
             moreanemities9.setVisibility(View.VISIBLE);
             watersource9.setVisibility(View.GONE);
             overlooking9.setVisibility(View.GONE);
@@ -367,9 +414,9 @@ public class Features extends AppCompatActivity {
         }
 
 
-         // sell commersial
+        // sell commersial
 
-        if(ListingData.getInstance(getApplicationContext()).category().equals("Offices")){
+        if (ListingData.getInstance(getApplicationContext()).category().equals("Offices")) {
             anemities9.setVisibility(View.VISIBLE);
             moreanemities9.setVisibility(View.VISIBLE);
             watersource9.setVisibility(View.GONE);
@@ -385,7 +432,7 @@ public class Features extends AppCompatActivity {
             timesuitable9.setVisibility(View.VISIBLE);
         }
 
-        if(ListingData.getInstance(getApplicationContext()).category().equals("Retail")){
+        if (ListingData.getInstance(getApplicationContext()).category().equals("Retail")) {
             anemities9.setVisibility(View.VISIBLE);
             moreanemities9.setVisibility(View.VISIBLE);
             watersource9.setVisibility(View.GONE);
@@ -401,7 +448,7 @@ public class Features extends AppCompatActivity {
             timesuitable9.setVisibility(View.VISIBLE);
         }
 
-        if(ListingData.getInstance(getApplicationContext()).category().equals("Land")){
+        if (ListingData.getInstance(getApplicationContext()).category().equals("Land")) {
             anemities9.setVisibility(View.VISIBLE);
             moreanemities9.setVisibility(View.VISIBLE);
             watersource9.setVisibility(View.GONE);
@@ -417,7 +464,7 @@ public class Features extends AppCompatActivity {
             timesuitable9.setVisibility(View.VISIBLE);
         }
 
-        if(ListingData.getInstance(getApplicationContext()).category().equals("Industry") || ListingData.getInstance(getApplicationContext()).category().equals("Storage") || ListingData.getInstance(getApplicationContext()).category().equals("Hospitality")){
+        if (ListingData.getInstance(getApplicationContext()).category().equals("Industry") || ListingData.getInstance(getApplicationContext()).category().equals("Storage") || ListingData.getInstance(getApplicationContext()).category().equals("Hospitality")) {
             anemities9.setVisibility(View.VISIBLE);
             moreanemities9.setVisibility(View.VISIBLE);
             watersource9.setVisibility(View.GONE);
@@ -434,7 +481,7 @@ public class Features extends AppCompatActivity {
         }
 
 
-        if(ListingData.getInstance(getApplicationContext()).category().equals("Others") && ListingData.getInstance(getApplicationContext()).type().equals("Commercial")){
+        if (ListingData.getInstance(getApplicationContext()).category().equals("Others") && ListingData.getInstance(getApplicationContext()).type().equals("Commercial")) {
             anemities9.setVisibility(View.VISIBLE);
             moreanemities9.setVisibility(View.VISIBLE);
             boundrywall9.setVisibility(View.GONE);
@@ -452,22 +499,6 @@ public class Features extends AppCompatActivity {
             rule2.setVisibility(View.GONE);
 
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         pety.setOnClickListener(new View.OnClickListener() {
@@ -555,17 +586,15 @@ public class Features extends AppCompatActivity {
         });
 
 
-
-
         moreanemities.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(a==0){
+                if (a == 0) {
                     moreanemitiesitem91.setVisibility(View.VISIBLE);
                     uparrow.setVisibility(View.VISIBLE);
                     downarrow.setVisibility(View.GONE);
                     a = 1;
-                }else {
+                } else {
                     moreanemitiesitem91.setVisibility(View.GONE);
                     uparrow.setVisibility(View.GONE);
                     downarrow.setVisibility(View.VISIBLE);
@@ -574,7 +603,6 @@ public class Features extends AppCompatActivity {
                 }
             }
         });
-
 
 
         ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(Features.this, R.array.facing, android.R.layout.simple_spinner_item);
@@ -586,6 +614,7 @@ public class Features extends AppCompatActivity {
                 facingspinget = facingspin.getSelectedItem().toString();
 
             }
+
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
@@ -599,6 +628,7 @@ public class Features extends AppCompatActivity {
                 unitspinget = unitspin.getSelectedItem().toString();
 
             }
+
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
@@ -612,6 +642,7 @@ public class Features extends AppCompatActivity {
                 typeofflooringspinget = typeofflooringspin.getSelectedItem().toString();
 
             }
+
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
@@ -625,6 +656,7 @@ public class Features extends AppCompatActivity {
                 powerbackupspinget = powerbackupspin.getSelectedItem().toString();
 
             }
+
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
@@ -638,6 +670,7 @@ public class Features extends AppCompatActivity {
                 lasttimespinget = lasttimespin.getSelectedItem().toString();
 
             }
+
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
@@ -671,63 +704,60 @@ public class Features extends AppCompatActivity {
         timeitemsget = ListingData.getInstance(getApplicationContext()).timeitems();
 
 
-
-
-
         //radio
 
-        if(ListingData.getInstance(getApplicationContext()).pet() != null){
-            if(ListingData.getInstance(getApplicationContext()).pet().equals("Yes")){
+        if (ListingData.getInstance(getApplicationContext()).pet() != null) {
+            if (ListingData.getInstance(getApplicationContext()).pet().equals("Yes")) {
                 pety.setChecked(true);
                 pet = "Yes";
-            }else{
+            } else {
                 petn.setChecked(true);
                 pet = "No";
             }
         }
-        if(ListingData.getInstance(getApplicationContext()).visiter() != null){
-            if(ListingData.getInstance(getApplicationContext()).visiter().equals("Yes")){
+        if (ListingData.getInstance(getApplicationContext()).visiter() != null) {
+            if (ListingData.getInstance(getApplicationContext()).visiter().equals("Yes")) {
                 visitery.setChecked(true);
                 visiter = "Yes";
-            }else{
+            } else {
                 visitern.setChecked(true);
                 visiter = "No";
             }
         }
 
 
-        if(ListingData.getInstance(getApplicationContext()).smoking() != null){
-            if(ListingData.getInstance(getApplicationContext()).smoking().equals("Yes")){
+        if (ListingData.getInstance(getApplicationContext()).smoking() != null) {
+            if (ListingData.getInstance(getApplicationContext()).smoking().equals("Yes")) {
                 smokingy.setChecked(true);
-            }else{
+            } else {
                 smokingn.setChecked(true);
             }
         }
-        if(ListingData.getInstance(getApplicationContext()).alcohol() != null){
-            if(ListingData.getInstance(getApplicationContext()).alcohol().equals("Yes")){
+        if (ListingData.getInstance(getApplicationContext()).alcohol() != null) {
+            if (ListingData.getInstance(getApplicationContext()).alcohol().equals("Yes")) {
                 alcoholy.setChecked(true);
                 alcohol = "Yes";
-            }else{
+            } else {
                 alcoholn.setChecked(true);
                 alcohol = "No";
             }
         }
 
-        if(ListingData.getInstance(getApplicationContext()).event() != null){
-            if(ListingData.getInstance(getApplicationContext()).event().equals("Yes")){
+        if (ListingData.getInstance(getApplicationContext()).event() != null) {
+            if (ListingData.getInstance(getApplicationContext()).event().equals("Yes")) {
                 eventy.setChecked(true);
                 event = "Yes";
-            }else{
+            } else {
                 eventn.setChecked(true);
                 event = "No";
             }
         }
 
-        if(ListingData.getInstance(getApplicationContext()).boundrywall() != null){
-            if(ListingData.getInstance(getApplicationContext()).boundrywall().equals("Yes")){
+        if (ListingData.getInstance(getApplicationContext()).boundrywall() != null) {
+            if (ListingData.getInstance(getApplicationContext()).boundrywall().equals("Yes")) {
                 boundryyes.setChecked(true);
                 boundrywall = "Yes";
-            }else{
+            } else {
                 boundryno.setChecked(true);
                 boundrywall = "No";
             }
@@ -750,26 +780,26 @@ public class Features extends AppCompatActivity {
 
 
         // String anemitiesitemget,moreanemitiesitemget, watersourceitemget, overlookingitemget, somefeatureitemget, byersitemget, timeitemsget;
-        if(ListingData.getInstance(getApplicationContext()).getimage() != null) {
+        if (ListingData.getInstance(getApplicationContext()).getimage() != null) {
 
 
-            System.out.println("imageeeee ::;" +ListingData.getInstance(getApplicationContext()).getimage());
-            String propertyimg= ListingData.getInstance(getApplicationContext()).getimage();
+            System.out.println("imageeeee ::;" + ListingData.getInstance(getApplicationContext()).getimage());
+            String propertyimg = ListingData.getInstance(getApplicationContext()).getimage();
 
-            if(ListingData.getInstance(getApplicationContext()).getinstance().equals("Add")){
+            if (ListingData.getInstance(getApplicationContext()).getinstance().equals("Add")) {
                 byte[] decodedString = Base64.decode(propertyimg, Base64.DEFAULT);
                 Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                 Glide.with(Features.this).load(decodedByte).into(img);
-            }else {
-                if (propertyimg.length() > 95){
+            } else {
+                if (propertyimg.length() > 95) {
                     Glide.with(Features.this).load(propertyimg).into(img);
-                }else{
+                } else {
                     Glide.with(Features.this).load(R.drawable.nopropertyimage).into(img);
                 }
             }
             encodedImage = propertyimg;
         }
-        if(ListingData.getInstance(getApplicationContext()).anemitiesitem() != null) {
+        if (ListingData.getInstance(getApplicationContext()).anemitiesitem() != null) {
 
 
             if (anemitiesitemget.contains("Lift")) {
@@ -854,7 +884,7 @@ public class Features extends AppCompatActivity {
 
         }
 
-        if(ListingData.getInstance(getApplicationContext()).moreanemitiesitem() != null) {
+        if (ListingData.getInstance(getApplicationContext()).moreanemitiesitem() != null) {
 
 
             // moreanemitiies
@@ -981,9 +1011,9 @@ public class Features extends AppCompatActivity {
 
         }
 
-            //watersource
+        //watersource
 
-        if(ListingData.getInstance(getApplicationContext()).watersourceitem() != null) {
+        if (ListingData.getInstance(getApplicationContext()).watersourceitem() != null) {
 
             if (watersourceitemget.contains("Municipal Corporation")) {
                 watersourceitem.add("Municipal Corporation");
@@ -1005,9 +1035,9 @@ public class Features extends AppCompatActivity {
 
             }
         }
-            //overlooking
+        //overlooking
 
-        if(ListingData.getInstance(getApplicationContext()).overlookingitem() != null) {
+        if (ListingData.getInstance(getApplicationContext()).overlookingitem() != null) {
 
             if (overlookingitemget.contains("Park/Garden")) {
                 overlookingitem.add("Park/Garden");
@@ -1070,10 +1100,10 @@ public class Features extends AppCompatActivity {
             }
         }
 
-            //somefetures
+        //somefetures
 
 
-        if(ListingData.getInstance(getApplicationContext()).somefeatureitem() != null) {
+        if (ListingData.getInstance(getApplicationContext()).somefeatureitem() != null) {
 
             if (somefeatureitemget.contains("In a Gated Society")) {
                 somefeatureitem.add("In a Gated Society");
@@ -1118,8 +1148,8 @@ public class Features extends AppCompatActivity {
 
         }
 
-            // byres
-        if(ListingData.getInstance(getApplicationContext()).byersitem() != null) {
+        // byres
+        if (ListingData.getInstance(getApplicationContext()).byersitem() != null) {
 
 
             if (byersitemget.contains("24 x 7 Water")) {
@@ -1202,8 +1232,8 @@ public class Features extends AppCompatActivity {
             }
         }
 
-            //. time
-        if(ListingData.getInstance(getApplicationContext()).timeitems() != null) {
+        //. time
+        if (ListingData.getInstance(getApplicationContext()).timeitems() != null) {
 
             if (timeitemsget.contains("8am - 12pm")) {
                 timeitems.add("8am - 12pm");
@@ -1271,18 +1301,6 @@ public class Features extends AppCompatActivity {
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
         btnnext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1291,63 +1309,54 @@ public class Features extends AppCompatActivity {
 
                 System.out.println("local ::  Start");
 
-                if(ListingData.getInstance(getApplicationContext()).category().equals("Apartment/Flat/Builder Floor") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Sell")){
+                if (ListingData.getInstance(getApplicationContext()).category().equals("Apartment/Flat/Builder Floor") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Sell")) {
 
 
-
-
-                    if(descriptionget.isEmpty()){
+                    if (descriptionget.isEmpty()) {
                         showmessage("Please Enter Description");
                         description.setError("Please Enter Description");
-                    }
-
-                    else{
+                    } else {
                         ListingData.getInstance(getApplicationContext()).addfeatures(
                                 facingspinget, unitspinget, typeofflooringspinget,
                                 powerbackupspinget, lasttimespinget,
-                                pet, visiter, smoking, alcohol,event,
+                                pet, visiter, smoking, alcohol, event,
                                 String.valueOf(anemitiesitem), String.valueOf(moreanemitiesitem), String.valueOf(watersourceitem), String.valueOf(overlookingitem),
-                                String.valueOf(somefeatureitem), String.valueOf(byersitem),String.valueOf(timeitems), widthfacingget, descriptionget, boundrywall, encodedImage);
+                                String.valueOf(somefeatureitem), String.valueOf(byersitem), String.valueOf(timeitems), widthfacingget, descriptionget, boundrywall, encodedImage);
                         startActivity(new Intent(Features.this, PropertyProfileInfo.class));
                     }
                 }
-                if(ListingData.getInstance(getApplicationContext()).category().equals("Residential Land") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Sell")){
+                if (ListingData.getInstance(getApplicationContext()).category().equals("Residential Land") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Sell")) {
 
 
-                    if(descriptionget.isEmpty()){
+                    if (descriptionget.isEmpty()) {
                         showmessage("Please Enter Description");
                         description.setError("Please Enter Description");
-                    }
-
-                    else{
+                    } else {
                         ListingData.getInstance(getApplicationContext()).addfeatures(
                                 facingspinget, unitspinget, typeofflooringspinget,
                                 powerbackupspinget, lasttimespinget,
-                                pet, visiter, smoking, alcohol,event,
+                                pet, visiter, smoking, alcohol, event,
                                 String.valueOf(anemitiesitem), String.valueOf(moreanemitiesitem), String.valueOf(watersourceitem), String.valueOf(overlookingitem),
-                                String.valueOf(somefeatureitem), String.valueOf(byersitem),String.valueOf(timeitems), widthfacingget, descriptionget, boundrywall, encodedImage);
+                                String.valueOf(somefeatureitem), String.valueOf(byersitem), String.valueOf(timeitems), widthfacingget, descriptionget, boundrywall, encodedImage);
                         startActivity(new Intent(Features.this, PropertyProfileInfo.class));
 
                     }
 
                 }
 
-                if(ListingData.getInstance(getApplicationContext()).category().equals("House/Villa") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Sell")){
+                if (ListingData.getInstance(getApplicationContext()).category().equals("House/Villa") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Sell")) {
 
 
-
-                    if(descriptionget.isEmpty()){
+                    if (descriptionget.isEmpty()) {
                         showmessage("Please Enter Description");
                         description.setError("Please Enter Description");
-                    }
-
-                    else{
+                    } else {
                         ListingData.getInstance(getApplicationContext()).addfeatures(
                                 facingspinget, unitspinget, typeofflooringspinget,
                                 powerbackupspinget, lasttimespinget,
-                                pet, visiter, smoking, alcohol,event,
+                                pet, visiter, smoking, alcohol, event,
                                 String.valueOf(anemitiesitem), String.valueOf(moreanemitiesitem), String.valueOf(watersourceitem), String.valueOf(overlookingitem),
-                                String.valueOf(somefeatureitem), String.valueOf(byersitem),String.valueOf(timeitems),
+                                String.valueOf(somefeatureitem), String.valueOf(byersitem), String.valueOf(timeitems),
                                 widthfacingget, descriptionget, boundrywall, encodedImage);
                         startActivity(new Intent(Features.this, PropertyProfileInfo.class));
 
@@ -1356,21 +1365,19 @@ public class Features extends AppCompatActivity {
 
                 }
 
-                if(ListingData.getInstance(getApplicationContext()).category().equals("Others") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Sell") && ListingData.getInstance(getApplicationContext()).type().equals("Residential")){
+                if (ListingData.getInstance(getApplicationContext()).category().equals("Others") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Sell") && ListingData.getInstance(getApplicationContext()).type().equals("Residential")) {
 
 
-                    if(descriptionget.isEmpty()){
+                    if (descriptionget.isEmpty()) {
                         showmessage("Please Enter Description");
                         description.setError("Please Enter Description");
-                    }
-
-                    else{
+                    } else {
                         ListingData.getInstance(getApplicationContext()).addfeatures(
                                 facingspinget, unitspinget, typeofflooringspinget,
                                 powerbackupspinget, lasttimespinget,
-                                pet, visiter, smoking, alcohol,event,
+                                pet, visiter, smoking, alcohol, event,
                                 String.valueOf(anemitiesitem), String.valueOf(moreanemitiesitem), String.valueOf(watersourceitem), String.valueOf(overlookingitem),
-                                String.valueOf(somefeatureitem), String.valueOf(byersitem),String.valueOf(timeitems),
+                                String.valueOf(somefeatureitem), String.valueOf(byersitem), String.valueOf(timeitems),
                                 widthfacingget, descriptionget, boundrywall, encodedImage);
                         startActivity(new Intent(Features.this, PropertyProfileInfo.class));
 
@@ -1380,21 +1387,19 @@ public class Features extends AppCompatActivity {
 
                 //Rent
 
-                if((ListingData.getInstance(getApplicationContext()).category().equals("Apartment/Flat/Builder Floor") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Rent")) || (ListingData.getInstance(getApplicationContext()).category().equals("House/Villa") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Rent")) || (ListingData.getInstance(getApplicationContext()).category().equals("Others") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Rent") && ListingData.getInstance(getApplicationContext()).type().equals("Residential"))){
+                if ((ListingData.getInstance(getApplicationContext()).category().equals("Apartment/Flat/Builder Floor") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Rent")) || (ListingData.getInstance(getApplicationContext()).category().equals("House/Villa") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Rent")) || (ListingData.getInstance(getApplicationContext()).category().equals("Others") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Rent") && ListingData.getInstance(getApplicationContext()).type().equals("Residential"))) {
 
 
-                    if(descriptionget.isEmpty()){
+                    if (descriptionget.isEmpty()) {
                         showmessage("Please Enter Description");
                         description.setError("Please Enter Description");
-                    }
-
-                    else{
+                    } else {
                         ListingData.getInstance(getApplicationContext()).addfeatures(
                                 facingspinget, unitspinget, typeofflooringspinget,
                                 powerbackupspinget, lasttimespinget,
-                                pet, visiter, smoking, alcohol,event,
+                                pet, visiter, smoking, alcohol, event,
                                 String.valueOf(anemitiesitem), String.valueOf(moreanemitiesitem), String.valueOf(watersourceitem), String.valueOf(overlookingitem),
-                                String.valueOf(somefeatureitem), String.valueOf(byersitem),String.valueOf(timeitems),
+                                String.valueOf(somefeatureitem), String.valueOf(byersitem), String.valueOf(timeitems),
                                 widthfacingget, descriptionget, boundrywall, encodedImage);
                         startActivity(new Intent(Features.this, PropertyProfileInfo.class));
 
@@ -1406,22 +1411,19 @@ public class Features extends AppCompatActivity {
                 //Paying Guest
 
 
-                if((ListingData.getInstance(getApplicationContext()).category().equals("Apartment/Flat/Builder Floor") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Paying Guest")) || ListingData.getInstance(getApplicationContext()).category().equals("House/Villa") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Paying Guest")){
+                if ((ListingData.getInstance(getApplicationContext()).category().equals("Apartment/Flat/Builder Floor") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Paying Guest")) || ListingData.getInstance(getApplicationContext()).category().equals("House/Villa") && ListingData.getInstance(getApplicationContext()).propertylistfor().equals("Paying Guest")) {
 
 
-                    if(descriptionget.isEmpty()){
+                    if (descriptionget.isEmpty()) {
                         showmessage("Please Enter Description");
                         description.setError("Please Enter Description");
-                    }
-
-
-                    else{
+                    } else {
                         ListingData.getInstance(getApplicationContext()).addfeatures(
                                 facingspinget, unitspinget, typeofflooringspinget,
                                 powerbackupspinget, lasttimespinget,
-                                pet, visiter, smoking, alcohol,event,
+                                pet, visiter, smoking, alcohol, event,
                                 String.valueOf(anemitiesitem), String.valueOf(moreanemitiesitem), String.valueOf(watersourceitem), String.valueOf(overlookingitem),
-                                String.valueOf(somefeatureitem), String.valueOf(byersitem),String.valueOf(timeitems),
+                                String.valueOf(somefeatureitem), String.valueOf(byersitem), String.valueOf(timeitems),
                                 widthfacingget, descriptionget, boundrywall, encodedImage);
                         startActivity(new Intent(Features.this, PropertyProfileInfo.class));
 
@@ -1431,86 +1433,75 @@ public class Features extends AppCompatActivity {
 
                 // sell commersial
 
-                if(ListingData.getInstance(getApplicationContext()).category().equals("Offices")){
+                if (ListingData.getInstance(getApplicationContext()).category().equals("Offices")) {
 
 
-
-                    if(descriptionget.isEmpty()){
+                    if (descriptionget.isEmpty()) {
                         showmessage("Please Enter Description");
                         description.setError("Please Enter Description");
-                    }
-
-                    else{
+                    } else {
                         ListingData.getInstance(getApplicationContext()).addfeatures(
                                 facingspinget, unitspinget, typeofflooringspinget,
                                 powerbackupspinget, lasttimespinget,
-                                pet, visiter, smoking, alcohol,event,
+                                pet, visiter, smoking, alcohol, event,
                                 String.valueOf(anemitiesitem), String.valueOf(moreanemitiesitem), String.valueOf(watersourceitem), String.valueOf(overlookingitem),
-                                String.valueOf(somefeatureitem), String.valueOf(byersitem),String.valueOf(timeitems),
+                                String.valueOf(somefeatureitem), String.valueOf(byersitem), String.valueOf(timeitems),
                                 widthfacingget, descriptionget, boundrywall, encodedImage);
                         startActivity(new Intent(Features.this, PropertyProfileInfo.class));
 
                     }
                 }
 
-                if(ListingData.getInstance(getApplicationContext()).category().equals("Retail")){
+                if (ListingData.getInstance(getApplicationContext()).category().equals("Retail")) {
 
 
-
-
-                    if(descriptionget.isEmpty()){
+                    if (descriptionget.isEmpty()) {
                         showmessage("Please Enter Description");
                         description.setError("Please Enter Description");
-                    }
-
-                    else{
+                    } else {
                         ListingData.getInstance(getApplicationContext()).addfeatures(
                                 facingspinget, unitspinget, typeofflooringspinget,
                                 powerbackupspinget, lasttimespinget,
-                                pet, visiter, smoking, alcohol,event,
+                                pet, visiter, smoking, alcohol, event,
                                 String.valueOf(anemitiesitem), String.valueOf(moreanemitiesitem), String.valueOf(watersourceitem), String.valueOf(overlookingitem),
-                                String.valueOf(somefeatureitem), String.valueOf(byersitem),String.valueOf(timeitems),
+                                String.valueOf(somefeatureitem), String.valueOf(byersitem), String.valueOf(timeitems),
                                 widthfacingget, descriptionget, boundrywall, encodedImage);
                         startActivity(new Intent(Features.this, PropertyProfileInfo.class));
 
                     }
                 }
 
-                if(ListingData.getInstance(getApplicationContext()).category().equals("Land")){
+                if (ListingData.getInstance(getApplicationContext()).category().equals("Land")) {
 
 
-                    if(descriptionget.isEmpty()){
+                    if (descriptionget.isEmpty()) {
                         showmessage("Please Enter Description");
                         description.setError("Please Enter Description");
-                    }
-
-                    else{
+                    } else {
                         ListingData.getInstance(getApplicationContext()).addfeatures(
                                 facingspinget, unitspinget, typeofflooringspinget,
                                 powerbackupspinget, lasttimespinget,
-                                pet, visiter, smoking, alcohol,event,
+                                pet, visiter, smoking, alcohol, event,
                                 String.valueOf(anemitiesitem), String.valueOf(moreanemitiesitem), String.valueOf(watersourceitem), String.valueOf(overlookingitem),
-                                String.valueOf(somefeatureitem), String.valueOf(byersitem),String.valueOf(timeitems),
+                                String.valueOf(somefeatureitem), String.valueOf(byersitem), String.valueOf(timeitems),
                                 widthfacingget, descriptionget, boundrywall, encodedImage);
                         startActivity(new Intent(Features.this, PropertyProfileInfo.class));
 
                     }
                 }
 
-                if(ListingData.getInstance(getApplicationContext()).category().equals("Industry") || ListingData.getInstance(getApplicationContext()).category().equals("Storage") || ListingData.getInstance(getApplicationContext()).category().equals("Hospitality")){
+                if (ListingData.getInstance(getApplicationContext()).category().equals("Industry") || ListingData.getInstance(getApplicationContext()).category().equals("Storage") || ListingData.getInstance(getApplicationContext()).category().equals("Hospitality")) {
 
-                    if(descriptionget.isEmpty()){
+                    if (descriptionget.isEmpty()) {
                         showmessage("Please Enter Description");
                         description.setError("Please Enter Description");
-                    }
-
-                    else{
+                    } else {
                         ListingData.getInstance(getApplicationContext()).addfeatures(
                                 facingspinget, unitspinget, typeofflooringspinget,
                                 powerbackupspinget, lasttimespinget,
-                                pet, visiter, smoking, alcohol,event,
+                                pet, visiter, smoking, alcohol, event,
                                 String.valueOf(anemitiesitem), String.valueOf(moreanemitiesitem), String.valueOf(watersourceitem), String.valueOf(overlookingitem),
-                                String.valueOf(somefeatureitem), String.valueOf(byersitem),String.valueOf(timeitems),
+                                String.valueOf(somefeatureitem), String.valueOf(byersitem), String.valueOf(timeitems),
                                 widthfacingget, descriptionget, boundrywall, encodedImage);
                         startActivity(new Intent(Features.this, PropertyProfileInfo.class));
 
@@ -1518,23 +1509,19 @@ public class Features extends AppCompatActivity {
                 }
 
 
-                if(ListingData.getInstance(getApplicationContext()).category().equals("Others") && ListingData.getInstance(getApplicationContext()).type().equals("Commercial")){
+                if (ListingData.getInstance(getApplicationContext()).category().equals("Others") && ListingData.getInstance(getApplicationContext()).type().equals("Commercial")) {
 
 
-
-
-                    if(descriptionget.isEmpty()){
+                    if (descriptionget.isEmpty()) {
                         showmessage("Please Enter Description");
                         description.setError("Please Enter Description");
-                    }
-
-                    else{
+                    } else {
                         ListingData.getInstance(getApplicationContext()).addfeatures(
                                 facingspinget, unitspinget, typeofflooringspinget,
                                 powerbackupspinget, lasttimespinget,
-                                pet, visiter, smoking, alcohol,event,
+                                pet, visiter, smoking, alcohol, event,
                                 String.valueOf(anemitiesitem), String.valueOf(moreanemitiesitem), String.valueOf(watersourceitem), String.valueOf(overlookingitem),
-                                String.valueOf(somefeatureitem), String.valueOf(byersitem),String.valueOf(timeitems),
+                                String.valueOf(somefeatureitem), String.valueOf(byersitem), String.valueOf(timeitems),
                                 widthfacingget, descriptionget, boundrywall, encodedImage);
                         startActivity(new Intent(Features.this, PropertyProfileInfo.class));
 
@@ -1543,7 +1530,6 @@ public class Features extends AppCompatActivity {
                 }
 
                 System.out.println("local ::  Start");
-
 
 
             }
@@ -1557,16 +1543,14 @@ public class Features extends AppCompatActivity {
         });
 
 
-        if(encodedImage.length() > 250){
+        if (encodedImage.length() > 250) {
             imagepresent = "0";
             ListingData.getInstance(getApplicationContext()).imagepresent("0");
-        }else {
+        } else {
             imagepresent = "1";
             ListingData.getInstance(getApplicationContext()).imagepresent("1");
 
         }
-
-
 
 
         img.setOnClickListener(new View.OnClickListener() {
@@ -1583,11 +1567,13 @@ public class Features extends AppCompatActivity {
                     public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
                         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                         intent.setType("image/*");
-                        startActivityForResult(Intent.createChooser(intent, "select image"),1);
+                        startActivityForResult(Intent.createChooser(intent, "select image"), 1);
                     }
+
                     @Override
                     public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
                     }
+
                     @Override
                     public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
                         permissionToken.continuePermissionRequest();
@@ -1611,11 +1597,13 @@ public class Features extends AppCompatActivity {
                     public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
                         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                         intent.setType("image/*");
-                        startActivityForResult(Intent.createChooser(intent, "select image"),1);
+                        startActivityForResult(Intent.createChooser(intent, "select image"), 1);
                     }
+
                     @Override
                     public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
                     }
+
                     @Override
                     public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
                         permissionToken.continuePermissionRequest();
@@ -1636,13 +1624,12 @@ public class Features extends AppCompatActivity {
 //        }
 
 
-
     }
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(requestCode == 1 && resultCode == RESULT_OK && data != null){
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
             Uri filepath = data.getData();
             try {
                 InputStream inputStream = getContentResolver().openInputStream(filepath);
@@ -1661,17 +1648,16 @@ public class Features extends AppCompatActivity {
     }
 
 
-
     private void imageStore(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG,45,stream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 45, stream);
         byte[] imageBytes = stream.toByteArray();
         encodedImage = android.util.Base64.encodeToString(imageBytes, Base64.DEFAULT);
-        System.out.println("Encodedimage ::"+ encodedImage.length());
-        if(encodedImage.length() > 250){
+        System.out.println("Encodedimage ::" + encodedImage.length());
+        if (encodedImage.length() > 250) {
             imagepresent = "0";
             ListingData.getInstance(getApplicationContext()).imagepresent("0");
-        }else {
+        } else {
             imagepresent = "1";
             ListingData.getInstance(getApplicationContext()).imagepresent("1");
 
@@ -1749,8 +1735,7 @@ public class Features extends AppCompatActivity {
                 break;
 
 
-
-                // moreanemitiies
+            // moreanemitiies
 
             case R.id.swimmingpool:
                 if (checked) {
@@ -1797,7 +1782,7 @@ public class Features extends AppCompatActivity {
                 }
                 break;
 
-                case R.id.clubhouse:
+            case R.id.clubhouse:
                 if (checked) {
                     moreanemitiesitem.add("Club House");
                 } else {
@@ -1841,7 +1826,7 @@ public class Features extends AppCompatActivity {
                 break;
 
 
-                //watersource
+            //watersource
 
 
             case R.id.muncipalcorporation:
@@ -1860,7 +1845,7 @@ public class Features extends AppCompatActivity {
                 }
                 break;
 
-                //overlooking
+            //overlooking
 
 
             case R.id.parkgarden:
@@ -1913,7 +1898,7 @@ public class Features extends AppCompatActivity {
                 break;
 
 
-                //somefetures
+            //somefetures
 
 
             case R.id.gatedsociety:
@@ -1948,8 +1933,7 @@ public class Features extends AppCompatActivity {
                 break;
 
 
-
-                // byres
+            // byres
 
             case R.id.water24:
                 if (checked) {
@@ -2011,7 +1995,7 @@ public class Features extends AppCompatActivity {
                 break;
 
 
-                //. time
+            //. time
 
             case R.id.eight12:
                 if (checked) {
@@ -2080,22 +2064,6 @@ public class Features extends AppCompatActivity {
                     timeitems.remove("None");
                 }
                 break;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         }
