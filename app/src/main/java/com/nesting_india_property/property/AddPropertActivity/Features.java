@@ -3,6 +3,7 @@ package com.nesting_india_property.property.AddPropertActivity;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -23,9 +24,21 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.nesting_india_property.property.Adapter.AdsViewPager;
+import com.nesting_india_property.property.Adapter.DescriptionAdapter;
+import com.nesting_india_property.property.Avtivities.MainActivity;
+import com.nesting_india_property.property.Models.AdsDataModel;
+import com.nesting_india_property.property.Models.DescriptionDataModel;
 import com.nesting_india_property.property.R;
+import com.nesting_india_property.property.Utils.Endpoints;
 import com.nesting_india_property.property.Utils.ListingData;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
@@ -33,15 +46,25 @@ import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
+import com.nesting_india_property.property.Utils.SmsData;
+import com.nesting_india_property.property.Utils.VolleySingleton;
+import com.nesting_india_property.property.listener.OnDescriptionClickListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 
-public class Features extends AppCompatActivity {
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class Features extends AppCompatActivity implements OnDescriptionClickListener {
 
     LinearLayout anemities9, moreanemities9, watersource9, overlooking9, facing9,
             typeofflooring9, powerbackup9, byers9, description9, timesuitable9, rule1, rule2, somefeatures9, facingwidth9, boundrywall9, moreanemitiesitem91;
@@ -54,8 +77,9 @@ public class Features extends AppCompatActivity {
     String widthfacingget, descriptionget;
     ImageView img;
 
-    TextView tv_des1, tv_des2, tv_des3, tv_des4, tv_des5;
     BottomSheetDialog bottomSheet;
+    RecyclerView descriptionRecyclerview;
+    List<DescriptionDataModel> descriptionDataModelList;
     String encodedImage = "";
     String imagepresent;
     Bitmap bitmap;
@@ -152,51 +176,11 @@ public class Features extends AppCompatActivity {
         btnEg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bottomSheet = new BottomSheetDialog(Features.this, R.style.BottomSheetDialogTheme);
+                bottomSheet = new BottomSheetDialog(Features.this, R.style.BottomSheetDialog);
                 bottomSheet.setContentView(R.layout.fragment_bottomsheet);
-                tv_des1 = bottomSheet.findViewById(R.id.tv_des1);
-                tv_des2 = bottomSheet.findViewById(R.id.tv_des2);
-                tv_des3 = bottomSheet.findViewById(R.id.tv_des3);
-                tv_des4 = bottomSheet.findViewById(R.id.tv_des4);
-                tv_des5 = bottomSheet.findViewById(R.id.tv_des5);
-
-                tv_des1.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        description.setText(tv_des1.getText().toString());
-                        bottomSheet.dismiss();
-                    }
-
-                });
-                tv_des2.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        description.setText(tv_des2.getText().toString());
-                        bottomSheet.dismiss();
-                    }
-                });
-                tv_des3.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        description.setText(tv_des3.getText().toString());
-                        bottomSheet.dismiss();
-                    }
-                });
-                tv_des4.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        description.setText(tv_des4.getText().toString());
-                        bottomSheet.dismiss();
-                    }
-                });
-                tv_des5.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        description.setText(tv_des5.getText().toString());
-                        bottomSheet.dismiss();
-                    }
-                });
-
+                descriptionRecyclerview = bottomSheet.findViewById(R.id.recyclerView);
+                descriptionDataModelList = new ArrayList<>();
+                getDescriptions();
                 bottomSheet.show();
             }
         });
@@ -2067,5 +2051,70 @@ public class Features extends AppCompatActivity {
 
 
         }
+    }
+
+    private void getDescriptions() {
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Endpoints.getDescriptions, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                System.out.println("response :::" + response);
+                try {
+                    JSONObject obj = new JSONObject(response);
+                    String succes = obj.getString("success");
+                    JSONArray jsonArray = obj.getJSONArray("data");
+
+                    if (succes.equals("1")) {
+
+                        for (int i = 0; i < jsonArray.length(); i++) {
+
+                            JSONObject object = jsonArray.getJSONObject(i);
+
+
+                            String descriptionData, id1, status1;
+
+                            descriptionData = object.getString("description");
+                            id1 = object.getString("id");
+                            status1 = object.getString("status");
+
+
+                            DescriptionDataModel descriptionDataModel = new DescriptionDataModel(id1,status1, descriptionData);
+                            descriptionDataModelList.add(descriptionDataModel);
+                            DescriptionAdapter descriptionAdapter = new DescriptionAdapter(descriptionDataModelList, Features.this, Features.this);
+                            descriptionRecyclerview.setAdapter(descriptionAdapter);
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    showmessage("Server Error...");
+                    System.out.println("problem ::" + e);
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                showmessage("Server Error...");
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+
+                SmsData smsData = new SmsData();
+                Map<String, String> params = new HashMap<>();
+                params.put("header", smsData.token);
+                return params;
+            }
+        };
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
+    }
+
+    @Override
+    public void onClickDescription(String description1) {
+        description.setText(description1);
+        bottomSheet.dismiss();
     }
 }

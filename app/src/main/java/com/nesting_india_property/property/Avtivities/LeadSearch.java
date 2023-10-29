@@ -349,7 +349,7 @@ public class LeadSearch extends AppCompatActivity implements OnLeadClickListener
                             propertyid = object.getString("propertyid");
                             type = object.getString("type");
                             locality = object.getString("locality");
-                            leadStatus = object.getString("status");
+                            leadStatus = "2";
                             id = object.getString("id");
 
 

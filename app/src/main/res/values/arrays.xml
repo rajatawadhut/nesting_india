@@ -7,7 +7,7 @@
     </string-array>
 
     <string-array name="propertyfor">
-        <item>Select Looking Property</item>
+        <item>Select Searching Property For</item>
         <item>Sell</item>
         <item>Rent</item>
         <item>Paying Guest</item>

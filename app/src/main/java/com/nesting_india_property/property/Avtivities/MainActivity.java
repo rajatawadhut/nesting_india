@@ -817,7 +817,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateUserCategory() {
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.usertype, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.usercategory, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
 
@@ -838,8 +838,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String selectedItem = spinner.getSelectedItem().toString();
-                if (selectedItem.equals("Select")) {
-                    userCategoryAlert = "Select";
+                if (selectedItem.equals("Select User Category")) {
+                    userCategoryAlert = "Select User Category";
                     showmessage("Please Select User Type!");
                 } else if (selectedItem.equals("Owner")) {
                     userCategoryAlert = "1";
@@ -847,6 +847,8 @@ public class MainActivity extends AppCompatActivity {
                     userCategoryAlert = "2";
                 } else if (selectedItem.equals("Builder")) {
                     userCategoryAlert = "3";
+                }else if (selectedItem.equals("Buyer")) {
+                    userCategoryAlert = "4";
                 }
             }
 
@@ -859,7 +861,7 @@ public class MainActivity extends AppCompatActivity {
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!userCategoryAlert.equals("Select")) {
+                if (!userCategoryAlert.equals("Select User Category")) {
                     alertDialog.dismiss();
                     update(
                             VolleySingleton.getInstance(getApplicationContext()).fname(),

@@ -59,7 +59,7 @@ public class ChannelAdvisePartnerActivity extends AppCompatActivity {
 
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("Channel Partners / Associate Agents");
+        toolbar.setTitle("Property Dealers");
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

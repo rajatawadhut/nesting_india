@@ -383,8 +383,11 @@ public class PurchaseEnquiryActivity extends AppCompatActivity {
                 }
                 else if(min.equals("15 Cr")){
                     min = "150000000";
-                }else {
+                }
+                else if(min.equals("0")){
                     min = "0";
+                }else {
+                    min = "";
                 }
 
 
@@ -611,11 +614,12 @@ public class PurchaseEnquiryActivity extends AppCompatActivity {
                 }
                 else if(max.equals("15 Cr")){
                     max = "150000000";
-                }else {
-                    max = "0";
                 }
-
-
+                else if(max.equals("0")){
+                    max = "0";
+                }else {
+                    max = "";
+                }
             }
             public void onNothingSelected(AdapterView<?> parent) {
             }
@@ -629,8 +633,8 @@ public class PurchaseEnquiryActivity extends AppCompatActivity {
     }
 
     private boolean isValid() {
-        if(propertyfor.isEmpty() || propertyfor.equals("Select Looking Property")) {
-            showmessage("Please Select Looking Property!");
+        if(propertyfor.isEmpty() || propertyfor.equals("Select Searching Property For")) {
+            showmessage("Please Select Searching Property For!");
             return false;
         }
         else if(state.getText().toString().isEmpty()) {
@@ -642,10 +646,10 @@ public class PurchaseEnquiryActivity extends AppCompatActivity {
         }else if (locality.getText().toString().isEmpty()){
             showmessage("Please Select Locality!");
             return false;
-        }else if (min.equals("0")){
+        }else if (min.isEmpty()){
             showmessage("Please Select Minimum Price!");
             return false;
-        }else if (max.equals("0")){
+        }else if (max.isEmpty()){
             showmessage("Please Select Maximum Price!");
             return false;
         }else if (typeofproperty.getSelectedItem().equals("Select type of property")){

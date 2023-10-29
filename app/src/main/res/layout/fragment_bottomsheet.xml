@@ -2,75 +2,35 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center_vertical|center_horizontal"
-    android:background="@android:color/transparent"
+    android:background="@drawable/rounded_dialog"
+    android:backgroundTint="@color/graywhite"
     android:orientation="vertical">
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
     <LinearLayout
+        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:background="@drawable/bottom_sheet_background"
+        android:layout_margin="10dp"
         android:orientation="vertical">
 
         <TextView
-            android:background="@color/graywhite"
-            android:id="@+id/tv_des1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            android:layout_margin="10dp"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp"
-            android:text="Select Address1" />
+            android:padding="10dp"
+            android:layout_margin="4dp"
+            android:textSize="@dimen/dimen18dp"
+            android:textAlignment="center"
+            android:text="Descriptions" />
 
-        <TextView
-            android:background="@color/graywhite"
-            android:id="@+id/tv_des2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:layout_margin="10dp"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp"
-            android:text="Select Address2" />
 
-        <TextView
-            android:background="@color/graywhite"
-            android:id="@+id/tv_des3"
+        <androidx.recyclerview.widget.RecyclerView
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:layout_margin="10dp"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp"
-            android:text="Select Address3" />
-
-        <TextView
-            android:background="@color/graywhite"
-            android:id="@+id/tv_des4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:layout_margin="10dp"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp"
-            android:text="Select Address4" />
-
-        <TextView
-            android:background="@color/graywhite"
-            android:id="@+id/tv_des5"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:layout_margin="10dp"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp"
-            android:text="Select Address5" />
+            android:id="@+id/recyclerView"/>
 
     </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
 </RelativeLayout>

@@ -64,6 +64,21 @@ public class AdviserAdapter extends RecyclerView.Adapter<AdviserAdapter.ShowData
         holder.city.setText(dataSet.get(position).getCity());
         holder.state.setText(dataSet.get(position).getState());
 
+        String userType = "";
+
+       if (dataSet.get(position).getUsercategory().equals("1")) {
+           userType =  "Owner";
+        } else if (dataSet.get(position).getUsercategory().equals("2")) {
+           userType = "Dealer";
+        } else if (dataSet.get(position).getUsercategory().equals("3")) {
+           userType = "Builder";
+        }else if (dataSet.get(position).getUsercategory().equals("4")) {
+           userType = "Buyer";
+        }else {
+           userType = "Unknown";
+       }
+        holder.tv_usertype.setText(userType);
+
 
     }
 
@@ -73,7 +88,7 @@ public class AdviserAdapter extends RecyclerView.Adapter<AdviserAdapter.ShowData
     }
 
     class ShowData extends RecyclerView.ViewHolder {
-        TextView fullname, email, mobile, city, state;
+        TextView fullname, email, mobile, city, state, tv_usertype;
         CircleImageView image;
 
 
@@ -87,6 +102,7 @@ public class AdviserAdapter extends RecyclerView.Adapter<AdviserAdapter.ShowData
             city = itemView.findViewById(R.id.tv_city);
             state = itemView.findViewById(R.id.tv_state);
             image = itemView.findViewById(R.id.image);
+            tv_usertype = itemView.findViewById(R.id.tv_usertype);
 
         }
     }

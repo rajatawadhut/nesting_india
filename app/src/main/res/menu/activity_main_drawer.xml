@@ -93,7 +93,7 @@
         <item
             android:id="@+id/partner"
             android:icon="@drawable/personimg"
-            android:title="Channel Partner/ Associate Agent" />
+            android:title="Property Dealers" />
 
 
         <item
