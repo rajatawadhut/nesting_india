@@ -32,6 +32,7 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.nesting_india_property.property.Adapter.AdsViewPager;
+import com.nesting_india_property.property.Adapter.AdviserAdapter;
 import com.nesting_india_property.property.Adapter.PgAdapter;
 import com.nesting_india_property.property.Adapter.RentAdapter;
 import com.nesting_india_property.property.Adapter.SellAdapter;
@@ -43,6 +44,7 @@ import com.nesting_india_property.property.Models.AdsDataModel;
 import com.nesting_india_property.property.Models.PgDataModel;
 import com.nesting_india_property.property.Models.RentDataModel;
 import com.nesting_india_property.property.Models.SellDataModel;
+import com.nesting_india_property.property.Models.UserDataModel;
 import com.nesting_india_property.property.Notification.AlarmNotificationReceiver;
 import com.nesting_india_property.property.R;
 
@@ -128,14 +130,17 @@ public class MainActivity extends AppCompatActivity {
     private RentAdapter rentAdapter;
 
     private List<PgDataModel> pgDataModels;
-    private PgAdapter pgAdapter;
 
-    private LinearLayout homeefooter, latestfooter, shortlisted, searchfooter, postproperty;
+    private List<UserDataModel> userDataModels;
+    private PgAdapter pgAdapter;
+    private AdviserAdapter adviserAdapter;
+
+    private LinearLayout homeefooter, latestfooter, shortlisted, searchfooter, postproperty, slider5;
     ImageView footerh, footerl, footerp, footers, footershort, google, playstore;
     private TextView homeefooter1, latestfooter1, searchfooter1, shortlistedfooter1;
 
     private ViewPager viewPager, advertisement;
-    RecyclerView recyclerViewsell, recyclerViewrent, recyclerViewpg;
+    RecyclerView recyclerViewsell, recyclerViewrent, recyclerViewpg, rv_property_dealers;
     RequestQueue rq;
 
     List<SliderUtils> sliderImg;
@@ -143,6 +148,7 @@ public class MainActivity extends AppCompatActivity {
 //    SwipeRefreshLayout refresh;
 
 
+    ImageView facbook, twitter, instagram, youtube;
     String userid = "";
 
     ArrayList<String> willing1 = new ArrayList<>();
@@ -233,11 +239,47 @@ public class MainActivity extends AppCompatActivity {
         google = findViewById(R.id.google);
         playstore = findViewById(R.id.playstore);
         btnbuyservice = findViewById(R.id.btnbuyservice);
+        facbook = findViewById(R.id.facbook);
+        twitter = findViewById(R.id.twitter);
+        instagram = findViewById(R.id.instagram);
+        youtube = findViewById(R.id.youtube);
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Please Wait...");
         progressDialog.setCancelable(false);
 
+
+        facbook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/profile.php?id=100071179698871"));
+                startActivity(intent);
+            }
+        });
+
+        twitter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/nestingindia"));
+                startActivity(intent);
+            }
+        });
+
+        instagram.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.instagram.com/nestingindia.com_property/"));
+                startActivity(intent);
+            }
+        });
+
+        youtube.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/channel/UCgiK9dSxH4eVbSXAtRZBu4w"));
+                startActivity(intent);
+            }
+        });
 
         google.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -394,11 +436,14 @@ public class MainActivity extends AppCompatActivity {
         pgDataModels = new ArrayList<>();
         rentDataModels = new ArrayList<>();
         adsDataModels = new ArrayList<>();
+        userDataModels = new ArrayList<>();
 
 
         recyclerViewsell = findViewById(R.id.sellproperty);
         recyclerViewrent = findViewById(R.id.rentproperty);
         recyclerViewpg = findViewById(R.id.pgproperty);
+        rv_property_dealers = findViewById(R.id.rv_property_dealers);
+        slider5 = findViewById(R.id.slider5);
         advertisement = findViewById(R.id.advertisement);
 
 
@@ -429,10 +474,19 @@ public class MainActivity extends AppCompatActivity {
         pgAdapter = new PgAdapter(pgDataModels, this);
         recyclerViewpg.setAdapter(pgAdapter);
 
+        RecyclerView.LayoutManager layoutManager4 = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
+        rv_property_dealers.setLayoutManager(layoutManager4);
+        adviserAdapter = new AdviserAdapter(userDataModels, this);
+        rv_property_dealers.setAdapter(adviserAdapter);
+
 
         getsellproperty();
         getrentproperty();
         getpgproperty();
+
+        if(VolleySingleton.getInstance(getApplicationContext()).isLogin()){
+            getPropertyDealers();
+        }
 
 
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -814,6 +868,72 @@ public class MainActivity extends AppCompatActivity {
 
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new MyTimertask(), 5000, 3500);
+    }
+
+    private void getPropertyDealers() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Endpoints.getadvisor_home, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                slider5.setVisibility(View.VISIBLE);
+                System.out.println("response :::" + response);
+                try {
+                    JSONObject obj = new JSONObject(response);
+                    String succes = obj.getString("success");
+                    JSONArray jsonArray = obj.getJSONArray("data");
+
+                    if (succes.equals("1")) {
+
+                        for (int i = 0; i < jsonArray.length(); i++) {
+
+                            JSONObject object = jsonArray.getJSONObject(i);
+
+                            String id = object.getString("id");
+                            String fname = object.getString("fname");
+                            String lname = object.getString("lname");
+                            String mobile = object.getString("mobile");
+                            String email = object.getString("email");
+                            String address = object.getString("address");
+                            String city = object.getString("city");
+                            String state = object.getString("state");
+                            String time = object.getString("time");
+                            String date = object.getString("date");
+                            String status = object.getString("status");
+                            String usercategory = object.getString("usercategory");
+                            String profilepic = object.getString("profilepic");
+
+                            UserDataModel userData = new UserDataModel(id, fname, lname, mobile, email, address, city, state, time, date, status, usercategory, profilepic);
+                            userDataModels.add(userData);
+                            AdviserAdapter adviserAdapter = new AdviserAdapter(userDataModels, MainActivity.this);
+                            rv_property_dealers.setAdapter(adviserAdapter);
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    showmessage("Server Error...");
+                    System.out.println("problem ::" + e);
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                showmessage("Server Error...");
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+
+                SmsData smsData = new SmsData();
+                Map<String, String> params = new HashMap<>();
+                params.put("header", smsData.token);
+                params.put("city", VolleySingleton.getInstance(getApplicationContext()).city());
+                return params;
+            }
+        };
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
     }
 
     private void updateUserCategory() {

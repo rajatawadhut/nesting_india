@@ -38,6 +38,7 @@ public class Endpoints {
 
     public  static final String getallproperty = base_url+"getallproperty.php";
     public  static final String getAdvisor = base_url+"getAdvisor.php";
+    public  static final String getadvisor_home = base_url+"getadvisor_home.php";
     public  static final String getsellproperty = base_url+"getsellproperty.php";
     public  static final String getrentproperty = base_url+"getrentproperty.php";
     public  static final String getpgproperty = base_url+"getpgproperty.php";

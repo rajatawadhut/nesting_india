@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.nesting_india_property.property.Avtivities.ChannelAdvisePartnerActivity;
+import com.nesting_india_property.property.Avtivities.MainActivity;
 import com.nesting_india_property.property.Avtivities.ShowUSerList;
 import com.nesting_india_property.property.Models.UserDataModel;
 import com.nesting_india_property.property.R;
@@ -40,7 +42,12 @@ public class AdviserAdapter extends RecyclerView.Adapter<AdviserAdapter.ShowData
     @NonNull
     @Override
     public ShowData onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adviserdata, parent, false);
+        View view;
+        if(context instanceof MainActivity) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adviserdata_home, parent, false);
+        }else{
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adviserdata, parent, false);
+        }
         return new ShowData(view);
     }
 
@@ -77,8 +84,9 @@ public class AdviserAdapter extends RecyclerView.Adapter<AdviserAdapter.ShowData
         }else {
            userType = "Unknown";
        }
-        holder.tv_usertype.setText(userType);
-
+        if(context instanceof ChannelAdvisePartnerActivity) {
+            holder.tv_usertype.setText(userType);
+        }
 
     }
 

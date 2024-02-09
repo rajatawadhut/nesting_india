@@ -9,8 +9,8 @@ android {
         applicationId "com.nesting_india_property.property"
         minSdk 21
         targetSdk 33
-        versionCode 7
-        versionName "1.6"
+        versionCode 9
+        versionName "1.8"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
