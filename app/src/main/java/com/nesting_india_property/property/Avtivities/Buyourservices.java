@@ -143,6 +143,7 @@ public class Buyourservices extends AppCompatActivity implements PaymentResultLi
                 SmsData smsData = new SmsData();
                 Map<String, String> params = new HashMap<>();
                 params.put("header", smsData.token);
+                params.put("userType",VolleySingleton.getInstance(Buyourservices.this).userCategory());
                 return params;
             }
         };

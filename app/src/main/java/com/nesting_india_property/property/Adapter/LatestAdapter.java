@@ -263,6 +263,9 @@ public class LatestAdapter extends RecyclerView.Adapter<LatestAdapter.ShowData>{
                 intent.putExtra("email", dataSet.get(position).getEmail());
                 intent.putExtra("fullname", fullname );
                 intent.putExtra("instance", "view");
+                intent.putExtra("city", dataSet.get(position).getCity());
+                intent.putExtra("locality", dataSet.get(position).getLocality());
+
                 context.startActivity(intent);
             }
         });
@@ -282,6 +285,8 @@ public class LatestAdapter extends RecyclerView.Adapter<LatestAdapter.ShowData>{
                 intent.putExtra("email", dataSet.get(position).getEmail());
                 intent.putExtra("fullname", fullname);
                 intent.putExtra("instance", "call");
+                intent.putExtra("city", dataSet.get(position).getCity());
+                intent.putExtra("locality", dataSet.get(position).getLocality());
                 context.startActivity(intent);
             }
         });
@@ -298,6 +303,8 @@ public class LatestAdapter extends RecyclerView.Adapter<LatestAdapter.ShowData>{
                 intent.putExtra("email", dataSet.get(position).getEmail());
                 intent.putExtra("fullname", fullname);
                 intent.putExtra("instance", "share");
+                intent.putExtra("city", dataSet.get(position).getCity());
+                intent.putExtra("locality", dataSet.get(position).getLocality());
                 context.startActivity(intent);
 
             }

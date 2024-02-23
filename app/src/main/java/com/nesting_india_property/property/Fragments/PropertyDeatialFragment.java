@@ -358,6 +358,8 @@ public class PropertyDeatialFragment extends Fragment {
                 intent.putExtra("email", ListingData.getInstance(getContext()).getlemail());
                 intent.putExtra("fullname", ListingData.getInstance(getContext()).getfname()+" "+ListingData.getInstance(getContext()).getlname());
                 intent.putExtra("instance", "share");
+                intent.putExtra("city", city);
+                intent.putExtra("locality", locality);
                 getContext().startActivity(intent);
 
             }
@@ -372,6 +374,8 @@ public class PropertyDeatialFragment extends Fragment {
                 intent.putExtra("email", ListingData.getInstance(getContext()).getlemail());
                 intent.putExtra("fullname", ListingData.getInstance(getContext()).getfname()+" "+ListingData.getInstance(getContext()).getlname());
                 intent.putExtra("instance", "view");
+                intent.putExtra("city", city);
+                intent.putExtra("locality", locality);
                 getContext().startActivity(intent);
             }
         });

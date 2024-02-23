@@ -48,6 +48,8 @@ public class CallBackForm extends AppCompatActivity {
     TextInputLayout emaillayout , mobilelayout, citylayout, fullnamelayout, otplayout;
     TextView textview;
 
+    String propertyLocality , propertyCity;
+
     SmsData smsData;
     String credit = "0", creditStatus = "0";
 
@@ -112,6 +114,8 @@ public class CallBackForm extends AppCompatActivity {
         getinstancemobile = getIntent().getStringExtra("mobile");
         getinstanceemail = getIntent().getStringExtra("email");
         getinstancefullname = getIntent().getStringExtra("fullname");
+        propertyLocality = getIntent().getStringExtra("locality");
+        propertyCity = getIntent().getStringExtra("city");
 
 
         System.out.println("get emailll :: " + getinstanceemail+ "  "+getpropertyid +"   "+  getinstancefullname+ " "+getinstancemobile);
@@ -379,7 +383,7 @@ public class CallBackForm extends AppCompatActivity {
                             }
                             if(getinstance.equals("share")){
                                 Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-                                sharingIntent.putExtra(Intent.EXTRA_TEXT, " http://www.nestingindia.com/property/"+ getpropertyid);
+                                sharingIntent.putExtra(Intent.EXTRA_TEXT, " http://www.nestingindia.com/property/"+propertyCity+"/"+propertyLocality.replace(" ","-")+"/"+ getpropertyid);
                                 sharingIntent.setType("text/plain");
                                 startActivity(Intent.createChooser(sharingIntent, "Share Request Post"));
                                 finish();
