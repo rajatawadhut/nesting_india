@@ -1,5 +1,6 @@
 package com.nesting_india_property.property.Avtivities;
 
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -12,6 +13,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -71,6 +73,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
@@ -484,7 +487,7 @@ public class MainActivity extends AppCompatActivity {
         getrentproperty();
         getpgproperty();
 
-        if(VolleySingleton.getInstance(getApplicationContext()).isLogin()){
+        if (VolleySingleton.getInstance(getApplicationContext()).isLogin()) {
             getPropertyDealers();
         }
 
@@ -967,7 +970,7 @@ public class MainActivity extends AppCompatActivity {
                     userCategoryAlert = "2";
                 } else if (selectedItem.equals("Builder")) {
                     userCategoryAlert = "3";
-                }else if (selectedItem.equals("Buyer")) {
+                } else if (selectedItem.equals("Buyer")) {
                     userCategoryAlert = "4";
                 }
             }
@@ -6117,6 +6120,28 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        String[] permission;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permission = new String[]{
+                    Manifest.permission.READ_MEDIA_IMAGES,
+            };
+
+        } else {
+            permission = new String[]{
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+            };
+        }
+        if (ContextCompat.checkSelfPermission(MainActivity.this,
+                permission[0])
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    MainActivity.this,
+                    permission,
+                    1
+            );
+        }
 
 
         // to check current activity in the navigation drawer

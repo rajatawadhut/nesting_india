@@ -1,9 +1,11 @@
 package com.nesting_india_property.property.Fragments;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -13,6 +15,8 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.util.Base64;
@@ -33,18 +37,13 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.nesting_india_property.property.Avtivities.MainActivity;
 import com.nesting_india_property.property.Avtivities.MyPropertyActivity;
 import com.nesting_india_property.property.R;
 import com.nesting_india_property.property.Utils.Endpoints;
 import com.nesting_india_property.property.Utils.ListingData;
 import com.nesting_india_property.property.Utils.SmsData;
 import com.nesting_india_property.property.Utils.VolleySingleton;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionDeniedResponse;
-import com.karumi.dexter.listener.PermissionGrantedResponse;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.single.PermissionListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -57,6 +56,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.READ_MEDIA_IMAGES;
 import static android.app.Activity.RESULT_OK;
 
 
@@ -67,7 +67,7 @@ public class AddImages extends Fragment {
     ArrayList<String> bitmaps = new ArrayList<String>();
     ArrayList<Uri> imageadd = new ArrayList<Uri>();
     String encodedImage;
-    int position =0;
+    int position = 0;
     private ProgressDialog progressDialog;
     String propertyid;
 
@@ -75,12 +75,11 @@ public class AddImages extends Fragment {
     String imgtype;
 
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v= inflater.inflate(R.layout.fragment_add_images, container, false);
+        View v = inflater.inflate(R.layout.fragment_add_images, container, false);
 
 
         Toolbar toolbar = v.findViewById(R.id.toolbar);
@@ -96,8 +95,6 @@ public class AddImages extends Fragment {
         propertyid = ListingData.getInstance(getContext()).getpropertyid();
 
 
-
-
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Please Wait...");
         progressDialog.setCancelable(false);
@@ -110,8 +107,8 @@ public class AddImages extends Fragment {
         previous = v.findViewById(R.id.previous);
         imgtypespin = v.findViewById(R.id.imgtypespin);
 
-        String[] arraySpinner = new String[] {
-                "Front Image","More Images"
+        String[] arraySpinner = new String[]{
+                "Front Image", "More Images"
         };
 
 
@@ -121,8 +118,7 @@ public class AddImages extends Fragment {
         imgtypespin.setAdapter(adapter);
 
 
-        imgtypespin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-        {
+        imgtypespin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> arg0, View arg1, int position, long id) {
                 // TODO Auto-generated method stub
@@ -136,36 +132,42 @@ public class AddImages extends Fragment {
         });
 
 
-
         pickimage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 {
                     bitmaps.clear();
                     imageadd.clear();
-                    Dexter.withActivity(getActivity()).withPermission(READ_EXTERNAL_STORAGE).withListener(new PermissionListener() {
-                        @Override
-                        public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-                            if(imgtype.equals("Front Image")){
-                                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                                intent.setType("image/*");
-                                startActivityForResult(Intent.createChooser(intent, "select image"),1);
-                            }else {
-                                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                                intent.setType("image/*");
-                                startActivityForResult(Intent.createChooser(intent, "select image"), 1);
-                            }
 
+                    String[] permission;
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        permission = new String[]{
+                                Manifest.permission.READ_MEDIA_IMAGES,
+                        };
+
+                    } else {
+                        permission = new String[]{
+                                Manifest.permission.READ_EXTERNAL_STORAGE
+                        };
+                    }
+                    if (ContextCompat.checkSelfPermission(getActivity(),
+                            permission[0])
+                            != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(
+                                getActivity(),
+                                permission,
+                                1
+                        );
+                    }else{
+                        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                        if (!imgtype.equals("Front Image")) {
+                            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
                         }
-                        @Override
-                        public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
-                        }
-                        @Override
-                        public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
-                            permissionToken.continuePermissionRequest();
-                        }
-                    }).check();
+                        intent.setType("image/*");
+                        startActivityForResult(Intent.createChooser(intent, "select image"), 1);
+                    }
+
                 }
 
             }
@@ -177,29 +179,35 @@ public class AddImages extends Fragment {
                 {
                     bitmaps.clear();
                     imageadd.clear();
-                    Dexter.withActivity((Activity) getContext()).withPermission(READ_EXTERNAL_STORAGE).withListener(new PermissionListener() {
-                        @Override
-                        public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-                            if(imgtype.equals("Front Image")){
-                                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                                intent.setType("image/*");
-                                startActivityForResult(Intent.createChooser(intent, "select image"),1);
-                            }else {
-                                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                                intent.setType("image/*");
-                                startActivityForResult(Intent.createChooser(intent, "select image"), 1);
-                            }
+                    String[] permission;
 
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        permission = new String[]{
+                                Manifest.permission.READ_MEDIA_IMAGES,
+                        };
+
+                    } else {
+                        permission = new String[]{
+                                Manifest.permission.READ_EXTERNAL_STORAGE
+                        };
+                    }
+                    if (ContextCompat.checkSelfPermission(getActivity(),
+                            permission[0])
+                            != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(
+                                getActivity(),
+                                permission,
+                                1
+                        );
+                    }else{
+                        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                        if (!imgtype.equals("Front Image")) {
+                            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
                         }
-                        @Override
-                        public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
-                        }
-                        @Override
-                        public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
-                            permissionToken.continuePermissionRequest();
-                        }
-                    }).check();
+                        intent.setType("image/*");
+                        startActivityForResult(Intent.createChooser(intent, "select image"), 1);
+                    }
+
                 }
 
             }
@@ -208,10 +216,10 @@ public class AddImages extends Fragment {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(position < imageadd.size() -1 ){
+                if (position < imageadd.size() - 1) {
                     position++;
                     propertyimage.setImageURI(imageadd.get(position));
-                }else{
+                } else {
                     Toast.makeText(getContext(), "No More Images....", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -222,10 +230,10 @@ public class AddImages extends Fragment {
             @Override
             public void onClick(View v) {
 
-                if(position > 0){
+                if (position > 0) {
                     position--;
                     propertyimage.setImageURI(imageadd.get(position));
-                }else{
+                } else {
                     Toast.makeText(getContext(), "No Previous Images", Toast.LENGTH_SHORT).show();
                 }
 
@@ -235,18 +243,17 @@ public class AddImages extends Fragment {
         uploadimage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(bitmaps.size() == 0){
+                if (bitmaps.size() == 0) {
                     showmessage("Please Select Property Images ");
-                }else{
-                    if(imgtype.equals("Front Image")){
+                } else {
+                    if (imgtype.equals("Front Image")) {
                         uploadFrontImg();
-                    }else{
+                    } else {
                         postimage();
-                    }                }
+                    }
+                }
             }
         });
-
-
 
 
         return v;
@@ -255,18 +262,18 @@ public class AddImages extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(requestCode == 1 && resultCode == RESULT_OK && data != null){
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
 
 
             ClipData clipData = data.getClipData();
-            if(clipData != null){
-                for(int i = 0; i < clipData.getItemCount(); i++){
+            if (clipData != null) {
+                for (int i = 0; i < clipData.getItemCount(); i++) {
                     Uri Imageuri = clipData.getItemAt(i).getUri();
                     try {
                         InputStream is = getContext().getContentResolver().openInputStream(Imageuri);
                         Bitmap bitmap = BitmapFactory.decodeStream(is);
                         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.JPEG,19,stream);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 19, stream);
                         byte[] imageBytes = stream.toByteArray();
                         encodedImage = String.valueOf(Base64.encodeToString(imageBytes, Base64.DEFAULT));
                         bitmaps.add(encodedImage);
@@ -278,13 +285,13 @@ public class AddImages extends Fragment {
                     propertyimage.setImageURI(imageadd.get(0));
                     position = 0;
                 }
-            }else {
+            } else {
                 Uri imageuri = data.getData();
                 try {
                     InputStream is = getContext().getContentResolver().openInputStream(imageuri);
                     Bitmap bitmap = BitmapFactory.decodeStream(is);
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG,19,stream);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 19, stream);
                     byte[] imageBytes = stream.toByteArray();
                     encodedImage = android.util.Base64.encodeToString(imageBytes, Base64.DEFAULT);
                     bitmaps.add(encodedImage);
@@ -315,16 +322,15 @@ public class AddImages extends Fragment {
 
             @Override
             public void onResponse(String response) {
-                System.out.println("params123 response :: "+ response);
+                System.out.println("params123 response :: " + response);
                 progressDialog.dismiss();
-
 
 
                 try {
                     JSONObject obj = new JSONObject(response);
-                    if(obj.getBoolean("error")){
+                    if (obj.getBoolean("error")) {
                         showmessage(obj.getString("message"));
-                    }else{
+                    } else {
                         showmessage(obj.getString("message"));
 //                        startActivity(getActivity().getIntent());
                         startActivity(new Intent(getContext(), MyPropertyActivity.class));
@@ -342,21 +348,21 @@ public class AddImages extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 progressDialog.dismiss();
-                Toast.makeText(getContext(),"Something Went Wrong",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Something Went Wrong", Toast.LENGTH_SHORT).show();
                 Log.d("VOLLEY", String.valueOf(error));
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 SmsData smsData = new SmsData();
                 Map<String, String> params = new HashMap<>();
                 params.put("header", smsData.token);
 
-                for(int i = 0; i < bitmaps.size(); i++){
+                for (int i = 0; i < bitmaps.size(); i++) {
                     params.put("size", String.valueOf(bitmaps.size()));
                     params.put("userid", VolleySingleton.getInstance(getContext()).id());
                     params.put("propertyid", propertyid);
-                    params.put("image"+i, bitmaps.get(i));
+                    params.put("image" + i, bitmaps.get(i));
 
                 }
 
@@ -371,23 +377,22 @@ public class AddImages extends Fragment {
         VolleySingleton.getInstance(getContext()).addToRequestQueue(stringRequest);
     }
 
-    private void postimage(){
+    private void postimage() {
 
         progressDialog.show();
         StringRequest stringRequest = new StringRequest(Request.Method.POST, Endpoints.postmultipleimage, new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
-                System.out.println("params123 response :: "+ response);
+                System.out.println("params123 response :: " + response);
                 progressDialog.dismiss();
-
 
 
                 try {
                     JSONObject obj = new JSONObject(response);
-                    if(obj.getBoolean("error")){
+                    if (obj.getBoolean("error")) {
                         showmessage(obj.getString("message"));
-                    }else{
+                    } else {
                         showmessage(obj.getString("message"));
 //                        startActivity(getActivity().getIntent());
                         getActivity().getSupportFragmentManager().popBackStack();
@@ -404,21 +409,21 @@ public class AddImages extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 progressDialog.dismiss();
-                Toast.makeText(getContext(),"Something Went Wrong",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Something Went Wrong", Toast.LENGTH_SHORT).show();
                 Log.d("VOLLEY", String.valueOf(error));
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 SmsData smsData = new SmsData();
                 Map<String, String> params = new HashMap<>();
                 params.put("header", smsData.token);
 
-                for(int i = 0; i < bitmaps.size(); i++){
+                for (int i = 0; i < bitmaps.size(); i++) {
                     params.put("size", String.valueOf(bitmaps.size()));
                     params.put("userid", VolleySingleton.getInstance(getContext()).id());
                     params.put("propertyid", propertyid);
-                    params.put("image"+i, bitmaps.get(i));
+                    params.put("image" + i, bitmaps.get(i));
 
                 }
 
@@ -433,8 +438,8 @@ public class AddImages extends Fragment {
         VolleySingleton.getInstance(getContext()).addToRequestQueue(stringRequest);
     }
 
-    private void showmessage(String msg){
-        Toast.makeText(getContext(),msg,Toast.LENGTH_SHORT).show();
+    private void showmessage(String msg) {
+        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
 

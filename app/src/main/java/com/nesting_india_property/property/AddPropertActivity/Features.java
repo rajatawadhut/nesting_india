@@ -3,12 +3,17 @@ package com.nesting_india_property.property.AddPropertActivity;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.View;
@@ -40,12 +45,7 @@ import com.nesting_india_property.property.Models.DescriptionDataModel;
 import com.nesting_india_property.property.R;
 import com.nesting_india_property.property.Utils.Endpoints;
 import com.nesting_india_property.property.Utils.ListingData;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionDeniedResponse;
-import com.karumi.dexter.listener.PermissionGrantedResponse;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.single.PermissionListener;
+
 import com.nesting_india_property.property.Utils.SmsData;
 import com.nesting_india_property.property.Utils.VolleySingleton;
 import com.nesting_india_property.property.listener.OnDescriptionClickListener;
@@ -1546,23 +1546,33 @@ public class Features extends AppCompatActivity implements OnDescriptionClickLis
 
                 System.out.println("encodededdd :: " + encodedImage.length());
 
-                Dexter.withActivity(Features.this).withPermission(READ_EXTERNAL_STORAGE).withListener(new PermissionListener() {
-                    @Override
-                    public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-                        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                        intent.setType("image/*");
-                        startActivityForResult(Intent.createChooser(intent, "select image"), 1);
-                    }
 
-                    @Override
-                    public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
-                    }
+                String[] permission;
 
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
-                        permissionToken.continuePermissionRequest();
-                    }
-                }).check();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    permission = new String[]{
+                            Manifest.permission.READ_MEDIA_IMAGES,
+                    };
+
+                } else {
+                    permission = new String[]{
+                            Manifest.permission.READ_EXTERNAL_STORAGE
+                    };
+                }
+                if (ContextCompat.checkSelfPermission(Features.this,
+                        permission[0])
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(
+                            Features.this,
+                            permission,
+                            1
+                    );
+                }else{
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.setType("image/*");
+                    startActivityForResult(Intent.createChooser(intent, "select image"), 1);
+                }
+
             }
         });
 
@@ -1575,24 +1585,31 @@ public class Features extends AppCompatActivity implements OnDescriptionClickLis
 //                ListingData.getInstance(getApplicationContext()).imagepresent("0");
 
                 System.out.println("encodededdd :: " + encodedImage.length());
+                String[] permission;
 
-                Dexter.withActivity(Features.this).withPermission(READ_EXTERNAL_STORAGE).withListener(new PermissionListener() {
-                    @Override
-                    public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-                        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                        intent.setType("image/*");
-                        startActivityForResult(Intent.createChooser(intent, "select image"), 1);
-                    }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    permission = new String[]{
+                            Manifest.permission.READ_MEDIA_IMAGES,
+                    };
 
-                    @Override
-                    public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
-                    }
-
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
-                        permissionToken.continuePermissionRequest();
-                    }
-                }).check();
+                } else {
+                    permission = new String[]{
+                            Manifest.permission.READ_EXTERNAL_STORAGE
+                    };
+                }
+                if (ContextCompat.checkSelfPermission(Features.this,
+                        permission[0])
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(
+                            Features.this,
+                            permission,
+                            1
+                    );
+                }else{
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.setType("image/*");
+                    startActivityForResult(Intent.createChooser(intent, "select image"), 1);
+                }
             }
         });
 

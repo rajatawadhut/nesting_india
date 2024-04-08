@@ -93,5 +93,6 @@ public class Endpoints {
     public  static final String getCreditCounter = base_url+"getCreditCounter.php";
     public  static final String updateCreditCounter = base_url+"updateCreditCounter.php";
     public  static final String updateLeadStatus = base_url+"updateLeadStatus.php";
+    public  static final String sendMail = base_url+"sendMail.php";
 
 }

@@ -6,8 +6,20 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.nesting_india_property.property.Avtivities.UtilsforMail;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -43,7 +55,50 @@ public class JavaMailRegisterOtp extends AsyncTask<Void,Void,Void> {
         this.mEmail = mEmail;
         this.mSubject = mSubject;
         this.mMessage = mMessage;
+        sendMail(mEmail, mMessage, mContext);
+
     }
+
+    private void sendMail(String mEmail, String mMessage, Context context) {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Endpoints.sendMail, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                System.out.println("response :::" + response);
+                try {
+                    JSONObject obj = new JSONObject(response);
+                    String succes = obj.getString("success");
+                    JSONArray jsonArray = obj.getJSONArray("data");
+
+                    if (succes.equals("1")) {
+
+                    }
+
+                } catch (JSONException e) {
+                    System.out.println("problem ::" + e);
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+
+                SmsData smsData = new SmsData();
+                Map<String, String> params = new HashMap<>();
+                params.put("to", mEmail);
+                params.put("message", mMessage);
+                return params;
+            }
+        };
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        VolleySingleton.getInstance(context).addToRequestQueue(stringRequest);
+    }
+
 
     @Override
     protected void onPreExecute() {

@@ -4,11 +4,15 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -35,12 +39,7 @@ import com.nesting_india_property.property.Utils.Endpoints;
 import com.nesting_india_property.property.Utils.ListingData;
 import com.nesting_india_property.property.Utils.SmsData;
 import com.nesting_india_property.property.Utils.VolleySingleton;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionDeniedResponse;
-import com.karumi.dexter.listener.PermissionGrantedResponse;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.single.PermissionListener;
+
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -131,31 +130,35 @@ public class AddImgActivity extends AppCompatActivity {
                 {
                     bitmaps.clear();
                     imageadd.clear();
-                    Dexter.withActivity(AddImgActivity.this).withPermission(READ_EXTERNAL_STORAGE).withListener(new PermissionListener() {
-                        @Override
-                        public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-                            if(imgtype.equals("Front Image")){
-                                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                                intent.setType("image/*");
-                                startActivityForResult(Intent.createChooser(intent, "select image"),1);
-                            }else {
-                                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                                intent.setType("image/*");
-                                startActivityForResult(Intent.createChooser(intent, "select image"), 1);
-                            }
 
-                        }
+                    String[] permission;
 
-                        @Override
-                        public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
-                        }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        permission = new String[]{
+                                Manifest.permission.READ_MEDIA_IMAGES,
+                        };
 
-                        @Override
-                        public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
-                            permissionToken.continuePermissionRequest();
+                    } else {
+                        permission = new String[]{
+                                Manifest.permission.READ_EXTERNAL_STORAGE
+                        };
+                    }
+                    if (ContextCompat.checkSelfPermission(AddImgActivity.this,
+                            permission[0])
+                            != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(
+                                AddImgActivity.this,
+                                permission,
+                                1
+                        );
+                    }else{
+                        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                        if (!imgtype.equals("Front Image")) {
+                            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
                         }
-                    }).check();
+                        intent.setType("image/*");
+                        startActivityForResult(Intent.createChooser(intent, "select image"),1);
+                    }
                 }
 
             }
@@ -167,30 +170,38 @@ public class AddImgActivity extends AppCompatActivity {
                 {
                     bitmaps.clear();
                     imageadd.clear();
-                    Dexter.withActivity((Activity) AddImgActivity.this).withPermission(READ_EXTERNAL_STORAGE).withListener(new PermissionListener() {
-                        @Override
-                        public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-                            if(imgtype.equals("Front Image")){
-                                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                                intent.setType("image/*");
-                                startActivityForResult(Intent.createChooser(intent, "select image"),1);
-                            }else {
-                                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                                intent.setType("image/*");
-                                startActivityForResult(Intent.createChooser(intent, "select image"), 1);
-                            }
-                        }
 
-                        @Override
-                        public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
-                        }
 
-                        @Override
-                        public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
-                            permissionToken.continuePermissionRequest();
+                    String[] permission;
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        permission = new String[]{
+                                Manifest.permission.READ_MEDIA_IMAGES,
+                        };
+
+                    } else {
+                        permission = new String[]{
+                                Manifest.permission.READ_EXTERNAL_STORAGE
+                        };
+                    }
+                    if (ContextCompat.checkSelfPermission(AddImgActivity.this,
+                            permission[0])
+                            != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(
+                                AddImgActivity.this,
+                                permission,
+                                1
+                        );
+                    }else{
+                        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                        if (!imgtype.equals("Front Image")) {
+                            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
                         }
-                    }).check();
+                        intent.setType("image/*");
+                        startActivityForResult(Intent.createChooser(intent, "select image"),1);
+                    }
+
+
                 }
 
             }

@@ -4,10 +4,14 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -31,18 +35,14 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.nesting_india_property.property.AddPropertActivity.Features;
 import com.nesting_india_property.property.R;
 import com.nesting_india_property.property.Utils.Endpoints;
 import com.nesting_india_property.property.Utils.SmsData;
 import com.nesting_india_property.property.Utils.VolleySingleton;
 
 import com.google.android.material.textfield.TextInputLayout;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionDeniedResponse;
-import com.karumi.dexter.listener.PermissionGrantedResponse;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.single.PermissionListener;
+
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -225,21 +225,32 @@ public class ProfileActivity extends AppCompatActivity {
         profile_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Dexter.withActivity(ProfileActivity.this).withPermission(READ_EXTERNAL_STORAGE).withListener(new PermissionListener() {
-                    @Override
-                    public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-                        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                        intent.setType("image/*");
-                        startActivityForResult(Intent.createChooser(intent, "select image"),1);
-                    }
-                    @Override
-                    public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
-                    }
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
-                        permissionToken.continuePermissionRequest();
-                    }
-                }).check();
+
+                String[] permission;
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    permission = new String[]{
+                            Manifest.permission.READ_MEDIA_IMAGES,
+                    };
+
+                } else {
+                    permission = new String[]{
+                            Manifest.permission.READ_EXTERNAL_STORAGE
+                    };
+                }
+                if (ContextCompat.checkSelfPermission(ProfileActivity.this,
+                        permission[0])
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(
+                            ProfileActivity.this,
+                            permission,
+                            1
+                    );
+                }else{
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.setType("image/*");
+                    startActivityForResult(Intent.createChooser(intent, "select image"),1);
+                }
             }
         });
     }
