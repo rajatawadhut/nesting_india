@@ -3,6 +3,7 @@ package com.nesting_india_property.property.Adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Build;
 import android.text.Html;
@@ -55,11 +56,18 @@ public class SubscriptionPlanAdapter extends RecyclerView.Adapter<SubscriptionPl
             holder.subscription_description.setText(Html.fromHtml(model.getSubscription_description()));
         }
         holder.subscription_offer.setText("Launching Offer " + model.getSubscription_offer() + " % off");
-        holder.subscription_price.setText( "\u20B9 "+ model.getSubscription_price() + " for " + model.getSubscription_offer() + " days");
+        holder.orignal_subscription_price.setText(model.getSubscription_price());
+        holder.orignal_subscription_price.setPaintFlags(holder.orignal_subscription_price.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+
+        int price = Integer.parseInt(model.getSubscription_price());
+        int percentage = Integer.parseInt(model.getSubscription_offer());
+        int valuePrice = (price - ((price * percentage) /100));
+        holder.subscription_price.setText( "\u20B9 "+ valuePrice + " for " + model.getSubscription_duration() + " days");
 
         holder.btn_buy_now.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                model.setOriginalPrice(String.valueOf(valuePrice));
                 listener.onSelectSubscription(model);
             }
         });
@@ -72,7 +80,7 @@ public class SubscriptionPlanAdapter extends RecyclerView.Adapter<SubscriptionPl
     }
 
     class ShowData extends RecyclerView.ViewHolder {
-        TextView subscription_title, subscription_price, subscription_description, subscription_offer;
+        TextView subscription_title, subscription_price, subscription_description, subscription_offer, orignal_subscription_price;
 
         Button btn_buy_now;
 
@@ -82,6 +90,7 @@ public class SubscriptionPlanAdapter extends RecyclerView.Adapter<SubscriptionPl
             subscription_description = itemView.findViewById(R.id.tv_description);
             subscription_offer = itemView.findViewById(R.id.tv_offer);
             subscription_price = itemView.findViewById(R.id.tv_price);
+            orignal_subscription_price = itemView.findViewById(R.id.tv_original_price);
             btn_buy_now = itemView.findViewById(R.id.btn_buy_now);
 
 

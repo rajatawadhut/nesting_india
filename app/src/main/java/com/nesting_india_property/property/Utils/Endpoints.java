@@ -82,6 +82,7 @@ public class Endpoints {
     public  static final String getuserlistsearch = base_url+"getuserlistsearch.php";
     public  static final String showuserlistproperty = base_url+"showuserlistproperty.php";
     public  static final String getadsimage = base_url+"getadsimage.php";
+    public  static final String getalladsimage = base_url+"getalladsimage.php";
     public  static final String getDescriptions = base_url+"getDescriptions.php";
 
 

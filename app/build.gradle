@@ -9,8 +9,8 @@ android {
         applicationId "com.nesting_india_property.property"
         minSdk 21
         targetSdk 34
-        versionCode 10
-        versionName "1.9"
+        versionCode 11
+        versionName "2.0"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -108,5 +108,7 @@ dependencies {
     implementation 'com.payumoney.core:payumoney-sdk:7.6.0'
 //    implementation 'com.payumoney.sdkui:plug-n-play:1.6.0'
     implementation "androidx.multidex:multidex:2.0.1"
+    implementation 'com.facebook.android:audience-network-sdk:6.+'
+    implementation 'androidx.annotation:annotation:1.0.0'
 
 }

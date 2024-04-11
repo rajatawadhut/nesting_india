@@ -37,7 +37,7 @@ public class AdsAdapter extends RecyclerView.Adapter<AdsAdapter.ShowData>{
     @NonNull
     @Override
     public ShowData onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adslayout, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adsmorelayout, parent, false);
         return new ShowData(view);
     }
 
@@ -50,23 +50,17 @@ public class AdsAdapter extends RecyclerView.Adapter<AdsAdapter.ShowData>{
         holder.cardImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, ShowAdsActivity.class);
-                intent.putExtra("url", dataSet.get(position).getUrl());
-                context.startActivity(intent);
+                if(!dataSet.get(position).getUrl().equals("#")){
+                    Intent intent = new Intent(context, ShowAdsActivity.class);
+                    intent.putExtra("url", dataSet.get(position).getUrl());
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                }
             }
         });
 
 
         System.out.println("datasetposition" + dataSet.get(position));
-
-        new Handler().postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                dataSet.remove(dataSet.get(position));
-                notifyDataSetChanged();
-            }
-        }, 5000);
     }
 
     @Override

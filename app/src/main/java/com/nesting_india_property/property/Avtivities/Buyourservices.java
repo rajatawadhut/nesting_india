@@ -253,7 +253,7 @@ public class Buyourservices extends AppCompatActivity implements PaymentResultLi
     @Override
     public void onSelectSubscription(SubscriptionPlanModel model) {
         planModel = model;
-        startpayment(model.getSubscription_price());
+        startpayment(model.getOriginalPrice());
     }
 }
 

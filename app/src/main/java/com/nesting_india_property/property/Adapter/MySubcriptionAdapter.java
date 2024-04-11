@@ -49,7 +49,10 @@ public class MySubcriptionAdapter extends RecyclerView.Adapter<MySubcriptionAdap
             holder.tv_description.setText(Html.fromHtml(model.getSubscription_description()));
         }
         holder.tv_credit.setText(model.getCredit());
-        holder.tv_price.setText(model.getSubscription_price());
+        int price = Integer.parseInt(model.getSubscription_price());
+        int percentage = Integer.parseInt(model.getSubscription_offer());
+        int valuePrice = (price - ((price * percentage) /100));
+        holder.tv_price.setText(String.valueOf(valuePrice));
         holder.tv_expiry_date.setText(model.getExpiry_date());
         holder.tv_payment_date.setText(model.getPayment_created_at());
         if(model.getPayment_status().equals("0")) {

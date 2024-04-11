@@ -25,7 +25,7 @@ public class ShowAdsActivity extends AppCompatActivity {
 
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("Advertisement");
+        toolbar.setTitle("Advertisement Details");
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

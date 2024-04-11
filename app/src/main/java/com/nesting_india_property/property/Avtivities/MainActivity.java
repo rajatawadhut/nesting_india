@@ -51,6 +51,7 @@ import com.nesting_india_property.property.Notification.AlarmNotificationReceive
 import com.nesting_india_property.property.R;
 
 import android.os.Handler;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -114,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
     ActionBarDrawerToggle toggle;
     private ProgressDialog progressDialog;
     TextView search;
-    Button pgviewmore, sellviewmore, rentviewmore, btnbuyservice;
+    Button pgviewmore, sellviewmore, rentviewmore, btnbuyservice, adsviewmore;
 
     public int number = 0;
     public int number2 = 0;
@@ -452,6 +453,7 @@ public class MainActivity extends AppCompatActivity {
 
         search = findViewById(R.id.search);
         pgviewmore = findViewById(R.id.pgviewmore);
+        adsviewmore = findViewById(R.id.adsviewmore);
         rentviewmore = findViewById(R.id.rentviewmore);
         sellviewmore = findViewById(R.id.sellviewmore);
 
@@ -548,6 +550,15 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        adsviewmore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ViewMoreAdsActivity.class);
+                startActivity(intent);
+            }
+        });
+
 
         pgviewmore.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -6121,6 +6132,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+
+
         String[] permission;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -6154,6 +6167,34 @@ public class MainActivity extends AppCompatActivity {
 //        latestfooter1.setTextColor(R.string.CodeColor);
 //        searchfooter1.setTextColor(R.string.CodeColor);
 //        shortlistedfooter1.setTextColor(R.string.CodeColor);
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1) {
+            // for each permission check if the user granted/denied them
+            // you may want to group the rationale in a single dialog,
+            // this is just an example
+            for (int i = 0, len = permissions.length; i < len; i++) {
+                String permission = permissions[i];
+                if (grantResults[i] == PackageManager.PERMISSION_DENIED) {
+                    // user rejected the permission
+                    boolean showRationale = false;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        showRationale = shouldShowRequestPermissionRationale(permission);
+                    }
+                    if (!showRationale) {
+                        Intent intent = new Intent();
+                        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        Uri uri = Uri.fromParts("package", getPackageName(), null);
+                        intent.setData(uri);
+                        startActivity(intent);
+                    }
+                }
+            }
+        }
     }
 
 

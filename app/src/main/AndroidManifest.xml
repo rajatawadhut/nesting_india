@@ -19,6 +19,7 @@
 
 
     <application
+        android:name=".BaseApplication"
         tools:node="replace"
         android:allowBackup="true"
         android:icon="@drawable/ic_logo"
@@ -77,6 +78,9 @@
 
         </activity>
 
+        <activity
+            android:name="com.nesting_india_property.property.Avtivities.ViewMoreAdsActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" />
         <activity
             android:name="com.nesting_india_property.property.Avtivities.SearchProject"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" />

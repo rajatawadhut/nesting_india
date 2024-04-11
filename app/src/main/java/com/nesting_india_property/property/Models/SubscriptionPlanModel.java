@@ -3,7 +3,7 @@ package com.nesting_india_property.property.Models;
 
 public class SubscriptionPlanModel {
 
-    String id, subscription_title, subscription_price, subscription_duration, subscription_description, subscription_offer, subscription_type, status, subscription_credit;
+    String id, subscription_title, subscription_price, subscription_duration, subscription_description, subscription_offer, subscription_type, status, subscription_credit, originalPrice;
 
     public SubscriptionPlanModel(String id, String subscription_title, String subscription_price, String subscription_duration, String subscription_description, String subscription_offer, String subscription_type, String status, String subscription_credit) {
         this.id = id;
@@ -47,6 +47,14 @@ public class SubscriptionPlanModel {
 
     public String getStatus() {
         return status;
+    }
+
+    public String getOriginalPrice() {
+        return originalPrice;
+    }
+
+    public void setOriginalPrice(String originalPrice) {
+        this.originalPrice = originalPrice;
     }
 
     public String getSubscription_credit() {

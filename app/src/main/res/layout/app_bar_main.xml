@@ -243,6 +243,18 @@
                         android:text="Advertisement"
                         android:textColor="@android:color/black"
                         android:textSize="20sp" />
+                    <Button
+                        android:id="@+id/adsviewmore"
+                        android:layout_width="150dp"
+                        android:layout_height="25dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/mainhome_btn_bg"
+                        android:text="View More"
+                        android:textAlignment="center"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="12sp" />
+
                 </LinearLayout>
 
 
