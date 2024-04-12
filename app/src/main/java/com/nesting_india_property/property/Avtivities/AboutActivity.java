@@ -20,7 +20,7 @@ public class AboutActivity extends AppCompatActivity {
 
     private ProgressDialog progressDialog;
 
-    String yourData = "<h1 style=\"text-align: center\" class=\"section-title\">our story</h1> \n\n\n" +
+    String yourData = "<h1 style=\"text-align: center\" class=\"section-title\">our story \n\n</h1>" +
             "                                <p class=\"px-3\">\n" +
             "\tThe days of relying on local dealers or \"mouth to mouth publicity\" to transact real estate transactions are long gone. The real estate industry has entered the E-World thanks to globalization and a fast-paced lifestyle. Active real estate participants are currently actively looking for the best opportunities to establish themselves in the E-Real Estate market. All of the issues that affect those who deal in real estate or who are looking for real estate can be resolved at www.NestingIndia.com. NestingIndia, one of the top real estate portals, keeps an eye on the real estate market. With its respected registered users and frequent visits from real estate industry participants, www.NestingIndia.com has developed into the real estate sector's hub. Know us\n" +
             "\t<br><br>\n" +
@@ -52,7 +52,7 @@ public class AboutActivity extends AppCompatActivity {
             "\t<li><strong>Solutions available for</strong> Real Estate Agents, Builder & Developer, Property Owners, Property Buyers, Real Estate Sellers,  Consultant & Advisor, etc. and lots of more.</li>\n" +
             "\t\n" +
             "\t</ul>\n" +
-            "\t<br>\n" +
+            "\t<br>" +
             "\t<h3 style=\"text-align: center\">Our Forte</h3>\n" +
             "\t<p>\n" +
             "\tThanks to its distinctive characteristics, www.NestingIndia.com has become more reputable in the online business. In order to quench your hunger for information on real estate, housing, and property in India, Real Estate is a well-structured property portal. A crucial website that allows vendors, buyers, and brokers to quickly exchange information is www.NestingIndia.com. In addition, these are our main areas of expertise:\n" +

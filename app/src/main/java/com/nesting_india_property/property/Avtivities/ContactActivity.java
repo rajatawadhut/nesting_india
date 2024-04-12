@@ -137,7 +137,7 @@ public class ContactActivity extends AppCompatActivity {
         String message2 = message + "\n"+ "Name : "+name+ "\n"+ "Phone : "+phone+ "\n"+ "Email : "+mail;
 
 //        Send Mail
-        JavaMailAPI javaMailAPI = new JavaMailAPI(this, mail, subject, message2, ContactActivity.this);
+        JavaMailAPI javaMailAPI = new JavaMailAPI(this,"nestingindianagpur@gmail.com", subject, message2, ContactActivity.this);
 
         javaMailAPI.execute();
 
