@@ -37,6 +37,8 @@
                     android:textStyle="bold" />
 
                 <LinearLayout
+                    android:layout_gravity="center"
+                    android:gravity="center"
                     android:paddingBottom="@dimen/dimen10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -221,7 +221,7 @@ public class Buyourservices extends AppCompatActivity implements PaymentResultLi
                 params.put("plan_name", planModel.getSubscription_title());
                 params.put("plan_credit", planModel.getSubscription_credit());
                 params.put("plan_id", planModel.getId());
-                params.put("plan_price", planModel.getSubscription_price());
+                params.put("plan_price", planModel.getOriginalPrice());
                 params.put("plan_duration", planModel.getSubscription_duration());
                 params.put("transaction_id", transId);
                 params.put("status", "1");
