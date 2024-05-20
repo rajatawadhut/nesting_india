@@ -126,7 +126,7 @@ public class PrivacyPolicyActivity extends AppCompatActivity {
             "\t<h3 style=\"text-align: center\" >USER DISPUTES</h3>\n" +
             "\tThe Users are solely responsible for your interactions at www.NestingIndia.com and www.NestingIndia.com reserves the right, but has no obligation, to monitor disputes between Members.\n" +
             "\t<br><br>\n" +
-            "\twww.NestingIndia.com will not be party to any legal proceedings between User and any other registered or free User for any transactions through the Site. www.NestingIndia.com will always abide by governing / legal authorities order and cooperate fully through the process, but the costs of the same shall be recovered from the party that has implicated PlaceentIndia.com in such case.\n" +
+            "\twww.NestingIndia.com will not be party to any legal proceedings between User and any other registered or free User for any transactions through the Site. www.NestingIndia.com will always abide by governing / legal authorities order and cooperate fully through the process, but the costs of the same shall be recovered from the party that has implicated nestingindia.com in such case.\n" +
             "\t<h3 style=\"text-align: center\" >MATTER OF DISPUTES AND JURISDICTIONAL ASPECTS</h3>\n" +
             "\tFor any kind of legal dispute related to www.NestingIndia.com would be dealt in only territory of Nagpur. All the legal issues are subjected only to pertinent contemporary's laws in force at NAGPUR to the jurisdiction of courts located in NAGPUR only.\n" +
             "\t<h3 style=\"text-align: center\" >GOVERNING LAW AND JURISDICTION</h3>\n" +

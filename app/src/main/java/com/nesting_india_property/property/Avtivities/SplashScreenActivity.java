@@ -39,8 +39,8 @@ public class SplashScreenActivity extends AppCompatActivity {
     LinearLayout nodata;
 
 
-//    String API= "https://nestingindia.com/nestingandroid/getv3Property.php";
-    String API= "https://nestingindia.com/nestingandroid/getv2Property.php";
+    String API= "https://nestingindia.com/nestingandroid/getv3Property.php";
+//    String API= "https://nestingindia.com/nestingandroid/getv2Property.php";
 //    String API= "https://nestingindia.com/nestingandroid/getVProperty.php";
 
 
